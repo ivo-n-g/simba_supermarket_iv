@@ -83,9 +83,9 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
   };
 
   return (
-    <aside className="w-full md:w-72 bg-white md:bg-gray-50 sticky top-[104px] lg:top-16 z-40 md:h-[calc(100vh-64px)] overflow-visible border-b md:border-r border-gray-100 shadow-sm md:shadow-none transition-all duration-300">
+    <aside className="w-full md:w-72 bg-white md:bg-gray-50 sticky top-[104px] lg:top-16 z-40 md:h-[calc(100vh-64px)] md:overflow-y-auto border-b md:border-r border-gray-100 shadow-sm md:shadow-none transition-all duration-300">
       {/* Mobile Dropdown Button */}
-      <div className="md:hidden p-3 px-4">
+      <div className="md:hidden p-3 px-4 bg-white relative z-50">
         <button 
           onClick={() => setIsOpen(!isOpen)}
           className="w-full flex items-center justify-between p-3 bg-primary text-white rounded-xl shadow-lg shadow-primary/20 font-bold text-sm transition-transform active:scale-[0.98]"
@@ -101,7 +101,7 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
       </div>
 
       {/* Categories List (Desktop Sidebar / Mobile Dropdown Content) */}
-      <div className={`${isOpen ? 'block' : 'hidden'} md:block absolute md:relative top-full left-0 w-full md:w-auto bg-white md:bg-transparent border-b md:border-0 border-gray-100 md:p-6 shadow-xl md:shadow-none z-50 animate-in fade-in slide-in-from-top-2 duration-200`}>
+      <div className={`${isOpen ? 'block' : 'hidden'} md:block absolute md:static top-full left-0 w-full bg-white md:bg-transparent border-b md:border-0 border-gray-100 md:p-6 shadow-xl md:shadow-none z-50`}>
         <div className="p-2 md:p-0 flex flex-col gap-1 md:gap-1.5">
           <div className="flex items-center gap-2 mb-4 hidden md:flex">
             <div className="p-2 bg-primary/10 rounded-lg text-primary">
@@ -163,7 +163,7 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
       {isOpen && (
         <div 
           className="md:hidden fixed inset-0 bg-black/20 z-40 backdrop-blur-[1px]" 
-          style={{ top: '156px' }} // Position below the dropdown bar
+          style={{ top: '156px' }} 
           onClick={() => setIsOpen(false)}
         />
       )}

@@ -17,7 +17,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
   const [history, setHistory] = useState<string[]>([]);
   const { user, logout, cartCount } = useStore();
   const { language, setLanguage, t } = useLanguage();
-  const searchRef = useRef<HTMLDivElement>(null);
+  
+  const desktopSearchRef = useRef<HTMLDivElement>(null);
+  const mobileSearchRef = useRef<HTMLDivElement>(null);
 
   // Load history from localStorage
   useEffect(() => {
@@ -30,7 +32,10 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
   // Handle clicking outside of suggestions
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      const isOutsideDesktop = desktopSearchRef.current && !desktopSearchRef.current.contains(event.target as Node);
+      const isOutsideMobile = mobileSearchRef.current && !mobileSearchRef.current.contains(event.target as Node);
+      
+      if (isOutsideDesktop && isOutsideMobile) {
         setShowSuggestions(false);
       }
     };
@@ -102,7 +107,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
             </h1>
             
             {/* Desktop Search Bar */}
-            <div className="hidden lg:block relative" ref={searchRef}>
+            <div className="hidden lg:block relative" ref={desktopSearchRef}>
               <form onSubmit={handleSubmit} className="relative w-64 xl:w-96">
                 <input
                   type="text"
@@ -119,7 +124,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
                 </button>
               </form>
 
-              {/* Suggestions Dropdown */}
+              {/* Desktop Suggestions Dropdown */}
               {showSuggestions && (inputValue || history.length > 0) && (
                 <div className="absolute top-full left-0 w-full bg-white mt-1 rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[60] text-gray-800 animate-in fade-in slide-in-from-top-2 duration-200">
                   {inputValue && suggestions.length > 0 && (
@@ -206,7 +211,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
         </div>
         
         {/* Mobile Search Bar Area */}
-        <div className="lg:hidden bg-white px-4 py-2 border-b border-gray-100 relative" ref={searchRef}>
+        <div className="lg:hidden bg-white px-4 py-2 border-b border-gray-100 relative" ref={mobileSearchRef}>
           <form onSubmit={handleSubmit} className="relative">
             <input
               type="text"

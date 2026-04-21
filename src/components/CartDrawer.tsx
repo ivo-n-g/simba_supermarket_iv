@@ -11,7 +11,7 @@ interface CartDrawerProps {
 type CheckoutStep = 'cart' | 'identity' | 'payment' | 'success';
 
 const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
-  const { cart, removeFromCart, updateQuantity, cartCount, checkout, deliveryMethod, setDeliveryMethod, user } = useStore();
+  const { cart, removeFromCart, updateQuantity, checkout, deliveryMethod, setDeliveryMethod, user } = useStore();
   const { t } = useLanguage();
   const [step, setStep] = useState<CheckoutStep>('cart');
   const [isProcessing, setIsProcessing] = useState(false);

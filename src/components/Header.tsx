@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
+import productsData from '../../simba_products.json';
 import LoginModal from './LoginModal';
 import CartDrawer from './CartDrawer';
 
@@ -12,18 +13,57 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
   const [inputValue, setInputValue] = React.useState('');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [history, setHistory] = useState<string[]>([]);
   const { user, logout, cartCount } = useStore();
   const { language, setLanguage, t } = useLanguage();
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  // Load history from localStorage
+  useEffect(() => {
+    const savedHistory = localStorage.getItem('simba_search_history');
+    if (savedHistory) {
+      setHistory(JSON.parse(savedHistory));
+    }
+  }, []);
+
+  // Handle clicking outside of suggestions
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const addToHistory = (query: string) => {
+    if (!query.trim()) return;
+    const newHistory = [query, ...history.filter(h => h !== query)].slice(0, 5);
+    setHistory(newHistory);
+    localStorage.setItem('simba_search_history', JSON.stringify(newHistory));
+  };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputValue(value);
     onSearch(value);
+    setShowSuggestions(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSearch(inputValue);
+    addToHistory(inputValue);
+    setShowSuggestions(false);
+  };
+
+  const handleSuggestionClick = (query: string) => {
+    setInputValue(query);
+    onSearch(query);
+    addToHistory(query);
+    setShowSuggestions(false);
   };
 
   const handleAuthClick = (e: React.MouseEvent) => {
@@ -37,6 +77,20 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
     }
   };
 
+  // Get autocomplete suggestions
+  const suggestions = React.useMemo(() => {
+    if (!inputValue.trim()) return [];
+    const query = inputValue.toLowerCase();
+    const results = productsData.products
+      .filter(p => {
+        const name = (p as any)[`name_${language}`] || p.name;
+        return name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query);
+      })
+      .map(p => (p as any)[`name_${language}`] || p.name)
+      .slice(0, 6);
+    return Array.from(new Set(results));
+  }, [inputValue, language]);
+
   return (
     <>
       <header className="sticky top-0 z-50 bg-primary text-white shadow-md">
@@ -47,26 +101,67 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
               Simba
             </h1>
             
-            {/* Search Bar (Hidden on small/medium screens) */}
-            <form onSubmit={handleSubmit} className="hidden lg:flex relative w-64 xl:w-96">
-              <input
-                type="text"
-                placeholder={t('searchPlaceholder')}
-                value={inputValue}
-                onChange={handleSearch}
-                className="w-full py-2 px-4 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-secondary transition-all text-sm"
-              />
-              <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 text-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-            </form>
+            {/* Desktop Search Bar */}
+            <div className="hidden lg:block relative" ref={searchRef}>
+              <form onSubmit={handleSubmit} className="relative w-64 xl:w-96">
+                <input
+                  type="text"
+                  placeholder={t('searchPlaceholder')}
+                  value={inputValue}
+                  onChange={handleSearch}
+                  onFocus={() => setShowSuggestions(true)}
+                  className="w-full py-2 px-4 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-secondary transition-all text-sm"
+                />
+                <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 text-primary">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </button>
+              </form>
+
+              {/* Suggestions Dropdown */}
+              {showSuggestions && (inputValue || history.length > 0) && (
+                <div className="absolute top-full left-0 w-full bg-white mt-1 rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[60] text-gray-800 animate-in fade-in slide-in-from-top-2 duration-200">
+                  {inputValue && suggestions.length > 0 && (
+                    <div className="py-2">
+                      {suggestions.map((s, i) => (
+                        <button
+                          key={i}
+                          onClick={() => handleSuggestionClick(s)}
+                          className="w-full text-left px-4 py-2 hover:bg-primary/5 flex items-center gap-3 transition-colors"
+                        >
+                          <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                          </svg>
+                          <span className="text-sm line-clamp-1">{s}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {history.length > 0 && !inputValue && (
+                    <div className="py-2">
+                      <div className="px-4 py-1 text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('recentSearches')}</div>
+                      {history.map((h, i) => (
+                        <button
+                          key={i}
+                          onClick={() => handleSuggestionClick(h)}
+                          className="w-full text-left px-4 py-2 hover:bg-primary/5 flex items-center gap-3 transition-colors"
+                        >
+                          <svg className="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span className="text-sm font-medium text-gray-600">{h}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Actions */}
           <div className="flex items-center gap-2 md:gap-6">
-            {/* Language Switcher */}
             <div className="flex items-center gap-0.5 bg-white/10 p-1 rounded-lg">
               {(['en', 'rw', 'fr'] as const).map((lang) => (
                 <button
@@ -110,14 +205,15 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
           </div>
         </div>
         
-        {/* Mobile Search Bar */}
-        <div className="lg:hidden bg-white px-4 py-2 border-b border-gray-100">
+        {/* Mobile Search Bar Area */}
+        <div className="lg:hidden bg-white px-4 py-2 border-b border-gray-100 relative" ref={searchRef}>
           <form onSubmit={handleSubmit} className="relative">
             <input
               type="text"
               placeholder={t('searchPlaceholder')}
               value={inputValue}
               onChange={handleSearch}
+              onFocus={() => setShowSuggestions(true)}
               className="w-full py-2.5 pl-10 pr-10 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm bg-gray-50"
             />
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -137,6 +233,45 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
               </button>
             )}
           </form>
+
+          {/* Mobile Suggestions Dropdown */}
+          {showSuggestions && (inputValue || history.length > 0) && (
+            <div className="absolute top-full left-0 w-full bg-white rounded-b-xl shadow-2xl border-x border-b border-gray-100 overflow-hidden z-[60] text-gray-800">
+              {inputValue && suggestions.length > 0 && (
+                <div className="py-2">
+                  {suggestions.map((s, i) => (
+                    <button
+                      key={i}
+                      onClick={() => handleSuggestionClick(s)}
+                      className="w-full text-left px-4 py-3 hover:bg-primary/5 flex items-center gap-3 border-b border-gray-50 last:border-0"
+                    >
+                      <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                      <span className="text-sm">{s}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+              {history.length > 0 && !inputValue && (
+                <div className="py-2">
+                  <div className="px-4 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('recentSearches')}</div>
+                  {history.map((h, i) => (
+                    <button
+                      key={i}
+                      onClick={() => handleSuggestionClick(h)}
+                      className="w-full text-left px-4 py-3 hover:bg-primary/5 flex items-center gap-3 border-b border-gray-50 last:border-0"
+                    >
+                      <svg className="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-sm font-medium text-gray-600">{h}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </header>
 

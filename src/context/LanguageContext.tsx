@@ -283,6 +283,11 @@ const translations: Translations = {
     en: 'Step',
     rw: 'Intambwe',
     fr: 'Étape',
+  },
+  recentSearches: {
+    en: 'Recent Searches',
+    rw: 'Ibyo washatse vuba',
+    fr: 'Recherches récentes',
   }
 };
 

@@ -284,6 +284,11 @@ const translations: Translations = {
     rw: 'Intambwe',
     fr: 'Étape',
   },
+  comingSoon: {
+    en: 'Coming Soon',
+    rw: 'Vuba aha',
+    fr: 'Bientôt disponible',
+  },
   recentSearches: {
     en: 'Recent Searches',
     rw: 'Ibyo washatse vuba',

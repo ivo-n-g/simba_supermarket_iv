@@ -8,31 +8,73 @@ interface LoginModalProps {
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
-  const { login, signup } = useStore();
+  const { login, signup, loginWithGoogle } = useStore();
   const { t } = useLanguage();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isLogin) {
-      // Simulate login
-      login(email.split('@')[0] || 'User', email);
-    } else {
-      // Simulate signup
-      signup(fullName || email.split('@')[0], email);
+  const validateForm = () => {
+    if (!email.includes('@')) {
+      setError('Please enter a valid email address.');
+      return false;
     }
-    onClose();
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return false;
+    }
+    if (!isLogin && !fullName.trim()) {
+      setError('Please enter your full name.');
+      return false;
+    }
+    return true;
   };
 
-  const handleGoogleLogin = () => {
-    // Simulate Google login
-    login('John Doe', 'john.doe@gmail.com', 'https://lh3.googleusercontent.com/a/default-user');
-    onClose();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    
+    if (!validateForm()) return;
+
+    setIsLoading(true);
+    try {
+      if (isLogin) {
+        const success = await login(email, password);
+        if (success) {
+          onClose();
+        } else {
+          setError('Invalid email or password.');
+        }
+      } else {
+        const success = await signup(fullName, email, password);
+        if (success) {
+          onClose();
+        } else {
+          setError('User with this email already exists.');
+        }
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    try {
+      await loginWithGoogle();
+      onClose();
+    } catch (err) {
+      setError('Google login failed.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -49,6 +91,15 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               </svg>
             </button>
           </div>
+
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 rounded-lg text-red-600 dark:text-red-400 text-sm font-medium flex items-center gap-2 animate-shake">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (
@@ -88,8 +139,15 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             </div>
             <button
               type="submit"
-              className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-opacity-90 transition-all shadow-lg active:scale-[0.98]"
+              disabled={isLoading}
+              className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-opacity-90 transition-all shadow-lg active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-2"
             >
+              {isLoading && (
+                <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+              )}
               {isLogin ? t('signIn') : t('createAccount')}
             </button>
           </form>
@@ -105,7 +163,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
           <button
             onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all active:scale-[0.98] mb-6"
+            disabled={isLoading}
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all active:scale-[0.98] mb-6 disabled:opacity-50"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -131,7 +190,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           <p className="text-center text-sm text-gray-500 dark:text-gray-400">
             {isLogin ? t('dontHaveAccount') : t('alreadyHaveAccount')}{' '}
             <button 
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={() => { setIsLogin(!isLogin); setError(''); }}
               className="text-secondary font-bold hover:underline"
             >
               {isLogin ? t('signUp') : t('login')}

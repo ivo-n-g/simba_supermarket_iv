@@ -15,7 +15,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const { t } = useLanguage();
   const [step, setStep] = useState<CheckoutStep>('cart');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'momo' | 'card' | 'cash'>('momo');
+  const [paymentMethod, setPaymentMethod] = useState<'momo' | 'card' | 'cash'>('cash');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -157,20 +157,28 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                     <h4 className="font-bold text-gray-700 dark:text-gray-300 text-sm uppercase tracking-wider">{t('paymentMethod')}</h4>
                     <div className="space-y-3">
                       {[
-                        { id: 'momo', label: t('momo'), icon: '📱' },
-                        { id: 'card', label: t('card'), icon: '💳' },
-                        { id: 'cash', label: t('cash'), icon: '💵' }
+                        { id: 'momo', label: t('momo'), icon: '📱', disabled: true },
+                        { id: 'card', label: t('card'), icon: '💳', disabled: true },
+                        { id: 'cash', label: t('cash'), icon: '💵', disabled: false }
                       ].map((m) => (
                         <button
                           key={m.id}
-                          onClick={() => setPaymentMethod(m.id as any)}
-                          className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${
+                          disabled={m.disabled}
+                          onClick={() => !m.disabled && setPaymentMethod(m.id as any)}
+                          className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 transition-all relative ${
                             paymentMethod === m.id ? 'border-primary dark:border-secondary bg-primary/5 dark:bg-secondary/5 ring-1 ring-primary dark:ring-secondary' : 'border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600'
-                          }`}
+                          } ${m.disabled ? 'opacity-50 grayscale cursor-not-allowed' : ''}`}
                         >
                           <div className="flex items-center gap-3">
                             <span className="text-2xl">{m.icon}</span>
-                            <span className="font-bold text-gray-800 dark:text-gray-200">{m.label}</span>
+                            <div className="flex flex-col items-start">
+                              <span className="font-bold text-gray-800 dark:text-gray-200">{m.label}</span>
+                              {m.disabled && (
+                                <span className="text-[10px] font-black text-red-500 uppercase tracking-tighter bg-red-50 dark:bg-red-900/20 px-1.5 py-0.5 rounded border border-red-100 dark:border-red-900/30">
+                                  {t('comingSoon')}
+                                </span>
+                              )}
+                            </div>
                           </div>
                           {paymentMethod === m.id && (
                             <div className="w-6 h-6 bg-primary dark:bg-secondary text-white dark:text-primary rounded-full flex items-center justify-center">
@@ -182,10 +190,10 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                         </button>
                       ))}
                     </div>
-                    {paymentMethod === 'momo' && (
-                      <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl border border-yellow-100 dark:border-yellow-900/30">
-                        <p className="text-xs text-yellow-700 dark:text-yellow-400 leading-relaxed font-medium">
-                          You will receive a prompt on your phone to confirm the payment after clicking complete.
+                    {paymentMethod === 'cash' && (
+                      <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-100 dark:border-green-900/30">
+                        <p className="text-xs text-green-700 dark:text-green-400 leading-relaxed font-medium">
+                          You will pay for your order when it is delivered or picked up.
                         </p>
                       </div>
                     )}

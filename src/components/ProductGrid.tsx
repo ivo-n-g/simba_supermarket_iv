@@ -30,8 +30,8 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products, selectedCategory, s
   };
 
   return (
-    <div className="flex-1 p-4 md:p-8">
-      <h2 className="text-xl font-bold text-gray-800 mb-6">
+    <div className="flex-1 p-4 md:p-8 bg-white dark:bg-gray-900 transition-colors duration-300">
+      <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6">
         {searchQuery 
           ? `${t('searchResults')} "${searchQuery}"` 
           : (selectedCategory === 'All' ? t('allProducts') : t(selectedCategory))}
@@ -51,8 +51,13 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products, selectedCategory, s
       </div>
 
       {products.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">
+        <div className="text-center py-20">
+          <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-10 h-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <p className="text-gray-500 dark:text-gray-400 text-lg font-medium">
             {t('noProductsFound')} {searchQuery && `"${searchQuery}"`} {selectedCategory !== 'All' && `${t('in')} ${t(selectedCategory)}`}.
           </p>
         </div>

@@ -36,7 +36,6 @@ function App() {
         p.name_rw,
         p.name_fr,
         p.category,
-        // Also could add translated categories here if needed
       ].filter(Boolean).join(' ').toLowerCase();
 
       const matchesSearch = searchableText.includes(query);
@@ -46,7 +45,7 @@ function App() {
 
   return (
     <StoreProvider>
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
         <Header onSearch={setSearchQuery} />
         
         <main>
@@ -69,10 +68,10 @@ function App() {
           </div>
         </main>
         
-        <footer className="bg-primary text-white py-8 mt-12">
+        <footer className="bg-primary text-white py-8 mt-12 transition-colors duration-300">
           <div className="container mx-auto px-4 text-center">
             <p>© 2025 {productsData.store.name}. All rights reserved.</p>
-            <p className="text-gray-300 text-sm mt-2">{productsData.store.location}</p>
+            <p className="text-gray-300 dark:text-gray-400 text-sm mt-2">{productsData.store.location}</p>
           </div>
         </footer>
       </div>

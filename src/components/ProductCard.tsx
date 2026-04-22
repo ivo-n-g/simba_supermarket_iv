@@ -37,8 +37,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit 
   };
 
   return (
-    <div className="bg-white p-2 md:p-4 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all relative group flex flex-col h-full">
-      <div className="aspect-square mb-2 md:mb-3 relative overflow-hidden rounded-lg bg-gray-50">
+    <div className="bg-white dark:bg-gray-800 p-2 md:p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md dark:hover:shadow-primary/10 transition-all relative group flex flex-col h-full">
+      <div className="aspect-square mb-2 md:mb-3 relative overflow-hidden rounded-lg bg-gray-50 dark:bg-gray-700/50">
         <img
           src={image}
           alt={name}
@@ -47,31 +47,31 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit 
       </div>
       
       <div className="flex flex-col flex-1">
-        <span className="text-primary font-bold text-sm md:text-lg">
+        <span className="text-primary dark:text-secondary font-bold text-sm md:text-lg">
           {price.toLocaleString()} RWF
         </span>
-        <h3 className="text-gray-800 font-semibold text-[11px] md:text-sm line-clamp-2 min-h-[2rem] md:min-h-[2.5rem] mt-0.5 md:mt-1 leading-tight">
+        <h3 className="text-gray-800 dark:text-gray-100 font-semibold text-[11px] md:text-sm line-clamp-2 min-h-[2rem] md:min-h-[2.5rem] mt-0.5 md:mt-1 leading-tight">
           {name}
         </h3>
-        <span className="text-gray-400 text-[10px] md:text-sm pt-1">
+        <span className="text-gray-400 dark:text-gray-500 text-[10px] md:text-sm pt-1">
           {unit}
         </span>
 
         {/* Quantity Selector and Add Button */}
         <div className="mt-3 flex items-center gap-2">
-          <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden h-9 md:h-10">
+          <div className="flex items-center border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden h-9 md:h-10">
             <button 
               onClick={decrement}
-              className="px-2 md:px-3 h-full hover:bg-gray-100 text-gray-600 transition-colors font-bold"
+              className="px-2 md:px-3 h-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors font-bold"
             >
               -
             </button>
-            <span className="px-2 md:px-3 text-xs md:text-sm font-bold min-w-[1.5rem] text-center">
+            <span className="px-2 md:px-3 text-xs md:text-sm font-bold min-w-[1.5rem] text-center dark:text-gray-200">
               {localQuantity}
             </span>
             <button 
               onClick={increment}
-              className="px-2 md:px-3 h-full hover:bg-gray-100 text-gray-600 transition-colors font-bold"
+              className="px-2 md:px-3 h-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors font-bold"
             >
               +
             </button>

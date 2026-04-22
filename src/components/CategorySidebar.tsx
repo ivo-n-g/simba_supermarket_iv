@@ -83,9 +83,9 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
   };
 
   return (
-    <aside className="w-full md:w-72 bg-white md:bg-gray-50 sticky top-[104px] lg:top-16 z-40 md:h-[calc(100vh-64px)] md:overflow-y-auto border-b md:border-r border-gray-100 shadow-sm md:shadow-none transition-all duration-300">
+    <aside className="w-full md:w-72 bg-white dark:bg-gray-900 md:bg-gray-50 dark:md:bg-gray-900 sticky top-[104px] lg:top-16 z-40 md:h-[calc(100vh-64px)] md:overflow-y-auto border-b md:border-r border-gray-100 dark:border-gray-800 shadow-sm md:shadow-none transition-all duration-300">
       {/* Mobile Dropdown Button */}
-      <div className="md:hidden p-3 px-4 bg-white relative z-50">
+      <div className="md:hidden p-3 px-4 bg-white dark:bg-gray-900 relative z-50">
         <button 
           onClick={() => setIsOpen(!isOpen)}
           className="w-full flex items-center justify-between p-3 bg-primary text-white rounded-xl shadow-lg shadow-primary/20 font-bold text-sm transition-transform active:scale-[0.98]"
@@ -101,7 +101,7 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
       </div>
 
       {/* Categories List (Desktop Sidebar / Mobile Dropdown Content) */}
-      <div className={`${isOpen ? 'block' : 'hidden'} md:block absolute md:static top-full left-0 w-full bg-white md:bg-transparent border-b md:border-0 border-gray-100 md:p-6 shadow-xl md:shadow-none z-50`}>
+      <div className={`${isOpen ? 'block' : 'hidden'} md:block absolute md:static top-full left-0 w-full bg-white dark:bg-gray-900 md:bg-transparent border-b md:border-0 border-gray-100 dark:border-gray-800 md:p-6 shadow-xl md:shadow-none z-50`}>
         <div className="p-2 md:p-0 flex flex-col gap-1 md:gap-1.5">
           <div className="flex items-center gap-2 mb-4 hidden md:flex">
             <div className="p-2 bg-primary/10 rounded-lg text-primary">
@@ -109,7 +109,7 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
               </svg>
             </div>
-            <h3 className="text-sm font-bold text-gray-800 uppercase tracking-widest">{t('categories')}</h3>
+            <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-widest">{t('categories')}</h3>
           </div>
 
           <button
@@ -117,17 +117,17 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
             className={`group flex items-center justify-between px-4 py-3 rounded-xl text-sm md:text-base text-left transition-all w-full ${
               selectedCategory === 'All'
                 ? 'bg-primary text-white font-bold md:shadow-lg md:shadow-primary/20 md:scale-[1.02]'
-                : 'hover:bg-primary/5 text-gray-600 hover:text-primary'
+                : 'hover:bg-primary/5 dark:hover:bg-primary/20 text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary'
             }`}
           >
             <div className="flex items-center gap-3">
-              <span className={`${selectedCategory === 'All' ? 'text-secondary' : 'text-gray-400 group-hover:text-primary'}`}>
+              <span className={`${selectedCategory === 'All' ? 'text-secondary' : 'text-gray-400 group-hover:text-primary dark:group-hover:text-primary'}`}>
                 {categoryIcons['All']}
               </span>
               <span>{t('allCategories')}</span>
             </div>
             <span className={`text-[10px] px-2 py-0.5 rounded-full ${
-              selectedCategory === 'All' ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-500'
+              selectedCategory === 'All' ? 'bg-white/20 text-white' : 'bg-gray-200 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
             }`}>
               {totalCount}
             </span>
@@ -140,17 +140,17 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
               className={`group flex items-center justify-between px-4 py-3 rounded-xl text-sm md:text-base text-left transition-all w-full ${
                 selectedCategory === category
                   ? 'bg-primary text-white font-bold md:shadow-lg md:shadow-primary/20 md:scale-[1.02]'
-                  : 'hover:bg-primary/5 text-gray-600 hover:text-primary'
+                  : 'hover:bg-primary/5 dark:hover:bg-primary/20 text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary'
               }`}
             >
               <div className="flex items-center gap-3">
-                <span className={`${selectedCategory === category ? 'text-secondary' : 'text-gray-400 group-hover:text-primary'}`}>
+                <span className={`${selectedCategory === category ? 'text-secondary' : 'text-gray-400 group-hover:text-primary dark:group-hover:text-primary'}`}>
                   {categoryIcons[category] || categoryIcons['General']}
                 </span>
                 <span>{t(category)}</span>
               </div>
               <span className={`text-[10px] px-2 py-0.5 rounded-full ${
-                selectedCategory === category ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-500'
+                selectedCategory === category ? 'bg-white/20 text-white' : 'bg-gray-200 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
               }`}>
                 {categoryCounts[category] || 0}
               </span>

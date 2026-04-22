@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useTheme } from '../context/ThemeContext';
 import productsData from '../../simba_products.json';
 import LoginModal from './LoginModal';
 import CartDrawer from './CartDrawer';
@@ -17,6 +18,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
   const [history, setHistory] = useState<string[]>([]);
   const { user, logout, cartCount } = useStore();
   const { language, setLanguage, t } = useLanguage();
+  const { theme, toggleTheme } = useTheme();
   
   const desktopSearchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
@@ -98,7 +100,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-primary text-white shadow-md">
+      <header className="sticky top-0 z-50 bg-primary text-white shadow-md transition-colors duration-300">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2 md:gap-8">
@@ -126,14 +128,14 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
 
               {/* Desktop Suggestions Dropdown */}
               {showSuggestions && (inputValue || history.length > 0) && (
-                <div className="absolute top-full left-0 w-full bg-white mt-1 rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[60] text-gray-800 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-800 mt-1 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden z-[60] text-gray-800 dark:text-gray-200 animate-in fade-in slide-in-from-top-2 duration-200">
                   {inputValue && suggestions.length > 0 && (
                     <div className="py-2">
                       {suggestions.map((s, i) => (
                         <button
                           key={i}
                           onClick={() => handleSuggestionClick(s)}
-                          className="w-full text-left px-4 py-2 hover:bg-primary/5 flex items-center gap-3 transition-colors"
+                          className="w-full text-left px-4 py-2 hover:bg-primary/5 dark:hover:bg-primary/20 flex items-center gap-3 transition-colors"
                         >
                           <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -150,12 +152,12 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
                         <button
                           key={i}
                           onClick={() => handleSuggestionClick(h)}
-                          className="w-full text-left px-4 py-2 hover:bg-primary/5 flex items-center gap-3 transition-colors"
+                          className="w-full text-left px-4 py-2 hover:bg-primary/5 dark:hover:bg-primary/20 flex items-center gap-3 transition-colors"
                         >
-                          <svg className="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="w-4 h-4 text-gray-300 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
-                          <span className="text-sm font-medium text-gray-600">{h}</span>
+                          <span className="text-sm font-medium text-gray-600 dark:text-gray-400">{h}</span>
                         </button>
                       ))}
                     </div>
@@ -166,7 +168,25 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-2 md:gap-6">
+          <div className="flex items-center gap-2 md:gap-4">
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+              title="Toggle Theme"
+            >
+              {theme === 'light' ? (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 18v1m9-9h1M3 9h1m12.728-4.272l.707.707M6.343 17.657l.707.707M17.657 17.657l-.707.707M4.272 6.343l-.707.707M12 7a5 5 0 100 10 5 5 0 000-10z" />
+                </svg>
+              )}
+            </button>
+
+            {/* Language Switcher */}
             <div className="flex items-center gap-0.5 bg-white/10 p-1 rounded-lg">
               {(['en', 'rw', 'fr'] as const).map((lang) => (
                 <button
@@ -211,7 +231,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
         </div>
         
         {/* Mobile Search Bar Area */}
-        <div className="lg:hidden bg-white px-4 py-2 border-b border-gray-100 relative" ref={mobileSearchRef}>
+        <div className="lg:hidden bg-white dark:bg-gray-900 px-4 py-2 border-b border-gray-100 dark:border-gray-800 relative transition-colors duration-300" ref={mobileSearchRef}>
           <form onSubmit={handleSubmit} className="relative">
             <input
               type="text"
@@ -219,7 +239,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
               value={inputValue}
               onChange={handleSearch}
               onFocus={() => setShowSuggestions(true)}
-              className="w-full py-2.5 pl-10 pr-10 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm bg-gray-50"
+              className="w-full py-2.5 pl-10 pr-10 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm bg-gray-50 dark:bg-gray-800"
             />
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -230,7 +250,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
               <button 
                 type="button"
                 onClick={() => { setInputValue(''); onSearch(''); }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -241,14 +261,14 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
 
           {/* Mobile Suggestions Dropdown */}
           {showSuggestions && (inputValue || history.length > 0) && (
-            <div className="absolute top-full left-0 w-full bg-white rounded-b-xl shadow-2xl border-x border-b border-gray-100 overflow-hidden z-[60] text-gray-800">
+            <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-800 rounded-b-xl shadow-2xl border-x border-b border-gray-100 dark:border-gray-700 overflow-hidden z-[60] text-gray-800 dark:text-gray-200">
               {inputValue && suggestions.length > 0 && (
                 <div className="py-2">
                   {suggestions.map((s, i) => (
                     <button
                       key={i}
                       onClick={() => handleSuggestionClick(s)}
-                      className="w-full text-left px-4 py-3 hover:bg-primary/5 flex items-center gap-3 border-b border-gray-50 last:border-0"
+                      className="w-full text-left px-4 py-3 hover:bg-primary/5 dark:hover:bg-primary/20 flex items-center gap-3 border-b border-gray-50 dark:border-gray-700 last:border-0"
                     >
                       <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -260,17 +280,17 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
               )}
               {history.length > 0 && !inputValue && (
                 <div className="py-2">
-                  <div className="px-4 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('recentSearches')}</div>
+                  <div className="px-4 py-2 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">{t('recentSearches')}</div>
                   {history.map((h, i) => (
                     <button
                       key={i}
                       onClick={() => handleSuggestionClick(h)}
-                      className="w-full text-left px-4 py-3 hover:bg-primary/5 flex items-center gap-3 border-b border-gray-50 last:border-0"
+                      className="w-full text-left px-4 py-3 hover:bg-primary/5 dark:hover:bg-primary/20 flex items-center gap-3 border-b border-gray-50 dark:border-gray-700 last:border-0"
                     >
-                      <svg className="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <span className="text-sm font-medium text-gray-600">{h}</span>
+                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400">{h}</span>
                     </button>
                   ))}
                 </div>

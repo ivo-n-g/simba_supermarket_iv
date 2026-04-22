@@ -60,9 +60,9 @@ const translations: Translations = {
     fr: 'Sous-total',
   },
   orderSuccess: {
-    en: 'Order Successful!',
-    rw: 'Kwishyura bagenze neza!',
-    fr: 'Commande réussie !',
+    en: 'Order Received!',
+    rw: 'Inshyu yakiriwe!',
+    fr: 'Commande reçue !',
   },
   thankYou: {
     en: 'Thank you for shopping with Simba Supermarket.',

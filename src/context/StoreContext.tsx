@@ -8,16 +8,24 @@ interface CartItem {
   image: string;
 }
 
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+}
+
 interface User {
   name: string;
   email: string;
   photoURL?: string;
-  password?: string; // For mock local auth
+  password?: string;
 }
 
 interface StoreContextType {
   user: User | null;
   cart: CartItem[];
+  wishlist: Product[];
   login: (email: string, password?: string) => Promise<boolean>;
   signup: (name: string, email: string, password?: string) => Promise<boolean>;
   handleGoogleSuccess: (credentialResponse: any) => void;
@@ -25,6 +33,8 @@ interface StoreContextType {
   addToCart: (product: { id: number; name: string; price: number; image: string }, quantity?: number) => void;
   removeFromCart: (productId: number) => void;
   updateQuantity: (productId: number, quantity: number) => void;
+  toggleWishlist: (product: Product) => void;
+  isInWishlist: (productId: number) => boolean;
   checkout: () => Promise<void>;
   deliveryMethod: 'pickup' | 'delivery';
   setDeliveryMethod: (method: 'pickup' | 'delivery') => void;
@@ -36,19 +46,25 @@ const StoreContext = createContext<StoreContextType | undefined>(undefined);
 export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [wishlist, setWishlist] = useState<Product[]>([]);
   const [deliveryMethod, setDeliveryMethod] = useState<'pickup' | 'delivery'>('pickup');
 
-  // Load session and cart
   useEffect(() => {
     const savedUser = localStorage.getItem('simba_user_session');
     if (savedUser) setUser(JSON.parse(savedUser));
     const savedCart = localStorage.getItem('simba_cart');
     if (savedCart) setCart(JSON.parse(savedCart));
+    const savedWishlist = localStorage.getItem('simba_wishlist');
+    if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
   }, []);
 
   useEffect(() => {
     localStorage.setItem('simba_cart', JSON.stringify(cart));
   }, [cart]);
+
+  useEffect(() => {
+    localStorage.setItem('simba_wishlist', JSON.stringify(wishlist));
+  }, [wishlist]);
 
   const login = async (email: string, password?: string): Promise<boolean> => {
     const users: User[] = JSON.parse(localStorage.getItem('simba_users_db') || '[]');
@@ -76,8 +92,6 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   };
 
   const handleGoogleSuccess = (credentialResponse: any) => {
-    // In a real app, you would send this token to your backend
-    // For this prototype, we'll decode the JWT (it's a base64 string)
     const token = credentialResponse.credential;
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
@@ -122,6 +136,18 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setCart((prevCart) => prevCart.map((item) => item.id === productId ? { ...item, quantity } : item));
   };
 
+  const toggleWishlist = (product: Product) => {
+    setWishlist(prev => {
+      const isExist = prev.find(p => p.id === product.id);
+      if (isExist) {
+        return prev.filter(p => p.id !== product.id);
+      }
+      return [...prev, product];
+    });
+  };
+
+  const isInWishlist = (productId: number) => wishlist.some(p => p.id === productId);
+
   const checkout = async () => {
     return new Promise<void>((resolve) => {
       setTimeout(() => {
@@ -135,8 +161,8 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   return (
     <StoreContext.Provider value={{ 
-      user, cart, login, signup, handleGoogleSuccess, logout, 
-      addToCart, removeFromCart, updateQuantity, checkout, 
+      user, cart, wishlist, login, signup, handleGoogleSuccess, logout, 
+      addToCart, removeFromCart, updateQuantity, toggleWishlist, isInWishlist, checkout, 
       deliveryMethod, setDeliveryMethod, cartCount 
     }}>
       {children}

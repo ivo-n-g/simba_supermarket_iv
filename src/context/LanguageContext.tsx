@@ -114,6 +114,41 @@ const translations: Translations = {
     rw: 'Amazina yose',
     fr: 'Nom complet',
   },
+  profile: {
+    en: 'Profile',
+    rw: 'Imyirondoro',
+    fr: 'Profil',
+  },
+  wishlist: {
+    en: 'Wishlist',
+    rw: 'Ibyo nifuza',
+    fr: 'Liste de souhaits',
+  },
+  myOrders: {
+    en: 'My Orders',
+    rw: 'Ibyo nahoze',
+    fr: 'Mes commandes',
+  },
+  logout: {
+    en: 'Logout',
+    rw: 'Sohoka',
+    fr: 'Déconnexion',
+  },
+  emptyWishlist: {
+    en: 'Your wishlist is empty',
+    rw: 'Nta bintu birimo nifuza',
+    fr: 'Votre liste de souhaits est vide',
+  },
+  personalInfo: {
+    en: 'Personal Information',
+    rw: 'Imyirondoro bwite',
+    fr: 'Informations personnelles',
+  },
+  dashboard: {
+    en: 'Dashboard',
+    rw: 'Imyirondoro yanjye',
+    fr: 'Tableau de bord',
+  },
   orContinueWith: {
     en: 'Or continue with',
     rw: 'Cyangwa ukomeze na',

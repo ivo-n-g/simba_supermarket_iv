@@ -11,15 +11,23 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit }) => {
-  const { addToCart } = useStore();
+  const { addToCart, toggleWishlist, isInWishlist } = useStore();
   const { t } = useLanguage();
   const [localQuantity, setLocalQuantity] = useState(1);
+
+  const isWishlisted = isInWishlist(id);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     addToCart({ id, name, price, image }, localQuantity);
-    setLocalQuantity(1); // Reset after adding
+    setLocalQuantity(1);
+  };
+
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWishlist({ id, name, price, image });
   };
 
   const increment = (e: React.MouseEvent) => {
@@ -44,6 +52,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit 
           alt={name}
           className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300 p-2"
         />
+        <button 
+          onClick={handleToggleWishlist}
+          className={`absolute top-2 right-2 p-2 rounded-full shadow-md transition-all z-10 ${
+            isWishlisted 
+              ? 'bg-red-500 text-white' 
+              : 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-400 hover:text-red-500'
+          }`}
+        >
+          <svg className="w-4 h-4" fill={isWishlisted ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+        </button>
       </div>
       
       <div className="flex flex-col flex-1">
@@ -57,7 +77,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit 
           {unit}
         </span>
 
-        {/* Quantity Selector and Add Button */}
         <div className="mt-3 flex items-center gap-2">
           <div className="flex items-center border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden h-9 md:h-10">
             <button 

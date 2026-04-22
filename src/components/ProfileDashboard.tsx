@@ -1,0 +1,154 @@
+import React, { useState } from 'react';
+import { useStore } from '../context/StoreContext';
+import { useLanguage } from '../context/LanguageContext';
+
+interface ProfileDashboardProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+type DashboardTab = 'profile' | 'wishlist' | 'orders';
+
+const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ isOpen, onClose }) => {
+  const { user, logout, wishlist, toggleWishlist, addToCart } = useStore();
+  const { t } = useLanguage();
+  const [activeTab, setActiveTab] = useState<DashboardTab>('profile');
+
+  if (!isOpen || !user) return null;
+
+  const handleLogout = () => {
+    if (window.confirm(t('logoutConfirm'))) {
+      logout();
+      onClose();
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity duration-300">
+      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col md:flex-row transform transition-all duration-300 scale-100 opacity-100">
+        {/* Sidebar */}
+        <div className="w-full md:w-64 bg-gray-50 dark:bg-gray-900/50 p-6 border-r border-gray-100 dark:border-gray-700">
+          <div className="flex flex-col items-center text-center mb-8">
+            <div className="w-20 h-20 bg-primary dark:bg-secondary text-white dark:text-primary rounded-full flex items-center justify-center font-black text-3xl mb-3 shadow-lg">
+              {user.photoURL ? (
+                <img src={user.photoURL} alt={user.name} className="w-full h-full rounded-full object-cover" />
+              ) : user.name[0]}
+            </div>
+            <h3 className="font-bold text-gray-900 dark:text-white line-clamp-1">{user.name}</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1">{user.email}</p>
+          </div>
+
+          <nav className="space-y-2">
+            {[
+              { id: 'profile', label: t('profile'), icon: '👤' },
+              { id: 'wishlist', label: t('wishlist'), icon: '❤️' },
+              { id: 'orders', label: t('myOrders'), icon: '📦' }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as DashboardTab)}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all ${
+                  activeTab === tab.id 
+                    ? 'bg-primary text-white shadow-md shadow-primary/20' 
+                    : 'text-gray-500 hover:bg-primary/5 dark:hover:bg-primary/10'
+                }`}
+              >
+                <span>{tab.icon}</span>
+                {tab.label}
+              </button>
+            ))}
+            
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all mt-8"
+            >
+              <span>🚪</span>
+              {t('logout')}
+            </button>
+          </nav>
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-gray-800">
+          <div className="p-6 flex justify-between items-center border-b border-gray-100 dark:border-gray-700">
+            <h2 className="text-xl font-black text-gray-800 dark:text-white uppercase tracking-tight">
+              {activeTab === 'profile' ? t('personalInfo') : activeTab === 'wishlist' ? t('wishlist') : t('myOrders')}
+            </h2>
+            <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 bg-gray-50 dark:bg-gray-700 rounded-xl transition-colors">
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-6">
+            {activeTab === 'profile' && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 bg-gray-50 dark:bg-gray-900/30 rounded-2xl border border-gray-100 dark:border-gray-700">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">{t('fullName')}</label>
+                    <p className="font-bold text-gray-800 dark:text-white">{user.name}</p>
+                  </div>
+                  <div className="p-4 bg-gray-50 dark:bg-gray-900/30 rounded-2xl border border-gray-100 dark:border-gray-700">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">{t('emailAddress')}</label>
+                    <p className="font-bold text-gray-800 dark:text-white">{user.email}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'wishlist' && (
+              <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+                {wishlist.length === 0 ? (
+                  <div className="text-center py-20">
+                    <span className="text-6xl mb-4 block">💝</span>
+                    <p className="text-gray-500 dark:text-gray-400 font-medium">{t('emptyWishlist')}</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {wishlist.map((product) => (
+                      <div key={product.id} className="p-3 flex gap-4 bg-gray-50 dark:bg-gray-900/30 rounded-2xl border border-gray-100 dark:border-gray-700 group">
+                        <div className="w-20 h-20 bg-white dark:bg-gray-800 rounded-xl overflow-hidden flex-shrink-0">
+                          <img src={product.image} alt={product.name} className="w-full h-full object-contain p-2" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-bold text-gray-800 dark:text-white text-sm line-clamp-1 mb-1">{product.name}</h4>
+                          <p className="text-primary dark:text-secondary font-black text-sm mb-3">{product.price.toLocaleString()} RWF</p>
+                          <div className="flex gap-2">
+                            <button 
+                              onClick={() => addToCart(product)}
+                              className="flex-1 bg-primary text-white text-[10px] font-bold py-2 rounded-lg hover:opacity-90 transition-all"
+                            >
+                              {t('addToCart')}
+                            </button>
+                            <button 
+                              onClick={() => toggleWishlist(product)}
+                              className="p-2 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-lg hover:bg-red-100 transition-all"
+                            >
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === 'orders' && (
+              <div className="text-center py-20 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                <span className="text-6xl mb-4 block">📦</span>
+                <p className="text-gray-500 dark:text-gray-400 font-medium">No orders yet.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProfileDashboard;

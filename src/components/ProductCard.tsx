@@ -52,6 +52,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit 
           alt={name}
           className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300 p-2"
         />
+        {/* Top Right Heart Icon (Quick toggle) */}
         <button 
           onClick={handleToggleWishlist}
           className={`absolute top-2 right-2 p-2 rounded-full shadow-md transition-all z-10 ${
@@ -77,33 +78,52 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit 
           {unit}
         </span>
 
-        <div className="mt-3 flex items-center gap-2">
-          <div className="flex items-center border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden h-9 md:h-10">
+        {/* Action Controls */}
+        <div className="mt-3 space-y-2">
+          {/* Quantity and Add to Cart Row */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden h-8 md:h-10">
+              <button 
+                onClick={decrement}
+                className="px-1.5 md:px-3 h-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors font-bold"
+              >
+                -
+              </button>
+              <span className="px-1.5 md:px-3 text-[10px] md:text-sm font-bold min-w-[1rem] md:min-w-[1.5rem] text-center dark:text-gray-200">
+                {localQuantity}
+              </span>
+              <button 
+                onClick={increment}
+                className="px-1.5 md:px-3 h-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors font-bold"
+              >
+                +
+              </button>
+            </div>
+            
             <button 
-              onClick={decrement}
-              className="px-2 md:px-3 h-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors font-bold"
+              onClick={handleAddToCart}
+              className="flex-1 bg-primary text-white h-8 md:h-10 rounded-lg shadow-sm hover:bg-opacity-90 transition-all active:scale-95 flex items-center justify-center gap-1 px-2"
             >
-              -
-            </button>
-            <span className="px-2 md:px-3 text-xs md:text-sm font-bold min-w-[1.5rem] text-center dark:text-gray-200">
-              {localQuantity}
-            </span>
-            <button 
-              onClick={increment}
-              className="px-2 md:px-3 h-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors font-bold"
-            >
-              +
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <span className="text-[10px] font-bold uppercase tracking-wider">{t('addToCart')}</span>
             </button>
           </div>
-          
+
+          {/* Secondary Wishlist Button */}
           <button 
-            onClick={handleAddToCart}
-            className="flex-1 bg-primary text-white h-9 md:h-10 rounded-lg shadow-sm hover:bg-opacity-90 transition-all active:scale-95 flex items-center justify-center gap-1 md:gap-2 px-2"
+            onClick={handleToggleWishlist}
+            className={`w-full h-8 rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-2 border-2 transition-all active:scale-95 ${
+              isWishlisted 
+                ? 'bg-red-50 border-red-100 text-red-500 dark:bg-red-900/10 dark:border-red-900/30' 
+                : 'border-gray-100 text-gray-400 hover:border-red-100 hover:text-red-500 dark:border-gray-700 dark:hover:border-red-900/30'
+            }`}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            <svg className="w-3.5 h-3.5" fill={isWishlisted ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
-            <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider">{t('addToCart')}</span>
+            {t('addToWishlist')}
           </button>
         </div>
       </div>

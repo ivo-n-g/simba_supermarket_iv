@@ -169,6 +169,11 @@ const translations: Translations = {
     rw: 'Ongeramo',
     fr: 'Ajouter',
   },
+  addToWishlist: {
+    en: 'Wishlist',
+    rw: 'Nifuza',
+    fr: 'Souhait',
+  },
   'Alcoholic Drinks': {
     en: 'Alcoholic Drinks',
     rw: 'Ibinyobwa bisindisha',

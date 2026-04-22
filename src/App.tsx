@@ -5,10 +5,12 @@ import Hero from './components/Hero';
 import CategorySidebar from './components/CategorySidebar';
 import ProductGrid from './components/ProductGrid';
 import { StoreProvider } from './context/StoreContext';
+import { useLanguage } from './context/LanguageContext';
 
 function App() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const { language } = useLanguage();
 
   // Extract unique categories and their counts
   const { categories, categoryCounts, totalCount } = useMemo(() => {
@@ -27,21 +29,24 @@ function App() {
   const filteredProducts = useMemo(() => {
     const query = searchQuery.toLowerCase();
     return productsData.products.filter(product => {
+      const p = product as any;
       const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
       
-      const p = product as any;
       const searchableText = [
         p.name,
         p.name_en,
         p.name_rw,
         p.name_fr,
         p.category,
+        p.category_en,
+        p.category_rw,
+        p.category_fr,
       ].filter(Boolean).join(' ').toLowerCase();
 
       const matchesSearch = searchableText.includes(query);
       return matchesCategory && matchesSearch;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [selectedCategory, searchQuery, language]);
 
   return (
     <StoreProvider>
@@ -49,7 +54,7 @@ function App() {
         <Header onSearch={setSearchQuery} />
         
         <main>
-          <Hero tagline={productsData.store.tagline} />
+          <Hero />
           
           <div className="container mx-auto flex flex-col md:flex-row min-h-screen">
             <CategorySidebar 

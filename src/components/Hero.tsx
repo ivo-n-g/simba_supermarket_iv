@@ -1,10 +1,13 @@
 import React from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface HeroProps {
-  tagline: string;
+  tagline?: string;
 }
 
-const Hero: React.FC<HeroProps> = ({ tagline }) => {
+const Hero: React.FC<HeroProps> = () => {
+  const { t } = useLanguage();
+  
   return (
     <div className="relative h-[300px] md:h-[500px] flex items-center justify-center overflow-hidden">
       {/* Video Background */}
@@ -29,7 +32,7 @@ const Hero: React.FC<HeroProps> = ({ tagline }) => {
         </h2>
         <div className="inline-block bg-white/10 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/20 shadow-2xl">
           <p className="text-lg md:text-3xl text-secondary font-bold italic tracking-wide">
-            "{tagline}"
+            "{t('slogan')}"
           </p>
         </div>
       </div>

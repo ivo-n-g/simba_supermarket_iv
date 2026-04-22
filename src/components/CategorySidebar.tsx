@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import productsData from '../../simba_products.json';
 
 interface CategorySidebarProps {
   categories: string[];
@@ -74,8 +75,17 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
   selectedCategory,
   onSelectCategory,
 }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
+
+  const getCategoryName = (category: string) => {
+    if (category === 'All') return t('allCategories');
+    const product = productsData.products.find(p => p.category === category) as any;
+    if (product) {
+      return product[`category_${language}`] || category;
+    }
+    return t(category);
+  };
 
   const handleCategorySelect = (category: string) => {
     onSelectCategory(category);
@@ -92,7 +102,7 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
         >
           <div className="flex items-center gap-2">
             {categoryIcons[selectedCategory] || categoryIcons['All']}
-            <span>{selectedCategory === 'All' ? t('allCategories') : t(selectedCategory)}</span>
+            <span>{getCategoryName(selectedCategory)}</span>
           </div>
           <svg className={`w-5 h-5 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -147,7 +157,7 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
                 <span className={`${selectedCategory === category ? 'text-secondary' : 'text-gray-400 group-hover:text-primary dark:group-hover:text-primary'}`}>
                   {categoryIcons[category] || categoryIcons['General']}
                 </span>
-                <span>{t(category)}</span>
+                <span>{getCategoryName(category)}</span>
               </div>
               <span className={`text-[10px] px-2 py-0.5 rounded-full ${
                 selectedCategory === category ? 'bg-white/20 text-white' : 'bg-gray-200 dark:bg-gray-800 text-gray-500 dark:text-gray-400'

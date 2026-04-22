@@ -149,6 +149,11 @@ const translations: Translations = {
     rw: 'Imyirondoro yanjye',
     fr: 'Tableau de bord',
   },
+  slogan: {
+    en: "Rwanda's Online Supermarket",
+    rw: "Isoko ryawe rya mbere mu Rwanda",
+    fr: "Votre supermarché en ligne au Rwanda",
+  },
   orContinueWith: {
     en: 'Or continue with',
     rw: 'Cyangwa ukomeze na',

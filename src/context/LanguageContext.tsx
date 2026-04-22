@@ -66,8 +66,8 @@ const translations: Translations = {
   },
   thankYou: {
     en: 'Thank you for shopping with Simba Supermarket.',
-    rw: 'Murakoze guhahira muri Simba Supermarket.',
-    fr: 'Merci d\'avoir fait vos achats chez Simba Supermarket.',
+    rw: 'Murakoze guhahira muri Simba Isoko rigezweho.',
+    fr: 'Merci d\'avoir fait vos achats chez Simba Supermarché.',
   },
   signInWithGoogle: {
     en: 'Sign in with Google',
@@ -154,6 +154,11 @@ const translations: Translations = {
     rw: "Isoko ryawe rya mbere mu Rwanda",
     fr: "Votre supermarché en ligne au Rwanda",
   },
+  supermarket: {
+    en: 'Supermarket',
+    rw: 'Isoko rigezweho',
+    fr: 'Supermarché',
+  },
   orContinueWith: {
     en: 'Or continue with',
     rw: 'Cyangwa ukomeze na',
@@ -197,7 +202,7 @@ const translations: Translations = {
   'Cosmetics & Personal Care': {
     en: 'Cosmetics & Personal Care',
     rw: 'Ibirungo n-ubwiza',
-    fr: 'Cosmétiques et soins personnels',
+    fr: 'Soins personnels',
   },
   'Food Products': {
     en: 'Food Products',
@@ -211,13 +216,13 @@ const translations: Translations = {
   },
   'Kitchen Storage': {
     en: 'Kitchen Storage',
-    rw: 'Ibikoresho by-o mu gikoni',
+    rw: 'Ibikoresho byo mu gikoni',
     fr: 'Rangement de cuisine',
   },
   'Kitchenware & Electronics': {
     en: 'Kitchenware & Electronics',
-    rw: 'Ibikoresho by-o mu nzu n-iby-ikoranabuhanga',
-    fr: 'Ustensiles de cuisine et électronique',
+    rw: 'Ibikoresho byo mu nzu',
+    fr: 'Ustensiles de cuisine',
   },
   'Pet Care': {
     en: 'Pet Care',

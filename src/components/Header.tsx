@@ -95,7 +95,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
       <header className="sticky top-0 z-50 bg-primary text-white shadow-md transition-colors duration-300">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 md:gap-8">
-            <h1 className="text-xl md:text-2xl font-bold text-secondary tracking-tight cursor-pointer">Simba</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-secondary tracking-tight cursor-pointer">
+              Simba <span className="text-white hidden sm:inline">{t('supermarket')}</span>
+            </h1>
             
             <div className="hidden lg:block relative" ref={desktopSearchRef}>
               <form onSubmit={handleSubmit} className="relative w-64 xl:w-96">

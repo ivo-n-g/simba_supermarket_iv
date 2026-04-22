@@ -10,7 +10,7 @@ import { useLanguage } from './context/LanguageContext';
 function App() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
 
   // Extract unique categories and their counts
   const { categories, categoryCounts, totalCount } = useMemo(() => {
@@ -75,7 +75,7 @@ function App() {
         
         <footer className="bg-primary text-white py-8 mt-12 transition-colors duration-300">
           <div className="container mx-auto px-4 text-center">
-            <p>© 2025 {productsData.store.name}. All rights reserved.</p>
+            <p>© 2025 Simba {t('supermarket')}. All rights reserved.</p>
             <p className="text-gray-300 dark:text-gray-400 text-sm mt-2">{productsData.store.location}</p>
           </div>
         </footer>

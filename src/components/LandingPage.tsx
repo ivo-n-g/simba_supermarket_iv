@@ -126,7 +126,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
                 marginWidth={0} 
                 src={`https://maps.google.com/maps?width=100%25&height=600&hl=en&q=${selectedLoc.lat},${selectedLoc.lng}+(${encodeURIComponent(selectedLoc.name)})&t=&z=16&ie=UTF8&iwloc=B&output=embed`}
                 className="grayscale dark:invert contrast-[1.2] opacity-90 transition-opacity duration-700"
-                key={selectedLoc.name} // Force re-render of iframe for smooth transition
+                key={selectedLoc.name}
               />
               <div className="absolute inset-0 pointer-events-none border-[20px] border-transparent shadow-[inset_0_0_100px_rgba(0,0,0,0.1)]"></div>
               
@@ -141,7 +141,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
         </div>
       </section>
 
-      {/* Feature Section */}
+      {/* Feature Section (Static Info Cards) */}
       <section className="py-24 container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {[
@@ -149,10 +149,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
             { title: 'Always Fresh', desc: 'Hand-picked premium quality products', icon: '🍃' },
             { title: '24/7 Service', desc: 'Order anytime, day or night', icon: '🕙' },
           ].map((f, i) => (
-            <div key={i} className="flex flex-col items-center text-center p-8 bg-white dark:bg-gray-800 rounded-[40px] shadow-sm hover:shadow-xl transition-all border border-gray-100 dark:border-gray-700">
-              <span className="text-5xl mb-6">{f.icon}</span>
-              <h3 className="text-xl font-black text-gray-800 dark:text-white uppercase mb-2">{f.title}</h3>
-              <p className="text-gray-500 dark:text-gray-400 font-medium">{f.desc}</p>
+            <div key={i} className="flex flex-col items-center text-center p-8 transition-colors duration-300">
+              <div className="w-24 h-24 bg-primary/5 dark:bg-primary/20 rounded-full flex items-center justify-center mb-8 shadow-inner">
+                <span className="text-5xl drop-shadow-lg">{f.icon}</span>
+              </div>
+              <h3 className="text-2xl font-black text-gray-800 dark:text-white uppercase tracking-tighter mb-4">{f.title}</h3>
+              <p className="text-gray-500 dark:text-gray-400 font-bold max-w-xs leading-relaxed italic opacity-80">
+                "{f.desc}"
+              </p>
             </div>
           ))}
         </div>

@@ -10,13 +10,25 @@ interface CartDrawerProps {
 
 type CheckoutStep = 'cart' | 'identity' | 'payment' | 'success';
 
+const branches = [
+  'Simba Supermarket Gishushu',
+  'Simba Supermarket Town',
+  'Simba Supermarket Kimironko',
+  'Simba Supermarket Kicukiro',
+];
+
 const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
-  const { cart, removeFromCart, updateQuantity, checkout, deliveryMethod, setDeliveryMethod, user } = useStore();
+  const { 
+    cart, removeFromCart, updateQuantity, checkout, 
+    deliveryMethod, setDeliveryMethod, pickupBranch, setPickupBranch, user 
+  } = useStore();
+  
   const { t } = useLanguage();
   const [step, setStep] = useState<CheckoutStep>('cart');
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'momo' | 'card' | 'cash'>('cash');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [branchError, setBranchError] = useState(false);
 
   const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
   const deliveryFee = deliveryMethod === 'delivery' ? 2000 : 0;
@@ -24,6 +36,12 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
 
   const handleNextStep = () => {
     if (step === 'cart') {
+      if (deliveryMethod === 'pickup' && !pickupBranch) {
+        setBranchError(true);
+        return;
+      }
+      setBranchError(false);
+      
       if (!user) {
         setIsLoginModalOpen(true);
         return;
@@ -36,7 +54,6 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
 
   const handleCheckout = async () => {
     setIsProcessing(true);
-    // Simulate payment verification
     await checkout();
     setIsProcessing(false);
     setStep('success');
@@ -205,18 +222,46 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
             {cart.length > 0 && step !== 'success' && (
               <div className="border-t border-gray-100 dark:border-gray-700 py-6 px-4 sm:px-6 bg-gray-50/50 dark:bg-gray-900/50">
                 {step === 'cart' && (
-                  <div className="mb-6">
-                    <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">{t('deliveryMethod')}</h3>
-                    <div className="grid grid-cols-2 gap-3">
-                      <button onClick={() => setDeliveryMethod('pickup')} className={`p-3 rounded-xl border-2 text-left transition-all ${deliveryMethod === 'pickup' ? 'border-primary dark:border-secondary bg-white dark:bg-gray-800 shadow-md' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'}`}>
-                        <div className="font-bold text-primary dark:text-secondary text-sm">{t('pickup')}</div>
-                        <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 leading-tight">{t('pickupNote')}</p>
-                      </button>
-                      <button onClick={() => setDeliveryMethod('delivery')} className={`p-3 rounded-xl border-2 text-left transition-all ${deliveryMethod === 'delivery' ? 'border-primary dark:border-secondary bg-white dark:bg-gray-800 shadow-md' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'}`}>
-                        <div className="font-bold text-primary dark:text-secondary text-sm">{t('delivery')}</div>
-                        <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 leading-tight">{t('deliveryNote')}</p>
-                      </button>
+                  <div className="mb-6 space-y-6">
+                    <div>
+                      <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">{t('deliveryMethod')}</h3>
+                      <div className="grid grid-cols-2 gap-3">
+                        <button onClick={() => setDeliveryMethod('pickup')} className={`p-3 rounded-xl border-2 text-left transition-all ${deliveryMethod === 'pickup' ? 'border-primary dark:border-secondary bg-white dark:bg-gray-800 shadow-md' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'}`}>
+                          <div className="font-bold text-primary dark:text-secondary text-sm">{t('pickup')}</div>
+                          <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 leading-tight">{t('pickupNote')}</p>
+                        </button>
+                        <button onClick={() => setDeliveryMethod('delivery')} className={`p-3 rounded-xl border-2 text-left transition-all ${deliveryMethod === 'delivery' ? 'border-primary dark:border-secondary bg-white dark:bg-gray-800 shadow-md' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'}`}>
+                          <div className="font-bold text-primary dark:text-secondary text-sm">{t('delivery')}</div>
+                          <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 leading-tight">{t('deliveryNote')}</p>
+                        </button>
+                      </div>
                     </div>
+
+                    {deliveryMethod === 'pickup' && (
+                      <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                        <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">{t('selectBranch')}</h3>
+                        <div className="space-y-2">
+                          {branches.map((branch) => (
+                            <button
+                              key={branch}
+                              onClick={() => { setPickupBranch(branch); setBranchError(false); }}
+                              className={`w-full p-3 rounded-xl border-2 text-left text-xs font-bold transition-all ${
+                                pickupBranch === branch
+                                  ? 'border-primary dark:border-secondary bg-primary/5 dark:bg-secondary/5 text-primary dark:text-secondary'
+                                  : 'border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 dark:text-gray-400'
+                              }`}
+                            >
+                              {branch}
+                            </button>
+                          ))}
+                        </div>
+                        {branchError && (
+                          <p className="text-[10px] text-red-500 font-bold mt-2 animate-shake">
+                            ⚠️ {t('pleaseSelectBranch')}
+                          </p>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
 

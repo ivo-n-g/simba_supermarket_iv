@@ -38,6 +38,8 @@ interface StoreContextType {
   checkout: () => Promise<void>;
   deliveryMethod: 'pickup' | 'delivery';
   setDeliveryMethod: (method: 'pickup' | 'delivery') => void;
+  pickupBranch: string;
+  setPickupBranch: (branch: string) => void;
   cartCount: number;
 }
 
@@ -48,6 +50,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<Product[]>([]);
   const [deliveryMethod, setDeliveryMethod] = useState<'pickup' | 'delivery'>('pickup');
+  const [pickupBranch, setPickupBranch] = useState<string>('');
 
   useEffect(() => {
     const savedUser = localStorage.getItem('simba_user_session');
@@ -163,7 +166,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     <StoreContext.Provider value={{ 
       user, cart, wishlist, login, signup, handleGoogleSuccess, logout, 
       addToCart, removeFromCart, updateQuantity, toggleWishlist, isInWishlist, checkout, 
-      deliveryMethod, setDeliveryMethod, cartCount 
+      deliveryMethod, setDeliveryMethod, pickupBranch, setPickupBranch, cartCount 
     }}>
       {children}
     </StoreContext.Provider>

@@ -254,6 +254,16 @@ const translations: Translations = {
     rw: 'Fata ibyo waguze mu iduka ryacu riri i Kigali.',
     fr: 'Retirez votre commande dans notre magasin de Kigali.',
   },
+  selectBranch: {
+    en: 'Select Pickup Branch',
+    rw: 'Hitamo aho uzafatira ibintu',
+    fr: 'Sélectionnez le point de retrait',
+  },
+  pleaseSelectBranch: {
+    en: 'Please select a branch to continue.',
+    rw: 'Hitamo ishami uzafatiraho ibintu.',
+    fr: 'Veuillez sélectionner un point de retrait.',
+  },
   deliveryNote: {
     en: 'Home delivery within Kigali (Extra 2,000 RWF).',
     rw: 'Kugezwaho iwawe muri Kigali (Hiyongeraho 2,000 RWF).',

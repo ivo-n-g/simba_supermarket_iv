@@ -158,12 +158,12 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick }) => {
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 18v1m9-9h1M3 9h1m12.728-4.272l.707.707M6.343 17.657l.707.707M17.657 17.657l-.707.707M4.272 6.343l-.707.707M12 7a5 5 0 100 10 5 5 0 000-10z" /></svg>
               )}
             </button>
-
-            <div className="hidden lg:flex items-center gap-1 bg-white/10 p-1 rounded-xl">
-              {(['en', 'rw', 'fr'] as const).map((lang) => (
-                <button key={lang} onClick={() => setLanguage(lang)} className={`px-2.5 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${language === lang ? 'bg-white text-primary shadow-lg' : 'hover:bg-white/10'}`}>{lang}</button>
-              ))}
-            </div>
+{/* Language Switcher */}
+<div className="flex items-center gap-0.5 md:gap-1 bg-white/10 p-1 rounded-xl">
+  {(['en', 'rw', 'fr'] as const).map((lang) => (
+    <button key={lang} onClick={() => setLanguage(lang)} className={`px-1.5 md:px-2.5 py-1 md:py-1.5 rounded-lg text-[9px] md:text-[10px] font-black uppercase transition-all ${language === lang ? 'bg-white text-primary shadow-lg' : 'hover:bg-white/10'}`}>{lang}</button>
+  ))}
+</div>
 
             {/* Auth */}
             <button onClick={handleAuthClick} className="flex items-center gap-2 md:px-4 py-2 hover:bg-white/10 rounded-2xl transition-all font-black text-sm">

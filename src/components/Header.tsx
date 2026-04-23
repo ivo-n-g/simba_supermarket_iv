@@ -176,9 +176,21 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick }) => {
             </button>
 
             {/* Cart Button */}
-            <button onClick={() => setIsCartDrawerOpen(true)} className="flex items-center gap-1.5 bg-secondary text-primary px-2.5 md:px-4 h-9 md:h-12 rounded-xl font-black hover:bg-yellow-400 transition-all active:scale-95 border-2 border-secondary/30">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-              <span className="text-xs md:text-sm">{cartCount}</span>
+            <button 
+              onClick={() => setIsCartDrawerOpen(true)} 
+              className="flex items-center gap-1.5 bg-secondary text-primary px-3 md:px-4 h-10 md:h-12 rounded-xl md:rounded-2xl font-black hover:bg-yellow-400 transition-all active:scale-95 border-2 border-secondary/30 shadow-md"
+            >
+              <div className="relative">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[8px] md:text-[10px] w-4 h-4 md:w-5 md:h-5 flex items-center justify-center rounded-full border border-primary animate-bounce">
+                    {cartCount}
+                  </span>
+                )}
+              </div>
+              <span className="text-[10px] md:text-sm uppercase tracking-tight">Cart</span>
             </button>
           </div>
         </div>

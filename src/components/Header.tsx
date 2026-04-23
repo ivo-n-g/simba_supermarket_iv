@@ -103,7 +103,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick }) => {
             Simba <span className="text-white hidden xl:inline">{t('supermarket')}</span>
           </h1>
           
-          {/* Desktop Search Bar (Hidden on Mobile) */}
+          {/* Desktop Search Bar */}
           <div className="hidden md:block relative flex-1 max-w-xl mx-4" ref={desktopSearchRef}>
             <form onSubmit={handleSubmit} className="relative">
               <input
@@ -112,7 +112,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick }) => {
                 value={inputValue}
                 onChange={handleSearch}
                 onFocus={() => setShowSuggestions(true)}
-                className="w-full h-11 md:h-12 py-2 px-10 md:px-12 rounded-xl md:rounded-2xl text-gray-800 dark:text-white bg-white/10 backdrop-blur-md border border-white/20 focus:bg-white focus:text-gray-900 focus:outline-none focus:ring-4 focus:ring-secondary/20 transition-all text-sm placeholder:text-gray-300"
+                className="w-full h-11 md:h-12 py-2 px-10 md:px-12 rounded-xl md:rounded-2xl text-gray-900 bg-white/10 backdrop-blur-md border border-white/20 focus:bg-white focus:text-gray-900 focus:outline-none focus:ring-4 focus:ring-secondary/20 transition-all text-sm placeholder:text-gray-300"
               />
               <div className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -139,7 +139,6 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick }) => {
 
           {/* Action Group */}
           <div className="flex items-center gap-1 md:gap-3">
-            {/* Theme & Language Group */}
             <div className="flex items-center bg-white/5 rounded-lg md:rounded-xl p-0.5 border border-white/5">
               <button onClick={toggleTheme} className="p-1.5 md:p-2.5 rounded-lg hover:bg-white/10 transition-all">
                 {theme === 'light' ? (
@@ -148,23 +147,14 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick }) => {
                   <svg className="w-3.5 h-3.5 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 18v1m9-9h1M3 9h1m12.728-4.272l.707.707M6.343 17.657l.707.707M17.657 17.657l-.707.707M4.272 6.343l-.707.707M12 7a5 5 0 100 10 5 5 0 000-10z" /></svg>
                 )}
               </button>
-
               <div className="w-px h-3 bg-white/10 mx-0.5"></div>
-
               <div className="flex items-center">
                 {(['en', 'rw', 'fr'] as const).map((lang) => (
-                  <button 
-                    key={lang} 
-                    onClick={() => setLanguage(lang)} 
-                    className={`px-1.5 md:px-2.5 py-1 rounded-md text-[8px] md:text-[10px] font-black uppercase transition-all ${language === lang ? 'bg-white text-primary' : 'hover:bg-white/10'}`}
-                  >
-                    {lang}
-                  </button>
+                  <button key={lang} onClick={() => setLanguage(lang)} className={`px-1.5 md:px-2.5 py-1 rounded-md text-[8px] md:text-[10px] font-black uppercase transition-all ${language === lang ? 'bg-white text-primary' : 'hover:bg-white/10'}`}>{lang}</button>
                 ))}
               </div>
             </div>
 
-            {/* Auth Button */}
             <button onClick={handleAuthClick} className="flex items-center p-1 md:px-4 md:py-2 hover:bg-white/10 rounded-xl transition-all font-black text-xs md:text-sm">
               {user?.photoURL ? (
                 <img src={user.photoURL} alt={user.name} className="h-7 w-7 md:h-9 md:w-9 rounded-full border-2 border-secondary object-cover" />
@@ -175,27 +165,14 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick }) => {
               )}
             </button>
 
-            {/* Cart Button */}
-            <button 
-              onClick={() => setIsCartDrawerOpen(true)} 
-              className="flex items-center gap-1.5 bg-secondary text-primary px-3 md:px-4 h-10 md:h-12 rounded-xl md:rounded-2xl font-black hover:bg-yellow-400 transition-all active:scale-95 border-2 border-secondary/30 shadow-md"
-            >
-              <div className="relative">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[8px] md:text-[10px] w-4 h-4 md:w-5 md:h-5 flex items-center justify-center rounded-full border border-primary animate-bounce">
-                    {cartCount}
-                  </span>
-                )}
-              </div>
-              <span className="text-[10px] md:text-sm uppercase tracking-tight">Cart</span>
+            <button onClick={() => setIsCartDrawerOpen(true)} className="flex items-center gap-1.5 bg-secondary text-primary px-2.5 md:px-4 h-9 md:h-12 rounded-xl font-black hover:bg-yellow-400 transition-all active:scale-95 border-2 border-secondary/30 shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+              <span className="text-xs md:text-sm">{cartCount}</span>
             </button>
           </div>
         </div>
         
-        {/* Mobile Search Bar Area */}
+        {/* Mobile Search Bar */}
         <div className="md:hidden bg-primary/95 dark:bg-gray-900 px-2 pb-3 border-b border-white/5 relative" ref={mobileSearchRef}>
           <form onSubmit={handleSubmit} className="relative">
             <input
@@ -204,22 +181,19 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick }) => {
               value={inputValue}
               onChange={handleSearch}
               onFocus={() => setShowSuggestions(true)}
-              className="w-full h-10 py-2 pl-9 pr-8 rounded-xl text-white dark:text-gray-100 focus:bg-white focus:text-gray-900 outline-none transition-all text-xs bg-white/10 backdrop-blur-md"
+              className="w-full h-10 py-2 pl-9 pr-8 rounded-xl text-gray-900 bg-white/10 backdrop-blur-md border border-white/5 focus:bg-white focus:text-gray-900 outline-none transition-all text-xs placeholder:text-gray-300"
             />
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             </div>
           </form>
 
-          {/* Mobile Suggestions Dropdown */}
           {showSuggestions && (inputValue || history.length > 0) && (
             <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-800 rounded-b-2xl shadow-2xl border-x border-b border-gray-100 dark:border-gray-700 overflow-hidden z-[60] text-gray-800 dark:text-gray-200">
               {inputValue && suggestions.length > 0 && (
                 <div className="py-1">
                   {suggestions.map((s, i) => (
-                    <button key={i} onClick={() => handleSuggestionClick(s)} className="w-full text-left px-5 py-3 hover:bg-primary/5 dark:hover:bg-primary/20 border-b border-gray-50 dark:border-gray-700 last:border-0 transition-colors">
-                      <span className="text-xs font-medium">{s}</span>
-                    </button>
+                    <button key={i} onClick={() => handleSuggestionClick(s)} className="w-full text-left px-5 py-3.5 hover:bg-primary/5 dark:hover:bg-primary/20 border-b border-gray-50 dark:border-gray-700 last:border-0 transition-colors text-xs font-medium">{s}</button>
                   ))}
                 </div>
               )}
@@ -227,7 +201,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick }) => {
                 <div className="py-2">
                   <div className="px-5 py-1 text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">{t('recentSearches')}</div>
                   {history.map((h, i) => (
-                    <button key={i} onClick={() => handleSuggestionClick(h)} className="w-full text-left px-5 py-3 hover:bg-primary/5 dark:hover:bg-primary/20 border-b border-gray-50 dark:border-gray-700 last:border-0 transition-colors">
+                    <button key={i} onClick={() => handleSuggestionClick(h)} className="w-full text-left px-5 py-3.5 hover:bg-primary/5 dark:hover:bg-primary/20 border-b border-gray-50 dark:border-gray-700 last:border-0 transition-colors">
+                      <svg className="w-3.5 h-3.5 text-gray-300 dark:text-gray-600 mr-2 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                       <span className="text-xs font-bold text-gray-600 dark:text-gray-400">{h}</span>
                     </button>
                   ))}

@@ -22,10 +22,13 @@ const categoryIcons: Record<string, string> = {
 };
 
 const locations = [
-  { name: 'Simba Supermarket Gishushu', lat: -1.9546, lng: 30.1039, address: 'KG 8 Ave, Kigali' },
+  { name: 'Simba Supermarket Gishushu', lat: -1.9546, lng: 30.1039, address: 'KG 8 Ave, Gishushu, Kigali' },
   { name: 'Simba Supermarket Town', lat: -1.9441, lng: 30.0619, address: 'KN 2 St, Kigali City Center' },
-  { name: 'Simba Supermarket Kimironko', lat: -1.9351, lng: 30.1265, address: 'KG 11 Ave, Kigali' },
-  { name: 'Simba Supermarket Kicukiro', lat: -1.9774, lng: 30.1044, address: 'KK 15 Rd, Kigali' },
+  { name: 'Simba Supermarket Kimironko', lat: -1.9351, lng: 30.1265, address: 'KG 11 Ave, Kimironko, Kigali' },
+  { name: 'Simba Supermarket Kicukiro', lat: -1.9774, lng: 30.1044, address: 'KK 15 Rd, Kicukiro, Kigali' },
+  { name: 'Simba Supermarket Nyarutarama', lat: -1.9311, lng: 30.0984, address: 'KG 9 Ave, Nyarutarama, Kigali' },
+  { name: 'Simba Supermarket Nyamirambo', lat: -1.9723, lng: 30.0456, address: 'KN 162 St, Nyamirambo, Kigali' },
+  { name: 'Simba Supermarket Remera', lat: -1.9587, lng: 30.1189, address: 'KG 11 Ave, Remera, Kigali' },
 ];
 
 const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory }) => {

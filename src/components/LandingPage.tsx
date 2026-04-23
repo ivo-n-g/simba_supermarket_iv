@@ -7,6 +7,13 @@ interface LandingPageProps {
   onSelectCategory: (category: string) => void;
 }
 
+interface Location {
+  name: string;
+  lat: number;
+  lng: number;
+  address: string;
+}
+
 const categoryIcons: Record<string, string> = {
   'All': '🛒',
   'Alcoholic Drinks': '🍷',
@@ -21,7 +28,7 @@ const categoryIcons: Record<string, string> = {
   'Sports & Wellness': '🏃',
 };
 
-const locations = [
+const locations: Location[] = [
   { name: 'Simba Supermarket Gishushu', lat: -1.9546, lng: 30.1039, address: 'KG 8 Ave, Gishushu, Kigali' },
   { name: 'Simba Supermarket Town', lat: -1.9441, lng: 30.0619, address: 'KN 2 St, Kigali City Center' },
   { name: 'Simba Supermarket Kimironko', lat: -1.9351, lng: 30.1265, address: 'KG 11 Ave, Kimironko, Kigali' },
@@ -39,7 +46,57 @@ const locations = [
 
 const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory }) => {
   const { t, language } = useLanguage();
-  const [selectedLoc, setSelectedLoc] = useState(locations[1]);
+  const [selectedLoc, setSelectedLoc] = useState<Location>(locations[1]);
+  const [isFindingLocation, setIsFindingLocation] = useState(false);
+
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 6371; // Radius of the earth in km
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in km
+  };
+
+  const deg2rad = (deg: number) => deg * (Math.PI / 180);
+
+  const findClosestBranch = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser');
+      return;
+    }
+
+    setIsFindingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        let minDistance = Infinity;
+        let closest = locations[0];
+
+        locations.forEach((loc) => {
+          const distance = calculateDistance(latitude, longitude, loc.lat, loc.lng);
+          if (distance < minDistance) {
+            minDistance = distance;
+            closest = loc;
+          }
+        });
+
+        setSelectedLoc(closest);
+        setIsFindingLocation(false);
+        // Smooth scroll to map if needed
+        const mapElement = document.getElementById('locations-section');
+        mapElement?.scrollIntoView({ behavior: 'smooth' });
+      },
+      (error) => {
+        console.error('Error getting location:', error);
+        alert('Could not get your location. Please select a branch manually.');
+        setIsFindingLocation(false);
+      }
+    );
+  };
 
   const getCategoryName = (category: string) => {
     const product = productsData.products.find(p => p.category === category) as any;
@@ -87,15 +144,33 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
       </section>
 
       {/* Locations Section */}
-      <section className="py-12 md:py-24 bg-white dark:bg-gray-800 transition-colors duration-300">
+      <section id="locations-section" className="py-12 md:py-24 bg-white dark:bg-gray-800 transition-colors duration-300">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center max-w-2xl mx-auto mb-12 md:mb-16">
             <h2 className="text-3xl md:text-5xl font-black text-primary dark:text-secondary uppercase tracking-tighter mb-3">
               {t('ourLocations')}
             </h2>
-            <p className="text-gray-500 dark:text-gray-400 font-bold italic text-sm md:text-base">
+            <p className="text-gray-500 dark:text-gray-400 font-bold italic text-sm md:text-base mb-6">
               {t('findUs')}
             </p>
+            <button 
+              onClick={findClosestBranch}
+              disabled={isFindingLocation}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-secondary text-primary rounded-full font-black text-xs uppercase tracking-widest shadow-lg hover:bg-yellow-400 transition-all disabled:opacity-50"
+            >
+              {isFindingLocation ? (
+                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              )}
+              Find Closest Branch
+            </button>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12 items-start">
@@ -118,7 +193,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
                       <span className="w-2 h-2 bg-primary dark:bg-secondary rounded-full animate-ping"></span>
                     )}
                   </div>
-                  <p className="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest">{loc.address}</p>
+                  <p className="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest leading-tight">{loc.address}</p>
                 </div>
               ))}
             </div>
@@ -140,7 +215,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
               <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 p-4 md:p-6 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-2xl md:rounded-3xl shadow-xl md:max-w-xs border border-white/20 animate-in fade-in slide-in-from-left-4">
                 <p className="text-[10px] font-black text-primary dark:text-secondary uppercase tracking-[0.2em] mb-1">Selected Branch</p>
                 <p className="text-xs md:text-sm font-bold text-gray-800 dark:text-white">{selectedLoc.name}</p>
-                <p className="text-[9px] text-gray-400 font-bold mt-1 uppercase">{selectedLoc.address}</p>
+                <p className="text-[9px] text-gray-400 font-bold mt-1 uppercase leading-tight">{selectedLoc.address}</p>
               </div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import productsData from '../../simba_products.json';
 
@@ -30,6 +30,7 @@ const locations = [
 
 const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory }) => {
   const { t, language } = useLanguage();
+  const [selectedLoc, setSelectedLoc] = useState(locations[1]); // Default to Town
 
   const getCategoryName = (category: string) => {
     const product = productsData.products.find(p => p.category === category) as any;
@@ -92,16 +93,30 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
             {/* Location Cards */}
             <div className="space-y-4 max-h-[500px] overflow-y-auto pr-4 scrollbar-hide">
               {locations.map((loc, i) => (
-                <div key={i} className="p-6 bg-gray-50 dark:bg-gray-900/50 rounded-[32px] border border-gray-100 dark:border-gray-700 hover:border-primary transition-colors cursor-pointer group">
-                  <h4 className="font-black text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors">{loc.name}</h4>
+                <div 
+                  key={i} 
+                  onClick={() => setSelectedLoc(loc)}
+                  className={`p-6 rounded-[32px] border-2 transition-all cursor-pointer group ${
+                    selectedLoc.name === loc.name 
+                    ? 'bg-primary/5 border-primary shadow-inner' 
+                    : 'bg-gray-50 dark:bg-gray-900/50 border-gray-100 dark:border-gray-700 hover:border-primary/50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <h4 className={`font-black transition-colors ${selectedLoc.name === loc.name ? 'text-primary dark:text-secondary' : 'text-gray-900 dark:text-white'}`}>
+                      {loc.name}
+                    </h4>
+                    {selectedLoc.name === loc.name && (
+                      <span className="w-2 h-2 bg-primary dark:bg-secondary rounded-full animate-ping"></span>
+                    )}
+                  </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest">{loc.address}</p>
                 </div>
               ))}
             </div>
 
-            {/* Interactive Map Mockup */}
-            <div className="lg:col-span-2 relative h-[500px] rounded-[40px] overflow-hidden shadow-2xl border-8 border-gray-100 dark:border-gray-700">
-              {/* Using a real Google Maps Iframe for a professional look */}
+            {/* Interactive Map */}
+            <div className="lg:col-span-2 relative h-[500px] rounded-[40px] overflow-hidden shadow-2xl border-8 border-gray-100 dark:border-gray-700 transition-all duration-500">
               <iframe 
                 width="100%" 
                 height="100%" 
@@ -109,15 +124,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
                 scrolling="no" 
                 marginHeight={0} 
                 marginWidth={0} 
-                src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=-1.9441,30.0619+(Simba%20Supermarket)&amp;t=&amp;z=13&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
-                className="grayscale dark:invert contrast-[1.2] opacity-80"
+                src={`https://maps.google.com/maps?width=100%25&height=600&hl=en&q=${selectedLoc.lat},${selectedLoc.lng}+(${encodeURIComponent(selectedLoc.name)})&t=&z=16&ie=UTF8&iwloc=B&output=embed`}
+                className="grayscale dark:invert contrast-[1.2] opacity-90 transition-opacity duration-700"
+                key={selectedLoc.name} // Force re-render of iframe for smooth transition
               />
               <div className="absolute inset-0 pointer-events-none border-[20px] border-transparent shadow-[inset_0_0_100px_rgba(0,0,0,0.1)]"></div>
               
               {/* Floating Info */}
-              <div className="absolute bottom-8 left-8 p-6 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-3xl shadow-xl max-w-xs border border-white/20">
-                <p className="text-xs font-black text-primary uppercase tracking-[0.2em] mb-2">Currently Open</p>
-                <p className="text-sm font-bold text-gray-800 dark:text-white">All our branches are ready to serve you 24/7 across Kigali.</p>
+              <div className="absolute bottom-8 left-8 p-6 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-3xl shadow-xl max-w-xs border border-white/20 animate-in fade-in slide-in-from-left-4">
+                <p className="text-xs font-black text-primary dark:text-secondary uppercase tracking-[0.2em] mb-2">Selected Branch</p>
+                <p className="text-sm font-bold text-gray-800 dark:text-white">{selectedLoc.name}</p>
+                <p className="text-[10px] text-gray-400 font-bold mt-1 uppercase">{selectedLoc.address}</p>
               </div>
             </div>
           </div>

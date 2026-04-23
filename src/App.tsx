@@ -50,13 +50,13 @@ function App() {
 
   return (
     <StoreProvider>
-      <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
         <Header onSearch={setSearchQuery} />
         
         <main>
           <Hero />
           
-          <div className="container mx-auto flex flex-col md:flex-row min-h-screen">
+          <div className="container mx-auto flex flex-col min-h-screen">
             <CategorySidebar 
               categories={categories}
               categoryCounts={categoryCounts}
@@ -65,18 +65,41 @@ function App() {
               onSelectCategory={setSelectedCategory}
             />
             
-            <ProductGrid 
-              products={filteredProducts}
-              selectedCategory={selectedCategory}
-              searchQuery={searchQuery}
-            />
+            <div className="bg-white dark:bg-gray-800/50 shadow-sm md:rounded-[32px] md:mb-12 overflow-hidden">
+              <ProductGrid 
+                products={filteredProducts}
+                selectedCategory={selectedCategory}
+                searchQuery={searchQuery}
+              />
+            </div>
           </div>
         </main>
         
-        <footer className="bg-primary text-white py-8 mt-12 transition-colors duration-300">
-          <div className="container mx-auto px-4 text-center">
-            <p>© 2025 Simba {t('supermarket')}. All rights reserved.</p>
-            <p className="text-gray-300 dark:text-gray-400 text-sm mt-2">{productsData.store.location}</p>
+        <footer className="bg-primary text-white py-12 transition-colors duration-300">
+          <div className="container mx-auto px-6 text-center">
+            <h2 className="text-3xl font-black text-secondary mb-8">Simba {t('supermarket')}</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12 text-left">
+              <div>
+                <h4 className="font-black mb-4 uppercase text-xs tracking-widest opacity-50">Discover</h4>
+                <ul className="space-y-2 text-sm font-bold">
+                  <li>About Us</li>
+                  <li>Careers</li>
+                  <li>Contact</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-black mb-4 uppercase text-xs tracking-widest opacity-50">Help</h4>
+                <ul className="space-y-2 text-sm font-bold">
+                  <li>FAQ</li>
+                  <li>Privacy Policy</li>
+                  <li>Terms</li>
+                </ul>
+              </div>
+            </div>
+            <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+              <p className="text-gray-400 text-sm">© 2025 Simba {t('supermarket')}. All rights reserved.</p>
+              <p className="text-gray-400 text-sm">{productsData.store.location}</p>
+            </div>
           </div>
         </footer>
       </div>

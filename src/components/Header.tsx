@@ -92,53 +92,51 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-primary text-white shadow-md transition-colors duration-300">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2 md:gap-8">
-            <h1 className="text-xl md:text-2xl font-bold text-secondary tracking-tight cursor-pointer">
-              Simba <span className="text-white hidden sm:inline">{t('supermarket')}</span>
+      <header className="sticky top-0 z-[100] bg-primary text-white shadow-lg transition-all duration-300">
+        <div className="container mx-auto px-4 md:px-6 h-20 flex items-center justify-between gap-4">
+          {/* Logo & Search */}
+          <div className="flex items-center gap-4 md:gap-12 flex-1">
+            <h1 className="text-3xl font-black text-secondary tracking-tighter cursor-pointer hover:opacity-90 transition-opacity">
+              Simba
             </h1>
             
-            <div className="hidden lg:block relative" ref={desktopSearchRef}>
-              <form onSubmit={handleSubmit} className="relative w-64 xl:w-96">
+            {/* Desktop Search Bar */}
+            <div className="hidden md:block relative flex-1 max-w-xl" ref={desktopSearchRef}>
+              <form onSubmit={handleSubmit} className="relative">
                 <input
                   type="text"
                   placeholder={t('searchPlaceholder')}
                   value={inputValue}
                   onChange={handleSearch}
                   onFocus={() => setShowSuggestions(true)}
-                  className="w-full py-2 px-4 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-secondary transition-all text-sm"
+                  className="w-full h-12 py-2 px-12 rounded-2xl text-gray-800 dark:text-white bg-white/10 backdrop-blur-md border border-white/20 focus:bg-white focus:text-gray-900 focus:outline-none focus:ring-4 focus:ring-secondary/20 transition-all text-sm placeholder:text-gray-300"
                 />
-                <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 text-primary">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
-                </button>
+                </div>
               </form>
 
+              {/* Suggestions Dropdown */}
               {showSuggestions && (inputValue || history.length > 0) && (
-                <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-800 mt-1 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden z-[60] text-gray-800 dark:text-gray-200 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-800 mt-2 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden z-[60] text-gray-800 dark:text-gray-200">
                   {inputValue && suggestions.length > 0 && (
                     <div className="py-2">
                       {suggestions.map((s, i) => (
-                        <button key={i} onClick={() => handleSuggestionClick(s)} className="w-full text-left px-4 py-2 hover:bg-primary/5 dark:hover:bg-primary/20 flex items-center gap-3 transition-colors">
-                          <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                          </svg>
+                        <button key={i} onClick={() => handleSuggestionClick(s)} className="w-full text-left px-6 py-3 hover:bg-primary/5 dark:hover:bg-primary/20 flex items-center gap-3 transition-colors font-medium">
                           <span className="text-sm line-clamp-1">{s}</span>
                         </button>
                       ))}
                     </div>
                   )}
                   {history.length > 0 && !inputValue && (
-                    <div className="py-2">
-                      <div className="px-4 py-1 text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('recentSearches')}</div>
+                    <div className="py-3">
+                      <div className="px-6 py-2 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{t('recentSearches')}</div>
                       {history.map((h, i) => (
-                        <button key={i} onClick={() => handleSuggestionClick(h)} className="w-full text-left px-4 py-2 hover:bg-primary/5 dark:hover:bg-primary/20 flex items-center gap-3 transition-colors">
-                          <svg className="w-4 h-4 text-gray-300 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          <span className="text-sm font-medium text-gray-600 dark:text-gray-400">{h}</span>
+                        <button key={i} onClick={() => handleSuggestionClick(h)} className="w-full text-left px-6 py-3 hover:bg-primary/5 dark:hover:bg-primary/20 flex items-center gap-3 transition-colors">
+                          <svg className="w-4 h-4 text-gray-300 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                          <span className="text-sm font-bold text-gray-600 dark:text-gray-400">{h}</span>
                         </button>
                       ))}
                     </div>
@@ -148,8 +146,10 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
             </div>
           </div>
 
+          {/* Right Side Actions */}
           <div className="flex items-center gap-2 md:gap-4">
-            <button onClick={toggleTheme} className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors">
+            {/* Theme Toggle */}
+            <button onClick={toggleTheme} className="p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-all hover:rotate-12">
               {theme === 'light' ? (
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
               ) : (
@@ -157,31 +157,38 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
               )}
             </button>
 
-            <div className="flex items-center gap-0.5 bg-white/10 p-1 rounded-lg">
+            {/* Language Switcher */}
+            <div className="hidden lg:flex items-center gap-1 bg-white/10 p-1 rounded-xl">
               {(['en', 'rw', 'fr'] as const).map((lang) => (
-                <button key={lang} onClick={() => setLanguage(lang)} className={`px-1.5 py-1 rounded text-[10px] md:text-xs font-bold uppercase transition-all ${language === lang ? 'bg-secondary text-primary' : 'hover:bg-white/10'}`}>{lang}</button>
+                <button key={lang} onClick={() => setLanguage(lang)} className={`px-2.5 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${language === lang ? 'bg-white text-primary shadow-lg' : 'hover:bg-white/10'}`}>{lang}</button>
               ))}
             </div>
 
-            <button onClick={handleAuthClick} className="flex items-center gap-1.5 hover:text-secondary transition-colors font-medium">
+            {/* Auth */}
+            <button onClick={handleAuthClick} className="flex items-center gap-2 md:px-4 py-2 hover:bg-white/10 rounded-2xl transition-all font-black text-sm">
               {user?.photoURL ? (
-                <img src={user.photoURL} alt={user.name} className="h-8 w-8 rounded-full border-2 border-secondary object-cover" />
+                <img src={user.photoURL} alt={user.name} className="h-9 w-9 rounded-full border-2 border-secondary object-cover shadow-lg" />
               ) : (
-                <div className="bg-white/10 p-1.5 rounded-full">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                <div className="p-2 bg-white/20 rounded-xl">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                 </div>
               )}
-              <span className="hidden sm:inline text-sm font-bold">{user ? user.name.split(' ')[0] : t('login')}</span>
+              <span className="hidden sm:inline">{user ? user.name.split(' ')[0] : t('login')}</span>
             </button>
-            <button onClick={() => setIsCartDrawerOpen(true)} className="flex items-center gap-1.5 bg-secondary text-primary px-3 py-2 rounded-lg font-bold hover:bg-yellow-400 transition-colors relative group shadow-sm active:scale-95">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-              <span className="hidden xs:inline text-sm">{cartCount}</span>
-              {cartCount > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full border border-primary animate-bounce">{cartCount}</span>}
+
+            {/* Cart Button */}
+            <button onClick={() => setIsCartDrawerOpen(true)} className="flex items-center gap-3 bg-secondary text-primary px-4 h-12 rounded-2xl font-black hover:bg-yellow-400 transition-all hover:scale-105 active:scale-95 shadow-xl shadow-secondary/20 border-2 border-secondary/50">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+              <div className="flex flex-col items-start leading-tight">
+                <span className="text-[10px] uppercase opacity-70">Cart</span>
+                <span className="text-sm">{cartCount}</span>
+              </div>
             </button>
           </div>
         </div>
         
-        <div className="lg:hidden bg-white dark:bg-gray-900 px-4 py-2 border-b border-gray-100 dark:border-gray-800 relative transition-colors duration-300" ref={mobileSearchRef}>
+        {/* Mobile Search Bar Area */}
+        <div className="lg:hidden bg-primary/95 dark:bg-gray-900 px-4 pb-4 border-b border-white/5 relative" ref={mobileSearchRef}>
           <form onSubmit={handleSubmit} className="relative">
             <input
               type="text"
@@ -189,37 +196,30 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
               value={inputValue}
               onChange={handleSearch}
               onFocus={() => setShowSuggestions(true)}
-              className="w-full py-2.5 pl-10 pr-10 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm bg-gray-50 dark:bg-gray-800"
+              className="w-full h-12 py-2.5 pl-12 pr-10 border border-white/10 rounded-2xl text-white dark:text-gray-100 focus:bg-white focus:text-gray-900 outline-none transition-all text-sm bg-white/10 backdrop-blur-md"
             />
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             </div>
-            {inputValue && (
-              <button type="button" onClick={() => { setInputValue(''); onSearch(''); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-              </button>
-            )}
           </form>
 
           {showSuggestions && (inputValue || history.length > 0) && (
-            <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-800 rounded-b-xl shadow-2xl border-x border-b border-gray-100 dark:border-gray-700 overflow-hidden z-[60] text-gray-800 dark:text-gray-200">
+            <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-800 rounded-b-2xl shadow-2xl border-x border-b border-gray-100 dark:border-gray-700 overflow-hidden z-[60] text-gray-800 dark:text-gray-200">
               {inputValue && suggestions.length > 0 && (
                 <div className="py-2">
                   {suggestions.map((s, i) => (
-                    <button key={i} onClick={() => handleSuggestionClick(s)} className="w-full text-left px-4 py-3 hover:bg-primary/5 dark:hover:bg-primary/20 flex items-center gap-3 border-b border-gray-50 dark:border-gray-700 last:border-0">
-                      <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                      <span className="text-sm">{s}</span>
+                    <button key={i} onClick={() => handleSuggestionClick(s)} className="w-full text-left px-6 py-4 hover:bg-primary/5 dark:hover:bg-primary/20 border-b border-gray-50 dark:border-gray-700 last:border-0 transition-colors">
+                      <span className="text-sm font-medium">{s}</span>
                     </button>
                   ))}
                 </div>
               )}
               {history.length > 0 && !inputValue && (
                 <div className="py-2">
-                  <div className="px-4 py-2 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">{t('recentSearches')}</div>
+                  <div className="px-6 py-3 text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">{t('recentSearches')}</div>
                   {history.map((h, i) => (
-                    <button key={i} onClick={() => handleSuggestionClick(h)} className="w-full text-left px-4 py-3 hover:bg-primary/5 dark:hover:bg-primary/20 flex items-center gap-3 border-b border-gray-50 dark:border-gray-700 last:border-0">
-                      <svg className="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400">{h}</span>
+                    <button key={i} onClick={() => handleSuggestionClick(h)} className="w-full text-left px-6 py-4 hover:bg-primary/5 dark:hover:bg-primary/20 border-b border-gray-50 dark:border-gray-700 last:border-0">
+                      <span className="text-sm font-bold text-gray-600 dark:text-gray-400">{h}</span>
                     </button>
                   ))}
                 </div>

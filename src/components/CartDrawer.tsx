@@ -8,7 +8,7 @@ interface CartDrawerProps {
   onClose: () => void;
 }
 
-type CheckoutStep = 'cart' | 'identity' | 'payment' | 'success';
+type CheckoutStep = 'cart' | 'pickup-selection' | 'identity' | 'payment' | 'success';
 
 const branches = [
   { name: 'Simba Supermarket Gishushu', address: 'KG 8 Ave, Gishushu, Kigali' },
@@ -45,20 +45,28 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
 
   const handleNextStep = () => {
     if (step === 'cart') {
-      if (deliveryMethod === 'pickup' && !pickupBranch) {
+      if (deliveryMethod === 'pickup') {
+        setStep('pickup-selection');
+      } else {
+        proceedToIdentity();
+      }
+    } else if (step === 'pickup-selection') {
+      if (!pickupBranch) {
         setBranchError(true);
         return;
       }
-      setBranchError(false);
-      
-      if (!user) {
-        setIsLoginModalOpen(true);
-        return;
-      }
-      setStep('identity');
+      proceedToIdentity();
     } else if (step === 'identity') {
       setStep('payment');
     }
+  };
+
+  const proceedToIdentity = () => {
+    if (!user) {
+      setIsLoginModalOpen(true);
+      return;
+    }
+    setStep('identity');
   };
 
   const handleCheckout = async () => {
@@ -72,6 +80,15 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
     }, 4000);
   };
 
+  const handleBack = () => {
+    if (step === 'pickup-selection') setStep('cart');
+    else if (step === 'identity') {
+      if (deliveryMethod === 'pickup') setStep('pickup-selection');
+      else setStep('cart');
+    }
+    else if (step === 'payment') setStep('identity');
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -81,13 +98,13 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
         
         <div className="absolute inset-y-0 right-0 max-w-full flex">
           <div className="w-screen max-w-md bg-white dark:bg-gray-800 shadow-2xl flex flex-col transform transition-transform duration-300 translate-x-0">
-            <div className="flex-1 flex flex-col py-6 overflow-y-scroll border-t-8 border-primary">
-              <div className="px-4 sm:px-6 flex items-start justify-between border-b border-gray-100 dark:border-gray-700 pb-4">
+            <div className="flex-1 flex flex-col min-h-0 border-t-8 border-primary">
+              <div className="px-4 sm:px-6 py-6 flex items-start justify-between border-b border-gray-100 dark:border-gray-700">
                 <div>
                   <h2 className="text-2xl font-black text-primary dark:text-secondary uppercase tracking-tight">{t('shoppingCart')}</h2>
                   {step !== 'success' && (
                     <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 uppercase tracking-widest font-black">
-                      {t('step')} {step === 'cart' ? '1' : step === 'identity' ? '2' : '3'} / 3
+                      {step === 'cart' ? 'Step 1 / 4' : step === 'pickup-selection' ? 'Step 2 / 4' : step === 'identity' ? 'Step 3 / 4' : 'Step 4 / 4'}
                     </p>
                   )}
                 </div>
@@ -98,7 +115,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                 </button>
               </div>
 
-              <div className="mt-6 px-4 sm:px-6">
+              <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6">
                 {step === 'success' ? (
                   <div className="flex flex-col items-center justify-center py-20 text-green-600 animate-in fade-in zoom-in duration-500 text-center">
                     <div className="w-24 h-24 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-6 shadow-inner">
@@ -147,8 +164,30 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                       </ul>
                     </div>
                   )
+                ) : step === 'pickup-selection' ? (
+                  <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                    <h3 className="text-sm font-black text-gray-800 dark:text-white uppercase tracking-[0.2em] ml-2">{t('selectBranch')}</h3>
+                    <div className="grid grid-cols-1 gap-2.5 pb-20">
+                      {branches.map((branch) => (
+                        <button
+                          key={branch.name}
+                          onClick={() => { setPickupBranch(branch.name); setBranchError(false); }}
+                          className={`w-full p-5 rounded-[24px] border-2 text-left transition-all flex flex-col gap-1 ${
+                            pickupBranch === branch.name
+                              ? 'border-primary dark:border-secondary bg-primary/5 dark:bg-secondary/5 ring-2 ring-primary/10'
+                              : 'border-gray-100 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50'
+                          }`}
+                        >
+                          <span className={`text-xs font-black uppercase tracking-tight ${pickupBranch === branch.name ? 'text-primary dark:text-secondary' : 'text-gray-800 dark:text-white'}`}>
+                            {branch.name}
+                          </span>
+                          <span className="text-[9px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest">{branch.address}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 ) : step === 'identity' ? (
-                  <div className="space-y-6">
+                  <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                     <div className="bg-primary/5 dark:bg-primary/10 p-6 rounded-[32px] border border-primary/10 dark:border-primary/20 shadow-inner">
                       <div className="flex items-center gap-4 mb-4">
                         <div className="w-14 h-14 bg-primary dark:bg-secondary dark:text-primary text-white rounded-2xl flex items-center justify-center font-black text-2xl shadow-lg">
@@ -181,7 +220,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-8">
+                  <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                     <h4 className="font-black text-gray-800 dark:text-white text-xs uppercase tracking-[0.2em] ml-2">{t('paymentMethod')}</h4>
                     <div className="space-y-4">
                       {[
@@ -231,55 +270,30 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
             </div>
 
             {cart.length > 0 && step !== 'success' && (
-              <div className="border-t border-gray-100 dark:border-gray-700 py-8 px-4 sm:px-6 bg-gray-50/50 dark:bg-gray-900/50">
+              <div className="border-t border-gray-100 dark:border-gray-700 py-8 px-4 sm:px-6 bg-gray-50/50 dark:bg-gray-900/50 shadow-inner">
                 {step === 'cart' && (
-                  <div className="mb-8 space-y-8">
-                    <div>
-                      <h3 className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-4 ml-2">{t('deliveryMethod')}</h3>
-                      <div className="grid grid-cols-2 gap-4">
-                        <button onClick={() => setDeliveryMethod('pickup')} className={`p-4 rounded-[28px] border-2 text-left transition-all ${deliveryMethod === 'pickup' ? 'border-primary bg-white dark:bg-gray-800 shadow-xl shadow-primary/10' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 opacity-60'}`}>
-                          <div className="font-black text-primary dark:text-secondary text-sm uppercase tracking-tighter">{t('pickup')}</div>
-                          <p className="text-[9px] text-gray-400 dark:text-gray-500 mt-1 leading-tight font-bold">{t('pickupNote')}</p>
-                        </button>
-                        <button 
-                          disabled 
-                          className="p-4 rounded-[28px] border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 opacity-40 cursor-not-allowed text-left relative overflow-hidden"
-                        >
-                          <div className="font-black text-gray-400 text-sm uppercase tracking-tighter">{t('delivery')}</div>
-                          <p className="text-[9px] text-gray-400 mt-1 leading-tight font-bold">{t('comingSoon')}</p>
-                        </button>
-                      </div>
+                  <div className="mb-8">
+                    <h3 className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-4 ml-2">{t('deliveryMethod')}</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <button onClick={() => setDeliveryMethod('pickup')} className={`p-4 rounded-[28px] border-2 text-left transition-all ${deliveryMethod === 'pickup' ? 'border-primary bg-white dark:bg-gray-800 shadow-xl shadow-primary/10' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 opacity-60'}`}>
+                        <div className="font-black text-primary dark:text-secondary text-sm uppercase tracking-tighter">{t('pickup')}</div>
+                        <p className="text-[9px] text-gray-400 dark:text-gray-500 mt-1 leading-tight font-bold">{t('pickupNote')}</p>
+                      </button>
+                      <button 
+                        disabled 
+                        className="p-4 rounded-[28px] border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 opacity-40 cursor-not-allowed text-left relative overflow-hidden"
+                      >
+                        <div className="font-black text-gray-400 text-sm uppercase tracking-tighter">{t('delivery')}</div>
+                        <p className="text-[9px] text-gray-400 mt-1 leading-tight font-bold">{t('comingSoon')}</p>
+                      </button>
                     </div>
-
-                    {deliveryMethod === 'pickup' && (
-                      <div className="animate-in fade-in slide-in-from-top-4 duration-500">
-                        <h3 className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-4 ml-2">{t('selectBranch')}</h3>
-                        <div className="grid grid-cols-1 gap-2.5">
-                          {branches.map((branch) => (
-                            <button
-                              key={branch.name}
-                              onClick={() => { setPickupBranch(branch.name); setBranchError(false); }}
-                              className={`w-full p-5 rounded-[24px] border-2 text-left transition-all flex flex-col gap-1 ${
-                                pickupBranch === branch.name
-                                  ? 'border-primary dark:border-secondary bg-primary/5 dark:bg-secondary/5 ring-2 ring-primary/10'
-                                  : 'border-gray-100 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50'
-                              }`}
-                            >
-                              <span className={`text-xs font-black uppercase tracking-tight ${pickupBranch === branch.name ? 'text-primary dark:text-secondary' : 'text-gray-800 dark:text-white'}`}>
-                                {branch.name}
-                              </span>
-                              <span className="text-[9px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest">{branch.address}</span>
-                            </button>
-                          ))}
-                        </div>
-                        {branchError && (
-                          <p className="text-[10px] text-red-500 font-black mt-3 ml-2 animate-shake flex items-center gap-2">
-                            <span>⚠️</span> {t('pleaseSelectBranch')}
-                          </p>
-                        )}
-                      </div>
-                    )}
                   </div>
+                )}
+
+                {branchError && step === 'pickup-selection' && (
+                  <p className="text-[10px] text-red-500 font-black mb-4 ml-2 animate-shake flex items-center gap-2">
+                    <span>⚠️</span> {t('pleaseSelectBranch')}
+                  </p>
                 )}
 
                 <div className="space-y-3 mb-8 bg-white dark:bg-gray-800/50 p-6 rounded-[32px] border border-gray-100 dark:border-gray-700 shadow-sm">
@@ -287,12 +301,6 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                     <p>{t('subtotal')}</p>
                     <p className="text-gray-900 dark:text-white">{subtotal.toLocaleString()} RWF</p>
                   </div>
-                  {deliveryMethod === 'delivery' && (
-                    <div className="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-widest">
-                      <p>{t('delivery')}</p>
-                      <p className="text-primary dark:text-secondary">+ 2,000 RWF</p>
-                    </div>
-                  )}
                   <div className="flex justify-between text-2xl font-black text-primary dark:text-secondary pt-4 border-t-2 border-gray-50 dark:border-gray-700 tracking-tighter">
                     <p>TOTAL</p>
                     <p>{totalPrice.toLocaleString()} RWF</p>
@@ -301,7 +309,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                 
                 <div className="flex gap-4">
                   {step !== 'cart' && (
-                    <button onClick={() => setStep(step === 'payment' ? 'identity' : 'cart')} className="px-8 py-5 rounded-3xl border-2 border-gray-200 dark:border-gray-700 font-black text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    <button onClick={handleBack} className="px-8 py-5 rounded-3xl border-2 border-gray-200 dark:border-gray-700 font-black text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                       ←
                     </button>
                   )}
@@ -319,7 +327,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                         {t('processing')}
                       </div>
                     ) : (
-                      step === 'payment' ? t('completePayment') : step === 'identity' ? t('paymentVerification') : t('checkout')
+                      step === 'payment' ? t('completePayment') : t('checkout')
                     )}
                   </button>
                 </div>

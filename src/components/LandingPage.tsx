@@ -211,11 +211,23 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
                 key={selectedLoc.name}
               />
               <div className="absolute inset-0 pointer-events-none border-[20px] border-transparent shadow-[inset_0_0_100px_rgba(0,0,0,0.1)]"></div>
-              
+              {/* Floating Info */}
               <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 p-4 md:p-6 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-2xl md:rounded-3xl shadow-xl md:max-w-xs border border-white/20 animate-in fade-in slide-in-from-left-4">
                 <p className="text-[10px] font-black text-primary dark:text-secondary uppercase tracking-[0.2em] mb-1">Selected Branch</p>
                 <p className="text-xs md:text-sm font-bold text-gray-800 dark:text-white">{selectedLoc.name}</p>
-                <p className="text-[9px] text-gray-400 font-bold mt-1 uppercase leading-tight">{selectedLoc.address}</p>
+                <p className="text-[9px] text-gray-400 font-bold mt-1 uppercase leading-tight mb-4">{selectedLoc.address}</p>
+
+                <a 
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${selectedLoc.lat},${selectedLoc.lng}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:scale-105 transition-all"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  </svg>
+                  Get Directions
+                </a>
               </div>
             </div>
           </div>

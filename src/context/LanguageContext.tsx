@@ -363,6 +363,31 @@ const translations: Translations = {
     en: 'Get Started',
     rw: 'Tangira ubu',
     fr: 'Commencer',
+  },
+  contactUs: {
+    en: 'Contact Us',
+    rw: 'Twandikire',
+    fr: 'Contactez-nous',
+  },
+  sendMessage: {
+    en: 'Send Message',
+    rw: 'Yohereza ubutumwa',
+    fr: 'Envoyer le message',
+  },
+  message: {
+    en: 'Message',
+    rw: 'Ubutumwa',
+    fr: 'Message',
+  },
+  messageSent: {
+    en: 'Message sent successfully!',
+    rw: 'Ubutumwa bwoherejwe neza!',
+    fr: 'Message envoyé avec succès !',
+  },
+  howCanWeHelp: {
+    en: 'How can we help you?',
+    rw: 'Ni gute twagufasha?',
+    fr: 'Comment pouvons-nous vous aider ?',
   }
 };
 

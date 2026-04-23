@@ -5,6 +5,7 @@ import Hero from './components/Hero';
 import CategorySidebar from './components/CategorySidebar';
 import ProductGrid from './components/ProductGrid';
 import LandingPage from './components/LandingPage';
+import ContactModal from './components/ContactModal';
 import { StoreProvider } from './context/StoreContext';
 import { useLanguage } from './context/LanguageContext';
 
@@ -12,6 +13,7 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [view, setView] = useState<'landing' | 'shop'>('landing');
+  const [isContactOpen, setIsContactOpen] = useState(false);
   const { language, t } = useLanguage();
 
   // Extract unique categories and their counts
@@ -116,7 +118,12 @@ function App() {
                 <ul className="space-y-3 text-sm font-bold">
                   <li className="hover:text-secondary cursor-pointer transition-colors">About Us</li>
                   <li className="hover:text-secondary cursor-pointer transition-colors">Careers</li>
-                  <li className="hover:text-secondary cursor-pointer transition-colors">Contact</li>
+                  <li 
+                    className="hover:text-secondary cursor-pointer transition-colors"
+                    onClick={() => setIsContactOpen(true)}
+                  >
+                    {t('contactUs')}
+                  </li>
                 </ul>
               </div>
               <div>
@@ -139,6 +146,8 @@ function App() {
             </div>
           </div>
         </footer>
+
+        <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
       </div>
     </StoreProvider>
   );

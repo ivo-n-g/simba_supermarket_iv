@@ -343,6 +343,26 @@ const translations: Translations = {
     en: 'Recent Searches',
     rw: 'Ibyo washatse vuba',
     fr: 'Recherches récentes',
+  },
+  exploreCategories: {
+    en: 'Explore Categories',
+    rw: 'Shaka mu byiciro',
+    fr: 'Explorer les catégories',
+  },
+  ourLocations: {
+    en: 'Our Locations',
+    rw: 'Aho dukorera',
+    fr: 'Nos emplacements',
+  },
+  findUs: {
+    en: 'Find the nearest Simba Supermarket in Kigali',
+    rw: 'Shaka iduka rya Simba rikuvubereye muri Kigali',
+    fr: 'Trouvez le supermarché Simba le plus proche à Kigali',
+  },
+  getStarted: {
+    en: 'Get Started',
+    rw: 'Tangira ubu',
+    fr: 'Commencer',
   }
 };
 

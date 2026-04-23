@@ -9,9 +9,10 @@ import ProfileDashboard from './ProfileDashboard';
 
 interface HeaderProps {
   onSearch: (query: string) => void;
+  onLogoClick: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onSearch }) => {
+const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick }) => {
   const [inputValue, setInputValue] = React.useState('');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
@@ -96,8 +97,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
         <div className="container mx-auto px-4 md:px-6 h-20 flex items-center justify-between gap-4">
           {/* Logo & Search */}
           <div className="flex items-center gap-4 md:gap-12 flex-1">
-            <h1 className="text-3xl font-black text-secondary tracking-tighter cursor-pointer hover:opacity-90 transition-opacity">
-              Simba
+            <h1 
+              onClick={onLogoClick}
+              className="text-3xl font-black text-secondary tracking-tighter cursor-pointer hover:opacity-90 transition-opacity"
+            >
+              Simba <span className="text-white hidden lg:inline">{t('supermarket')}</span>
             </h1>
             
             {/* Desktop Search Bar */}
@@ -118,7 +122,6 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
                 </div>
               </form>
 
-              {/* Suggestions Dropdown */}
               {showSuggestions && (inputValue || history.length > 0) && (
                 <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-800 mt-2 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden z-[60] text-gray-800 dark:text-gray-200">
                   {inputValue && suggestions.length > 0 && (
@@ -148,7 +151,6 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
 
           {/* Right Side Actions */}
           <div className="flex items-center gap-2 md:gap-4">
-            {/* Theme Toggle */}
             <button onClick={toggleTheme} className="p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-all hover:rotate-12">
               {theme === 'light' ? (
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
@@ -157,7 +159,6 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
               )}
             </button>
 
-            {/* Language Switcher */}
             <div className="hidden lg:flex items-center gap-1 bg-white/10 p-1 rounded-xl">
               {(['en', 'rw', 'fr'] as const).map((lang) => (
                 <button key={lang} onClick={() => setLanguage(lang)} className={`px-2.5 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${language === lang ? 'bg-white text-primary shadow-lg' : 'hover:bg-white/10'}`}>{lang}</button>
@@ -201,6 +202,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             </div>
+            {inputValue && (
+              <button type="button" onClick={() => { setInputValue(''); onSearch(''); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            )}
           </form>
 
           {showSuggestions && (inputValue || history.length > 0) && (

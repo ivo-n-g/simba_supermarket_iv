@@ -29,6 +29,12 @@ const locations = [
   { name: 'Simba Supermarket Nyarutarama', lat: -1.9311, lng: 30.0984, address: 'KG 9 Ave, Nyarutarama, Kigali' },
   { name: 'Simba Supermarket Nyamirambo', lat: -1.9723, lng: 30.0456, address: 'KN 162 St, Nyamirambo, Kigali' },
   { name: 'Simba Supermarket Remera', lat: -1.9587, lng: 30.1189, address: 'KG 11 Ave, Remera, Kigali' },
+  { name: 'Simba Supermarket Kacyiru', lat: -1.9395, lng: 30.0877, address: 'KG 7 Ave, Kacyiru, Kigali' },
+  { name: 'Simba Supermarket Gikondo', lat: -1.9719, lng: 30.0761, address: 'KK 12 Rd, Gikondo, Kigali' },
+  { name: 'Simba Supermarket Kanombe', lat: -1.9635, lng: 30.1548, address: 'KK 1 Ave, Kanombe, Kigali' },
+  { name: 'Simba Supermarket Kinyinya', lat: -1.9162, lng: 30.1107, address: 'KG 19 Ave, Kinyinya, Kigali' },
+  { name: 'Simba Supermarket Kibagabaga', lat: -1.9318, lng: 30.1167, address: 'KG 14 Ave, Kibagabaga, Kigali' },
+  { name: 'Simba Supermarket Nyanza', lat: -2.0005, lng: 30.0858, address: 'KK 15 Rd, Nyanza, Kigali' },
 ];
 
 const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory }) => {

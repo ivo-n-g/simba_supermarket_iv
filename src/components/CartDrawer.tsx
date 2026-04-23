@@ -18,6 +18,12 @@ const branches = [
   { name: 'Simba Supermarket Nyarutarama', address: 'KG 9 Ave, Nyarutarama, Kigali' },
   { name: 'Simba Supermarket Nyamirambo', address: 'KN 162 St, Nyamirambo, Kigali' },
   { name: 'Simba Supermarket Remera', address: 'KG 11 Ave, Remera, Kigali' },
+  { name: 'Simba Supermarket Kacyiru', address: 'KG 7 Ave, Kacyiru, Kigali' },
+  { name: 'Simba Supermarket Gikondo', address: 'KK 12 Rd, Gikondo, Kigali' },
+  { name: 'Simba Supermarket Kanombe', address: 'KK 1 Ave, Kanombe, Kigali' },
+  { name: 'Simba Supermarket Kinyinya', address: 'KG 19 Ave, Kinyinya, Kigali' },
+  { name: 'Simba Supermarket Kibagabaga', address: 'KG 14 Ave, Kibagabaga, Kigali' },
+  { name: 'Simba Supermarket Nyanza', address: 'KK 15 Rd, Nyanza, Kigali' },
 ];
 
 const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {

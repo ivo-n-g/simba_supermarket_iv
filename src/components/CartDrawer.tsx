@@ -232,9 +232,12 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                           <div className="font-black text-primary dark:text-secondary text-sm uppercase tracking-tighter">{t('pickup')}</div>
                           <p className="text-[9px] text-gray-400 dark:text-gray-500 mt-1 leading-tight font-bold">{t('pickupNote')}</p>
                         </button>
-                        <button onClick={() => setDeliveryMethod('delivery')} className={`p-4 rounded-[28px] border-2 text-left transition-all ${deliveryMethod === 'delivery' ? 'border-primary bg-white dark:bg-gray-800 shadow-xl shadow-primary/10' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 opacity-60'}`}>
-                          <div className="font-black text-primary dark:text-secondary text-sm uppercase tracking-tighter">{t('delivery')}</div>
-                          <p className="text-[9px] text-gray-400 dark:text-gray-500 mt-1 leading-tight font-bold">{t('deliveryNote')}</p>
+                        <button 
+                          disabled 
+                          className="p-4 rounded-[28px] border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 opacity-40 cursor-not-allowed text-left relative overflow-hidden"
+                        >
+                          <div className="font-black text-gray-400 text-sm uppercase tracking-tighter">{t('delivery')}</div>
+                          <p className="text-[9px] text-gray-400 mt-1 leading-tight font-bold">{t('comingSoon')}</p>
                         </button>
                       </div>
                     </div>

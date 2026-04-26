@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 type Language = 'en' | 'rw' | 'fr';
 
@@ -900,7 +900,13 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguage] = useState<Language>(() => {
+    return (localStorage.getItem('simba_language') as Language) || 'en';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('simba_language', language);
+  }, [language]);
 
   const t = (key: string) => {
     return translations[key]?.[language] || key;

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import productsData from '../simba_products.json';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -28,6 +28,12 @@ function AppContent() {
     content: ''
   });
   const { language, t } = useLanguage();
+
+  useEffect(() => {
+    if (window.location.pathname === '/dashboard') {
+      setIsBranchDashboardOpen(true);
+    }
+  }, [setIsBranchDashboardOpen]);
 
   const allProducts = useMemo(() => {
     return [...customProducts, ...productsData.products];

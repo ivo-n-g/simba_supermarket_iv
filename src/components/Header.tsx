@@ -32,6 +32,12 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
   const mobileSearchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (window.location.pathname === '/checkout') {
+      setIsCartDrawerOpen(true);
+    }
+  }, []);
+
+  useEffect(() => {
     const savedHistory = localStorage.getItem('simba_search_history');
     if (savedHistory) setHistory(JSON.parse(savedHistory));
   }, []);

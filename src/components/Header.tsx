@@ -96,12 +96,16 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick }) => {
       <header className="sticky top-0 z-[100] bg-primary text-white shadow-lg transition-all duration-300">
         <div className="container mx-auto px-2 md:px-6 h-16 md:h-20 flex items-center justify-between gap-1 md:gap-4">
           {/* Logo */}
-          <h1 
+          <div 
             onClick={onLogoClick}
-            className="text-xl md:text-3xl font-black text-secondary tracking-tighter cursor-pointer hover:opacity-90 transition-opacity whitespace-nowrap flex-shrink-0"
+            className="cursor-pointer hover:opacity-90 transition-opacity flex-shrink-0 flex items-center gap-2"
           >
-            Simba <span className="text-white hidden xl:inline">{t('supermarket')}</span>
-          </h1>
+            <img 
+              src="/logo.png" 
+              alt="Simba Supermarket" 
+              className="h-10 md:h-14 w-auto object-contain"
+            />
+          </div>
           
           {/* Desktop Search Bar */}
           <div className="hidden md:block relative flex-1 max-w-xl mx-4" ref={desktopSearchRef}>

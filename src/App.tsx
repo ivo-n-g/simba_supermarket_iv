@@ -109,9 +109,14 @@ function App() {
         
         <footer className="bg-primary text-white py-16 transition-colors duration-300">
           <div className="container mx-auto px-6 text-center">
-            <h2 className="text-4xl font-black text-secondary mb-12 cursor-pointer" onClick={resetToLanding}>
-              Simba {t('supermarket')}
-            </h2>
+            <div className="flex justify-center mb-12">
+              <img 
+                src="/logo.png" 
+                alt="Simba Supermarket" 
+                className="h-16 md:h-20 w-auto cursor-pointer object-contain"
+                onClick={resetToLanding}
+              />
+            </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16 text-left">
               <div>
                 <h4 className="font-black mb-6 uppercase text-xs tracking-[0.3em] opacity-40">Discover</h4>

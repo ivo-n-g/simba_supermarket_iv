@@ -26,6 +26,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDa
   const { t } = useLanguage();
   const [isLogin, setIsLogin] = useState(true);
   const [role, setRole] = useState<'customer' | 'representative'>('customer');
+  const [repRole, setRepRole] = useState<'manager' | 'staff'>('staff');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
@@ -79,17 +80,17 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDa
     setIsLoading(true);
     try {
       if (isLogin) {
-        const success = await login(email, password, role, role === 'representative' ? selectedBranch : undefined);
+        const success = await login(email, password, role, role === 'representative' ? selectedBranch : undefined, role === 'representative' ? repRole : undefined);
         if (success) {
           onClose();
           if (role === 'representative' && onOpenBranchDashboard) {
             onOpenBranchDashboard();
           }
         } else {
-          setError(`Invalid ${role === 'representative' ? 'representative' : ''} email or password.`);
+          setError(`Invalid ${role === 'representative' ? (repRole === 'manager' ? 'Manager' : 'Staff') : ''} email or password.`);
         }
       } else {
-        const success = await signup(fullName, email, password, role, role === 'representative' ? selectedBranch : undefined);
+        const success = await signup(fullName, email, password, role, role === 'representative' ? selectedBranch : undefined, role === 'representative' ? repRole : undefined);
         if (success) {
           onClose();
           if (role === 'representative' && onOpenBranchDashboard) {
@@ -193,15 +194,36 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDa
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               {role === 'representative' && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Assigned Branch</label>
-                  <select
-                    value={selectedBranch}
-                    onChange={(e) => setSelectedBranch(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 dark:text-white text-sm"
-                  >
-                    {branches.map(b => <option key={b} value={b}>{b}</option>)}
-                  </select>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Assigned Branch</label>
+                    <select
+                      value={selectedBranch}
+                      onChange={(e) => setSelectedBranch(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 dark:text-white text-xs font-bold"
+                    >
+                      {branches.map(b => <option key={b} value={b}>{b}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Staff Role</label>
+                    <div className="flex p-1 bg-gray-100 dark:bg-gray-900 rounded-lg h-10">
+                      <button
+                        type="button"
+                        onClick={() => setRepRole('manager')}
+                        className={`flex-1 text-[10px] font-black uppercase rounded-md transition-all ${repRole === 'manager' ? 'bg-white dark:bg-gray-700 text-primary dark:text-secondary shadow-sm' : 'text-gray-400'}`}
+                      >
+                        Manager
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setRepRole('staff')}
+                        className={`flex-1 text-[10px] font-black uppercase rounded-md transition-all ${repRole === 'staff' ? 'bg-white dark:bg-gray-700 text-primary dark:text-secondary shadow-sm' : 'text-gray-400'}`}
+                      >
+                        Staff
+                      </button>
+                    </div>
+                  </div>
                 </div>
               )}
               {!isLogin && (

@@ -12,12 +12,12 @@ interface BranchDashboardProps {
 type DashboardTab = 'orders' | 'inventory';
 
 const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hideClose }) => {
-  const { orders, updateOrderStatus, pickupBranch, updateStockAmount, getProductQuantity } = useStore();
+  const { user, orders, updateOrderStatus, pickupBranch, updateStockAmount, getProductQuantity } = useStore();
   const { t, language } = useLanguage();
-  const [role, setRole] = useState<'manager' | 'staff'>('manager');
   const [activeTab, setActiveTab] = useState<DashboardTab>('orders');
   const [inventorySearch, setInventorySearch] = useState('');
-  const selectedBranch = pickupBranch || 'Simba Supermarket Remera';
+  const selectedBranch = pickupBranch || user?.branch || 'Simba Supermarket Remera';
+  const role = user?.repRole || 'staff';
 
   const filteredOrders = orders.filter(order => order.branch === selectedBranch);
 
@@ -31,12 +31,6 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
 
   if (!isOpen) return null;
 
-  const toggleStock = (productId: number) => {
-    setOutOfStockItems(prev => 
-      prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]
-    );
-  };
-
   return (
     <div className="fixed inset-0 z-[110] overflow-hidden">
       <div className="absolute inset-0 bg-primary/20 backdrop-blur-xl" onClick={onClose} />
@@ -48,41 +42,31 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
               <span className="bg-secondary text-primary px-3 py-1 rounded-xl text-sm">{selectedBranch.split(' ').pop()}</span>
               {t('branchDashboard')}
             </h2>
-            {!hideClose && (
-              <button onClick={onClose} className="p-3 bg-white/10 rounded-2xl hover:bg-white/20 transition-all">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            )}
+            <div className="flex items-center gap-2">
+              <span className={`px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] shadow-lg ${role === 'manager' ? 'bg-secondary text-primary' : 'bg-white/20 text-white border border-white/10'}`}>
+                {role === 'manager' ? 'Branch Manager' : 'Branch Staff'}
+              </span>
+              {!hideClose && (
+                <button onClick={onClose} className="p-3 bg-white/10 rounded-2xl hover:bg-white/20 transition-all">
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
           </div>
           
-          <div className="flex justify-between items-end">
-            <div className="flex gap-4">
-              <button 
-                onClick={() => setRole('manager')}
-                className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${role === 'manager' ? 'bg-secondary text-primary' : 'bg-white/10 hover:bg-white/20'}`}
-              >
-                {t('manager')}
-              </button>
-              <button 
-                onClick={() => setRole('staff')}
-                className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${role === 'staff' ? 'bg-secondary text-primary' : 'bg-white/10 hover:bg-white/20'}`}
-              >
-                {t('staff')}
-              </button>
-            </div>
-
-            <div className="flex gap-6 border-b border-white/10">
+          <div className="flex justify-end items-end">
+            <div className="flex gap-6 border-b border-white/10 w-full md:w-auto">
               <button 
                 onClick={() => setActiveTab('orders')}
-                className={`pb-2 text-xs font-black uppercase tracking-widest transition-all border-b-2 ${activeTab === 'orders' ? 'border-secondary text-secondary' : 'border-transparent opacity-40 hover:opacity-100'}`}
+                className={`flex-1 md:flex-none pb-2 text-xs font-black uppercase tracking-widest transition-all border-b-2 ${activeTab === 'orders' ? 'border-secondary text-secondary' : 'border-transparent opacity-40 hover:opacity-100'}`}
               >
                 Orders
               </button>
               <button 
                 onClick={() => setActiveTab('inventory')}
-                className={`pb-2 text-xs font-black uppercase tracking-widest transition-all border-b-2 ${activeTab === 'inventory' ? 'border-secondary text-secondary' : 'border-transparent opacity-40 hover:opacity-100'}`}
+                className={`flex-1 md:flex-none pb-2 text-xs font-black uppercase tracking-widest transition-all border-b-2 ${activeTab === 'inventory' ? 'border-secondary text-secondary' : 'border-transparent opacity-40 hover:opacity-100'}`}
               >
                 Inventory
               </button>
@@ -135,23 +119,39 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                       ))}
                     </div>
 
-                    <div className="mt-auto pt-4 flex gap-2">
-                      {role === 'manager' && order.status === 'pending' && (
-                        <button 
-                          onClick={() => updateOrderStatus(order.id, 'assigned', 'Staff Member 1')}
-                          className="flex-1 py-3 bg-primary text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all"
-                        >
-                          {t('assign')}
-                        </button>
+                    <div className="mt-auto pt-4 flex flex-col gap-2">
+                      {order.assignedStaff && (
+                        <div className="flex items-center gap-2 mb-2 p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-100 dark:border-gray-600">
+                          <span className="text-[10px]">👤</span>
+                          <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Assigned: {order.assignedStaff}</span>
+                        </div>
                       )}
-                      {(role === 'staff' || (role === 'manager' && order.status === 'assigned')) && order.status !== 'ready' && order.status !== 'completed' && (
-                        <button 
-                          onClick={() => updateOrderStatus(order.id, 'ready')}
-                          className="flex-1 py-3 bg-secondary text-primary rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all"
-                        >
-                          {t('markReady')}
-                        </button>
-                      )}
+                      <div className="flex gap-2">
+                        {role === 'manager' && order.status === 'pending' && (
+                          <button 
+                            onClick={() => updateOrderStatus(order.id, 'assigned', user?.name || 'Staff Member')}
+                            className="flex-1 py-3 bg-primary text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-md active:scale-95"
+                          >
+                            {t('assign')} To Me
+                          </button>
+                        )}
+                        {(role === 'staff' || role === 'manager') && order.status === 'assigned' && order.assignedStaff === user?.name && (
+                          <button 
+                            onClick={() => updateOrderStatus(order.id, 'ready')}
+                            className="flex-1 py-3 bg-secondary text-primary rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-md active:scale-95"
+                          >
+                            {t('markReady')}
+                          </button>
+                        )}
+                        {order.status === 'ready' && role === 'manager' && (
+                          <button 
+                            onClick={() => updateOrderStatus(order.id, 'completed')}
+                            className="flex-1 py-3 bg-green-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-md active:scale-95"
+                          >
+                            Complete Order
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))

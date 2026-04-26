@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useStore, Location } from '../context/StoreContext';
 import productsData from '../../simba_products.json';
+import PriceRangeSlider from './PriceRangeSlider';
 
 interface LandingPageProps {
   categories: string[];
@@ -130,31 +131,15 @@ const LandingPage: React.FC<LandingPageProps> = ({
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div className="flex justify-between text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
-                <span>{t('priceRange')}</span>
-                <span className="text-primary dark:text-secondary">{maxPrice.toLocaleString()} RWF</span>
-              </div>
-              <div className="relative h-2 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center">
-                <input
-                  type="range"
-                  min="100"
-                  max="500000"
-                  step="100"
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(Math.min(Number(e.target.value), maxPrice - 100))}
-                  className="absolute w-full h-1 bg-transparent appearance-none cursor-pointer accent-primary dark:accent-secondary z-20 pointer-events-auto"
-                />
-                <input
-                  type="range"
-                  min="100"
-                  max="500000"
-                  step="100"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(Math.max(Number(e.target.value), minPrice + 100))}
-                  className="absolute w-full h-1 bg-transparent appearance-none cursor-pointer accent-primary dark:accent-secondary z-10 pointer-events-auto"
-                />
-              </div>
+            <div className="space-y-6">
+              <PriceRangeSlider 
+                min={100}
+                max={500000}
+                minPrice={minPrice}
+                maxPrice={maxPrice}
+                onMinChange={setMinPrice}
+                onMaxChange={setMaxPrice}
+              />
             </div>
             
             <button 

@@ -223,14 +223,23 @@ const LandingPage: React.FC<LandingPageProps> = ({
               ))}
             </div>
 
-            {/* Map Preview Mock */}
-            <div className="lg:col-span-7 relative group">
-              <div className="aspect-video bg-gray-900 rounded-[48px] md:rounded-[60px] overflow-hidden shadow-2xl border-4 md:border-8 border-white/10 relative">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&q=80&w=1200')] bg-cover bg-center opacity-40 grayscale group-hover:grayscale-0 transition-all duration-700"></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent"></div>
+            {/* Map Preview - REAL Google Maps Iframe */}
+            <div className="lg:col-span-7 relative group h-[400px] md:h-[600px]">
+              <div className="w-full h-full bg-gray-900 rounded-[48px] md:rounded-[60px] overflow-hidden shadow-2xl border-4 md:border-8 border-white/10 relative transition-all duration-700">
+                <iframe 
+                  width="100%" 
+                  height="100%" 
+                  style={{ border: 0 }}
+                  loading="lazy" 
+                  allowFullScreen 
+                  referrerPolicy="no-referrer-when-downgrade"
+                  src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyA88_PjG5Hl5pZ_6v7Y_q_V_0V5_V_0V5&q=${selectedLoc.lat},${selectedLoc.lng}&zoom=15`}
+                  className="grayscale hover:grayscale-0 transition-all duration-700"
+                ></iframe>
+                <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-primary/40 to-transparent"></div>
                 
                 {/* Branch Info Overlay */}
-                <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 md:right-8 bg-white dark:bg-gray-800 p-6 md:p-10 rounded-[32px] md:rounded-[48px] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] animate-in fade-in zoom-in duration-1000 border-2 md:border-4 border-white/20 dark:border-gray-700/50">
+                <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 md:right-8 bg-white dark:bg-gray-800 p-6 md:p-10 rounded-[32px] md:rounded-[48px] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] border-2 md:border-4 border-white/20 dark:border-gray-700/50 pointer-events-auto">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="text-left">
                       <p className="text-[10px] font-black text-primary dark:text-secondary uppercase tracking-[0.2em] mb-1">{t('selectedBranch')}</p>
@@ -238,14 +247,14 @@ const LandingPage: React.FC<LandingPageProps> = ({
                       <p className="text-[9px] md:text-xs text-gray-400 font-bold mt-1 uppercase leading-tight mb-4 tracking-widest">{selectedLoc.address}</p>
                       
                       {selectedLoc.name === closestBranchName && (
-                        <div className="inline-flex items-center gap-2 mb-4 bg-green-50 dark:bg-green-900/30 px-3 py-1.5 rounded-full border border-green-100 dark:border-green-800 animate-in slide-in-from-left duration-500">
+                        <div className="inline-flex items-center gap-2 mb-4 bg-green-50 dark:bg-green-900/30 px-3 py-1.5 rounded-full border border-green-100 dark:border-green-800">
                           <span className="text-sm">📍</span>
                           <span className="text-[9px] font-black text-green-600 dark:text-green-400 uppercase tracking-widest">{t('locatedClosest')}</span>
                         </div>
                       )}
 
                       {/* Branch Reviews Varied */}
-                      <div className="flex items-center gap-1 mb-4">
+                      <div className="flex items-center gap-1">
                         <div className="flex text-yellow-400">
                           {[1, 2, 3, 4, 5].map((star) => (
                             <span key={star} className="text-xs">
@@ -267,12 +276,6 @@ const LandingPage: React.FC<LandingPageProps> = ({
                       {t('getDirections')}
                     </a>
                   </div>
-                </div>
-
-                {/* Pulsing Pin Mock */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                  <div className="w-12 h-12 bg-secondary rounded-full animate-ping opacity-20"></div>
-                  <div className="w-4 h-4 bg-secondary rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-2xl"></div>
                 </div>
               </div>
             </div>

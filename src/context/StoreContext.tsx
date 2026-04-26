@@ -10,8 +10,8 @@ export interface Location {
 }
 
 export const locations: Location[] = [
-  { name: 'Simba Supermarket Gishushu', lat: -1.9546, lng: 30.1039, address: 'KG 8 Ave, Gishushu, Kigali', rating: 4.8, reviewCount: 156 },
-  { name: 'Simba Supermarket Town', lat: -1.9441, lng: 30.0619, address: 'KN 2 St, Kigali City Center', rating: 4.5, reviewCount: 342 },
+  { name: 'Simba Supermarket Gishushu', lat: -1.9515, lng: 30.1030, address: 'KG 8 Ave, Gishushu, Kigali', rating: 4.8, reviewCount: 156 },
+  { name: 'Simba Supermarket Town', lat: -1.9443, lng: 30.0617, address: 'KN 2 St, Kigali City Center', rating: 4.5, reviewCount: 342 },
   { name: 'Simba Supermarket Kimironko', lat: -1.9351, lng: 30.1265, address: 'KG 11 Ave, Kimironko, Kigali', rating: 4.7, reviewCount: 89 },
   { name: 'Simba Supermarket Kicukiro', lat: -1.9774, lng: 30.1044, address: 'KK 15 Rd, Kicukiro, Kigali', rating: 4.6, reviewCount: 124 },
   { name: 'Simba Supermarket Nyarutarama', lat: -1.9311, lng: 30.0984, address: 'KG 9 Ave, Nyarutarama, Kigali', rating: 4.9, reviewCount: 67 },

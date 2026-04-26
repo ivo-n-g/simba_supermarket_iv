@@ -769,6 +769,26 @@ const translations: Translations = {
     rw: 'Ishami ryawe',
     fr: 'Succursale assignée',
   },
+  submitReview: {
+    en: 'Submit Review',
+    rw: 'Ohereza Igitekerezo',
+    fr: 'Soumettre l\'avis',
+  },
+  leaveReview: {
+    en: 'Leave a Review',
+    rw: 'Tanga Igitekerezo',
+    fr: 'Laisser un avis',
+  },
+  orderHistory: {
+    en: 'Order History',
+    rw: 'Amateka ya Komande',
+    fr: 'Historique des commandes',
+  },
+  reviewSubmitted: {
+    en: 'Review Submitted',
+    rw: 'Igitekerezo Cyoherejwe',
+    fr: 'Avis Soumis',
+  },
   staffRole: {
     en: 'Staff Role',
     rw: 'Ushinzwe',

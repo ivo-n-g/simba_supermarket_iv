@@ -11,7 +11,7 @@ interface ProfileDashboardProps {
 type DashboardTab = 'profile' | 'wishlist' | 'orders' | 'branch';
 
 const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ isOpen, onClose, onOpenBranchDashboard }) => {
-  const { user, logout, wishlist, toggleWishlist, addToCart } = useStore();
+  const { user, logout, wishlist, toggleWishlist, addToCart, orders } = useStore();
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<DashboardTab>('profile');
 
@@ -154,9 +154,55 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ isOpen, onClose, on
             )}
 
             {activeTab === 'orders' && (
-              <div className="text-center py-20 animate-in fade-in slide-in-from-bottom-4 duration-300">
-                <span className="text-6xl mb-4 block">📦</span>
-                <p className="text-gray-500 dark:text-gray-400 font-medium">No orders yet.</p>
+              <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+                {orders.filter(o => o.customerName === user.name).length === 0 ? (
+                  <div className="text-center py-20">
+                    <span className="text-6xl mb-4 block">📦</span>
+                    <p className="text-gray-500 dark:text-gray-400 font-medium">{t('noOrdersFound') || 'No orders yet.'}</p>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {orders.filter(o => o.customerName === user.name).map(order => (
+                      <div key={order.id} className="bg-gray-50 dark:bg-gray-900/30 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col gap-4">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Order #{order.id}</span>
+                            <span className="font-bold text-gray-800 dark:text-white">{order.branch}</span>
+                          </div>
+                          <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
+                            order.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                            order.status === 'assigned' ? 'bg-blue-100 text-blue-700' :
+                            order.status === 'ready' ? 'bg-green-100 text-green-700' :
+                            'bg-gray-200 text-gray-700'
+                          }`}>
+                            {t(order.status) || order.status}
+                          </span>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          {order.items.map((item, idx) => (
+                            <div key={idx} className="flex justify-between text-sm">
+                              <span className="text-gray-600 dark:text-gray-300">{item.quantity}x {item.name}</span>
+                              <span className="font-bold">{(item.price * item.quantity).toLocaleString()} RWF</span>
+                            </div>
+                          ))}
+                        </div>
+                        
+                        <div className="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-600">
+                          <span className="font-black uppercase text-xs tracking-widest text-primary dark:text-secondary">Total: {order.total.toLocaleString()} RWF</span>
+                          {order.status === 'completed' && (
+                            <button 
+                              onClick={() => alert(t('reviewSubmitted') || 'Review Submitted!')}
+                              className="px-4 py-2 bg-secondary text-primary rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-md"
+                            >
+                              {t('leaveReview') || 'Leave a Review'}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>

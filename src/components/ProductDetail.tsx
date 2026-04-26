@@ -12,6 +12,7 @@ interface ProductDetailProps {
 const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onBack }) => {
   const { t, language } = useLanguage();
   const { customProducts, addToCart, getProductQuantity, pickupBranch, isProductInStock } = useStore();
+  const [isAdded, setIsAdded] = React.useState(false);
   
   // Find product in either custom products or base productsData
   const product = useMemo(() => {
@@ -30,6 +31,13 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onBack }) => {
 
   const getTranslatedCategory = () => {
     return (product as any)[`category_${language}`] || product.category;
+  };
+
+  const handleAddToCart = () => {
+    if (!product || !inStock) return;
+    addToCart(product);
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 2000);
   };
 
   // Realistic mock data generator
@@ -142,15 +150,26 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onBack }) => {
                 </span>
               </div>
               <button
-                onClick={() => addToCart(product)}
-                disabled={!inStock}
+                onClick={handleAddToCart}
+                disabled={!inStock || isAdded}
                 className={`w-full py-6 rounded-[32px] font-black text-xl uppercase tracking-tighter transition-all shadow-xl active:scale-95 ${
-                  inStock 
-                    ? 'bg-secondary text-primary hover:scale-[1.02] shadow-secondary/20' 
-                    : 'bg-gray-200 text-gray-400 cursor-not-allowed grayscale'
+                  isAdded
+                    ? 'bg-green-500 text-white animate-in zoom-in duration-300'
+                    : inStock 
+                      ? 'bg-secondary text-primary hover:scale-[1.02] shadow-secondary/20' 
+                      : 'bg-gray-200 text-gray-400 cursor-not-allowed grayscale'
                 }`}
               >
-                {inStock ? t('addToCart') : t('outOfStock')}
+                {isAdded ? (
+                   <div className="flex items-center justify-center gap-3">
+                     <svg className="w-6 h-6 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" />
+                     </svg>
+                     <span>{t('added')}</span>
+                   </div>
+                ) : (
+                  inStock ? t('addToCart') : t('outOfStock')
+                )}
               </button>
             </div>
           </div>

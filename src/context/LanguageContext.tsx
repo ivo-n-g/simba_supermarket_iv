@@ -59,6 +59,16 @@ const translations: Translations = {
     rw: 'Igiteranyo',
     fr: 'Sous-total',
   },
+  added: {
+    en: 'Added!',
+    rw: 'Byongewe!',
+    fr: 'Ajouté !',
+  },
+  demoOrderReceived: {
+    en: 'Demo order received',
+    rw: 'Komande yanyu yakiriwe',
+    fr: 'Commande de démonstration reçue',
+  },
   orderSuccess: {
     en: 'Order Received!',
     rw: 'Inshyu yakiriwe!',

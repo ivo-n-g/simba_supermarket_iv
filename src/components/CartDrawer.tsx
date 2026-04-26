@@ -134,7 +134,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <p className="text-3xl font-black text-primary dark:text-secondary mb-2 uppercase tracking-tight">{t('orderSuccess')}</p>
+                    <p className="text-3xl font-black text-primary dark:text-secondary mb-2 uppercase tracking-tight">{t('demoOrderReceived')}</p>
                     <p className="text-gray-500 dark:text-gray-400 font-bold">{t('thankYou')}</p>
                   </div>
                 ) : step === 'cart' ? (

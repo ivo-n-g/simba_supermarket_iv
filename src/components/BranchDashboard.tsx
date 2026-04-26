@@ -84,7 +84,11 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                 <span className="bg-secondary text-primary px-3 py-1 rounded-xl text-sm">{selectedBranch.split(' ').pop()}</span>
                 {t('branchDashboard')}
               </h2>
-              <p className="text-white/50 text-[10px] font-bold uppercase tracking-[0.3em] ml-1">{t('operationalControlCenter')}</p>
+              <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 ml-1">
+                <p className="text-white/50 text-[10px] font-bold uppercase tracking-[0.3em]">{t('operationalControlCenter')}</p>
+                <div className="hidden md:block w-1 h-1 bg-white/20 rounded-full"></div>
+                <p className="text-secondary text-[11px] font-black uppercase tracking-tight">{selectedBranch}</p>
+              </div>
             </div>
           </div>
 

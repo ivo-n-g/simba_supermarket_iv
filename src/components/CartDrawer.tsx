@@ -192,7 +192,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                           <span className={`text-xs font-black uppercase tracking-tight ${pickupBranch === branch.name ? 'text-primary dark:text-secondary' : 'text-gray-800 dark:text-white'}`}>
                             {branch.name}
                           </span>
-                          <span className="text-[9px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest">{branch.address}</span>
+                          <span className="text-[11px] text-gray-500 dark:text-gray-400 font-semibold">{branch.address}</span>
                         </button>
                       ))}
                     </div>

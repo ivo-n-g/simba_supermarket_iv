@@ -212,14 +212,14 @@ const LandingPage: React.FC<LandingPageProps> = ({
                           <span className="bg-secondary text-primary text-[8px] font-black px-2 py-0.5 rounded-full animate-pulse">{t('nearest')}</span>
                         )}
                       </div>
-                      <div className="flex items-center gap-2 mt-1">
-                        <p className={`text-[9px] md:text-[11px] font-bold uppercase tracking-widest opacity-60 ${selectedLoc.name === loc.name ? 'text-primary' : 'text-gray-400'}`}>
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <p className={`text-xs md:text-sm font-semibold ${selectedLoc.name === loc.name ? 'text-primary' : 'text-gray-500'}`}>
                           {loc.address}
                         </p>
                         {distance !== null && (
                           <>
                             <div className={`w-1 h-1 rounded-full ${selectedLoc.name === loc.name ? 'bg-primary/20' : 'bg-white/20'}`}></div>
-                            <p className={`text-[9px] font-black tracking-widest ${selectedLoc.name === loc.name ? 'text-primary' : 'text-secondary opacity-80'}`}>
+                            <p className={`text-[10px] md:text-xs font-black tracking-tight ${selectedLoc.name === loc.name ? 'text-primary' : 'text-secondary'}`}>
                               {distance < 1 ? `${(distance * 1000).toFixed(0)}m` : `${distance.toFixed(1)}km`}
                             </p>
                           </>
@@ -255,7 +255,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
                     <div className="text-left">
                       <p className="text-[10px] font-black text-primary dark:text-secondary uppercase tracking-[0.2em] mb-1">{t('selectedBranch')}</p>
                       <p className="text-base md:text-2xl font-black text-gray-800 dark:text-white uppercase tracking-tighter">{selectedLoc.name}</p>
-                      <p className="text-[9px] md:text-xs text-gray-400 font-bold mt-1 uppercase leading-tight mb-4 tracking-widest">{selectedLoc.address}</p>
+                      <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 font-bold mt-1 mb-4 leading-relaxed">{selectedLoc.address}</p>
                       
                       {selectedLoc.name === closestBranchName && (
                         <div className="inline-flex items-center gap-2 mb-4 bg-green-50 dark:bg-green-900/30 px-3 py-1.5 rounded-full border border-green-100 dark:border-green-800">

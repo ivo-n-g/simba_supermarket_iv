@@ -98,6 +98,7 @@ interface StoreContextType {
   setIsBranchDashboardOpen: (isOpen: boolean) => void;
   locations: Location[];
   closestBranchName: string;
+  userLocation: { lat: number; lng: number } | null;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -114,6 +115,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [customProducts, setCustomProducts] = useState<Product[]>([]);
   const [isBranchDashboardOpen, setIsBranchDashboardOpen] = useState(false);
   const [closestBranchName, setClosestBranchName] = useState('');
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('simba_user_session');
@@ -133,22 +135,43 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
+        setUserLocation({ lat: latitude, lng: longitude });
+        console.log('User Location:', latitude, longitude);
+        
         let closest = locations[0];
         let minDistance = Infinity;
 
+        // Haversine formula for accurate distance on Earth
+        const toRad = (value: number) => (value * Math.PI) / 180;
+        
         locations.forEach(loc => {
-          const distance = Math.sqrt(
-            Math.pow(loc.lat - latitude, 2) + Math.pow(loc.lng - longitude, 2)
-          );
+          const R = 6371; // Earth's radius in km
+          const dLat = toRad(loc.lat - latitude);
+          const dLon = toRad(loc.lng - longitude);
+          const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(toRad(latitude)) *
+              Math.cos(toRad(loc.lat)) *
+              Math.sin(dLon / 2) *
+              Math.sin(dLon / 2);
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          const distance = R * c;
+
           if (distance < minDistance) {
             minDistance = distance;
             closest = loc;
           }
         });
         
-        // Auto-select if no branch is manually selected
+        console.log('Closest branch identified:', closest.name, 'at', minDistance, 'km');
         setClosestBranchName(closest.name);
         setPickupBranch(prev => prev || closest.name);
+      }, (error) => {
+        console.error('Geolocation error:', error);
+      }, {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
       });
     }
   }, []);
@@ -353,7 +376,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       pickupTime, setPickupTime, cartCount, orders, updateOrderStatus,
       branchStock, updateStockAmount, isProductInStock, getProductQuantity,
       customProducts, addNewProduct, isBranchDashboardOpen, setIsBranchDashboardOpen, locations,
-      closestBranchName
+      closestBranchName, userLocation
     }}>
       {children}
     </StoreContext.Provider>

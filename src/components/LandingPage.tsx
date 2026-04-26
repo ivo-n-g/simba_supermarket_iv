@@ -39,8 +39,21 @@ const LandingPage: React.FC<LandingPageProps> = ({
   setOnlyInStock
 }) => {
   const { t, language } = useLanguage();
-  const { pickupBranch, setPickupBranch, locations, closestBranchName } = useStore();
+  const { pickupBranch, setPickupBranch, locations, closestBranchName, userLocation } = useStore();
   
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const toRad = (value: number) => (value * Math.PI) / 180;
+    const R = 6371; // km
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
   const [selectedLoc, setSelectedLoc] = useState<Location>(
     locations.find(l => l.name === pickupBranch) || locations[1]
   );
@@ -192,35 +205,48 @@ const LandingPage: React.FC<LandingPageProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16 items-center">
             {/* Branch List */}
             <div className="lg:col-span-5 space-y-3 md:space-y-4 max-h-[400px] md:max-h-[600px] overflow-y-auto pr-4 scrollbar-hide">
-              {locations.map((loc) => (
-                <div 
-                  key={loc.name}
-                  onClick={() => {
-                    setSelectedLoc(loc);
-                    setPickupBranch(loc.name);
-                  }}
-                  className={`p-5 md:p-8 rounded-[32px] cursor-pointer transition-all duration-500 border-2 flex items-center justify-between group ${
-                    selectedLoc.name === loc.name 
-                    ? 'bg-white text-primary border-secondary shadow-2xl' 
-                    : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20'
-                  }`}
-                >
-                  <div className="text-left">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-sm md:text-lg font-black uppercase tracking-tight">{loc.name.replace('Simba Supermarket ', '')}</h3>
-                      {loc.name === closestBranchName && (
-                        <span className="bg-secondary text-primary text-[8px] font-black px-2 py-0.5 rounded-full animate-pulse">{t('nearest')}</span>
-                      )}
+              {locations.map((loc) => {
+                const distance = userLocation ? calculateDistance(userLocation.lat, userLocation.lng, loc.lat, loc.lng) : null;
+                return (
+                  <div 
+                    key={loc.name}
+                    onClick={() => {
+                      setSelectedLoc(loc);
+                      setPickupBranch(loc.name);
+                    }}
+                    className={`p-5 md:p-8 rounded-[32px] cursor-pointer transition-all duration-500 border-2 flex items-center justify-between group ${
+                      selectedLoc.name === loc.name 
+                      ? 'bg-white text-primary border-secondary shadow-2xl' 
+                      : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20'
+                    }`}
+                  >
+                    <div className="text-left">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-sm md:text-lg font-black uppercase tracking-tight">{loc.name.replace('Simba Supermarket ', '')}</h3>
+                        {loc.name === closestBranchName && (
+                          <span className="bg-secondary text-primary text-[8px] font-black px-2 py-0.5 rounded-full animate-pulse">{t('nearest')}</span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 mt-1">
+                        <p className={`text-[9px] md:text-[11px] font-bold uppercase tracking-widest opacity-60 ${selectedLoc.name === loc.name ? 'text-primary' : 'text-gray-400'}`}>
+                          {loc.address}
+                        </p>
+                        {distance !== null && (
+                          <>
+                            <div className={`w-1 h-1 rounded-full ${selectedLoc.name === loc.name ? 'bg-primary/20' : 'bg-white/20'}`}></div>
+                            <p className={`text-[9px] font-black tracking-widest ${selectedLoc.name === loc.name ? 'text-primary' : 'text-secondary opacity-80'}`}>
+                              {distance < 1 ? `${(distance * 1000).toFixed(0)}m` : `${distance.toFixed(1)}km`}
+                            </p>
+                          </>
+                        )}
+                      </div>
                     </div>
-                    <p className={`text-[9px] md:text-[11px] font-bold uppercase tracking-widest mt-1 opacity-60 ${selectedLoc.name === loc.name ? 'text-primary' : 'text-gray-400'}`}>
-                      {loc.address}
-                    </p>
+                    {selectedLoc.name === loc.name && (
+                      <div className="w-8 h-8 bg-primary text-secondary rounded-full flex items-center justify-center animate-in zoom-in font-bold">✓</div>
+                    )}
                   </div>
-                  {selectedLoc.name === loc.name && (
-                    <div className="w-8 h-8 bg-primary text-secondary rounded-full flex items-center justify-center animate-in zoom-in font-bold">✓</div>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Map Preview - REAL Google Maps Iframe */}
@@ -249,7 +275,10 @@ const LandingPage: React.FC<LandingPageProps> = ({
                       {selectedLoc.name === closestBranchName && (
                         <div className="inline-flex items-center gap-2 mb-4 bg-green-50 dark:bg-green-900/30 px-3 py-1.5 rounded-full border border-green-100 dark:border-green-800">
                           <span className="text-sm">📍</span>
-                          <span className="text-[9px] font-black text-green-600 dark:text-green-400 uppercase tracking-widest">{t('locatedClosest')}</span>
+                          <span className="text-[9px] font-black text-green-600 dark:text-green-400 uppercase tracking-widest">
+                            {t('locatedClosest')} 
+                            {userLocation && ` (${calculateDistance(userLocation.lat, userLocation.lng, selectedLoc.lat, selectedLoc.lng).toFixed(1)}km)`}
+                          </span>
                         </div>
                       )}
 

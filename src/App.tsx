@@ -15,6 +15,8 @@ function AppContent() {
   const { user, customProducts, isBranchDashboardOpen, setIsBranchDashboardOpen } = useStore();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [minPrice, setMinPrice] = useState(100);
+  const [maxPrice, setMaxPrice] = useState(500000);
   const [aiResponse, setAiResponse] = useState<GroqResponse | null>(null);
   const [view, setView] = useState<'landing' | 'shop'>('landing');
   const [isContactOpen, setIsContactOpen] = useState(false);
@@ -39,17 +41,21 @@ function AppContent() {
   }, [allProducts]);
 
   const filteredProducts = useMemo(() => {
+    let products = allProducts;
+
     if (aiResponse) {
       if (aiResponse.productIds.length > 0) {
-        return allProducts.filter(p => aiResponse.productIds.includes(p.id));
+        products = allProducts.filter(p => aiResponse.productIds.includes(p.id));
+      } else {
+        return [];
       }
-      return [];
     }
 
     const query = searchQuery.toLowerCase();
-    return allProducts.filter(product => {
+    return products.filter(product => {
       const p = product as any;
       const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
+      const matchesPrice = product.price >= minPrice && product.price <= maxPrice;
       
       const searchableText = [
         p.name,
@@ -63,9 +69,9 @@ function AppContent() {
       ].filter(Boolean).join(' ').toLowerCase();
 
       const matchesSearch = searchableText.includes(query);
-      return matchesCategory && matchesSearch;
+      return matchesCategory && matchesSearch && matchesPrice;
     });
-  }, [selectedCategory, searchQuery, language, aiResponse]);
+  }, [selectedCategory, searchQuery, language, aiResponse, minPrice, maxPrice, allProducts]);
 
   const handleSelectCategory = (category: string) => {
     setSelectedCategory(category);
@@ -131,6 +137,10 @@ function AppContent() {
               totalCount={totalCount}
               selectedCategory={selectedCategory}
               onSelectCategory={setSelectedCategory}
+              minPrice={minPrice}
+              maxPrice={maxPrice}
+              setMinPrice={setMinPrice}
+              setMaxPrice={setMaxPrice}
             />
             
             <div className="flex-1 bg-white dark:bg-gray-800/50 shadow-sm md:rounded-[32px] md:my-8 overflow-hidden">

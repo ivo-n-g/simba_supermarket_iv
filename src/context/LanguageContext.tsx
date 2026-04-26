@@ -399,6 +399,11 @@ const translations: Translations = {
     rw: 'Ni gute twagufasha?',
     fr: 'Comment pouvons-nous vous aider ?',
   },
+  priceRange: {
+    en: 'Price Range',
+    rw: 'Igiciro',
+    fr: 'Gamme de prix',
+  },
   pickupTime: {
     en: 'Pick-up Time',
     rw: 'Igihe cyo gufatira',

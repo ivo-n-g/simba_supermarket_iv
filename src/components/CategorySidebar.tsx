@@ -8,6 +8,10 @@ interface CategorySidebarProps {
   totalCount: number;
   selectedCategory: string;
   onSelectCategory: (category: string) => void;
+  minPrice: number;
+  maxPrice: number;
+  setMinPrice: (price: number) => void;
+  setMaxPrice: (price: number) => void;
 }
 
 const categoryIcons: Record<string, React.ReactNode> = {
@@ -74,6 +78,10 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
   totalCount,
   selectedCategory,
   onSelectCategory,
+  minPrice,
+  maxPrice,
+  setMinPrice,
+  setMaxPrice
 }) => {
   const { t, language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
@@ -161,6 +169,61 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
               </span>
             </button>
           ))}
+
+          {/* Price Range Filter */}
+          <div className="mt-10 pt-10 border-t border-gray-100 dark:border-gray-800">
+            <h3 className="text-sm font-black text-primary dark:text-secondary uppercase tracking-[0.2em] mb-8">{t('priceRange')}</h3>
+            
+            <div className="space-y-8 px-2">
+              <div className="flex justify-between items-center bg-gray-50 dark:bg-gray-800/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-inner">
+                <div className="flex flex-col text-left">
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Min</span>
+                  <span className="font-black text-primary dark:text-secondary text-sm">{minPrice.toLocaleString()} <span className="text-[10px] opacity-40">RWF</span></span>
+                </div>
+                <div className="w-px h-8 bg-gray-200 dark:bg-gray-700"></div>
+                <div className="flex flex-col text-right">
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Max</span>
+                  <span className="font-black text-primary dark:text-secondary text-sm">{maxPrice.toLocaleString()} <span className="text-[10px] opacity-40">RWF</span></span>
+                </div>
+              </div>
+
+              <div className="space-y-4 relative pt-6">
+                <input
+                  type="range"
+                  min="100"
+                  max="500000"
+                  step="100"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(Math.min(Number(e.target.value), maxPrice - 100))}
+                  className="absolute w-full h-2 bg-transparent appearance-none cursor-pointer accent-primary dark:accent-secondary z-20 pointer-events-auto"
+                  style={{ top: '24px' }}
+                />
+                <input
+                  type="range"
+                  min="100"
+                  max="500000"
+                  step="100"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(Math.max(Number(e.target.value), minPrice + 100))}
+                  className="absolute w-full h-2 bg-transparent appearance-none cursor-pointer accent-primary dark:accent-secondary z-10 pointer-events-auto"
+                  style={{ top: '24px' }}
+                />
+                <div className="h-2 bg-gray-100 dark:bg-gray-800 rounded-full w-full"></div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-2">
+                {[5000, 10000, 50000, 100000].map(p => (
+                  <button 
+                    key={p}
+                    onClick={() => setMaxPrice(p)}
+                    className="py-2 rounded-xl border border-gray-100 dark:border-gray-800 text-[10px] font-black text-gray-400 hover:border-primary hover:text-primary transition-all uppercase tracking-widest"
+                  >
+                    Under {p.toLocaleString()}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       

@@ -1,5 +1,30 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
+export interface Location {
+  name: string;
+  lat: number;
+  lng: number;
+  address: string;
+  rating: number;
+  reviewCount: number;
+}
+
+export const locations: Location[] = [
+  { name: 'Simba Supermarket Gishushu', lat: -1.9546, lng: 30.1039, address: 'KG 8 Ave, Gishushu, Kigali', rating: 4.8, reviewCount: 156 },
+  { name: 'Simba Supermarket Town', lat: -1.9441, lng: 30.0619, address: 'KN 2 St, Kigali City Center', rating: 4.5, reviewCount: 342 },
+  { name: 'Simba Supermarket Kimironko', lat: -1.9351, lng: 30.1265, address: 'KG 11 Ave, Kimironko, Kigali', rating: 4.7, reviewCount: 89 },
+  { name: 'Simba Supermarket Kicukiro', lat: -1.9774, lng: 30.1044, address: 'KK 15 Rd, Kicukiro, Kigali', rating: 4.6, reviewCount: 124 },
+  { name: 'Simba Supermarket Nyarutarama', lat: -1.9311, lng: 30.0984, address: 'KG 9 Ave, Nyarutarama, Kigali', rating: 4.9, reviewCount: 67 },
+  { name: 'Simba Supermarket Nyamirambo', lat: -1.9723, lng: 30.0456, address: 'KN 162 St, Nyamirambo, Kigali', rating: 4.4, reviewCount: 215 },
+  { name: 'Simba Supermarket Remera', lat: -1.9587, lng: 30.1189, address: 'KG 11 Ave, Remera, Kigali', rating: 4.7, reviewCount: 198 },
+  { name: 'Simba Supermarket Kacyiru', lat: -1.9395, lng: 30.0877, address: 'KG 7 Ave, Kacyiru, Kigali', rating: 4.6, reviewCount: 54 },
+  { name: 'Simba Supermarket Gikondo', lat: -1.9719, lng: 30.0761, address: 'KK 12 Rd, Gikondo, Kigali', rating: 4.3, reviewCount: 112 },
+  { name: 'Simba Supermarket Kanombe', lat: -1.9635, lng: 30.1548, address: 'KK 1 Ave, Kanombe, Kigali', rating: 4.5, reviewCount: 78 },
+  { name: 'Simba Supermarket Kinyinya', lat: -1.9162, lng: 30.1107, address: 'KG 19 Ave, Kinyinya, Kigali', rating: 4.2, reviewCount: 43 },
+  { name: 'Simba Supermarket Kibagabaga', lat: -1.9318, lng: 30.1167, address: 'KG 14 Ave, Kibagabaga, Kigali', rating: 4.8, reviewCount: 92 },
+  { name: 'Simba Supermarket Nyanza', lat: -2.0005, lng: 30.0858, address: 'KK 15 Rd, Nyanza, Kigali', rating: 4.1, reviewCount: 31 },
+];
+
 interface CartItem {
   id: number;
   name: string;
@@ -71,6 +96,7 @@ interface StoreContextType {
   addNewProduct: (product: Omit<Product, 'id'>) => void;
   isBranchDashboardOpen: boolean;
   setIsBranchDashboardOpen: (isOpen: boolean) => void;
+  locations: Location[];
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -100,6 +126,28 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     if (savedStock) setBranchStock(JSON.parse(savedStock));
     const savedCustom = localStorage.getItem('simba_custom_products');
     if (savedCustom) setCustomProducts(JSON.parse(savedCustom));
+
+    // Geolocation for closest branch
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        let closest = locations[0];
+        let minDistance = Infinity;
+
+        locations.forEach(loc => {
+          const distance = Math.sqrt(
+            Math.pow(loc.lat - latitude, 2) + Math.pow(loc.lng - longitude, 2)
+          );
+          if (distance < minDistance) {
+            minDistance = distance;
+            closest = loc;
+          }
+        });
+        
+        // Auto-select if no branch is manually selected
+        setPickupBranch(prev => prev || closest.name);
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -161,7 +209,6 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     const users: User[] = JSON.parse(localStorage.getItem('simba_users_db') || '[]');
     const foundUser = users.find(u => u.email === email && (!password || u.password === password) && u.role === role);
     
-    // For demo: if logging in as representative and no user found, allow it if branch is selected
     if (!foundUser && role === 'representative' && branch) {
       const repUser: User = { name: email.split('@')[0], email, role: 'representative', branch, repRole: repRole || 'staff' };
       setUser(repUser);
@@ -172,7 +219,6 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     if (foundUser) {
       const sessionUser = { ...foundUser };
       delete sessionUser.password;
-      // Update repRole if provided during login for demo flexibility
       if (role === 'representative' && repRole) sessionUser.repRole = repRole;
       setUser(sessionUser);
       localStorage.setItem('simba_user_session', JSON.stringify(sessionUser));
@@ -294,7 +340,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       deliveryMethod, setDeliveryMethod, pickupBranch, setPickupBranch, 
       pickupTime, setPickupTime, cartCount, orders, updateOrderStatus,
       branchStock, updateStockAmount, isProductInStock, getProductQuantity,
-      customProducts, addNewProduct, isBranchDashboardOpen, setIsBranchDashboardOpen
+      customProducts, addNewProduct, isBranchDashboardOpen, setIsBranchDashboardOpen, locations
     }}>
       {children}
     </StoreContext.Provider>

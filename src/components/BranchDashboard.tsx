@@ -22,7 +22,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
   const [newProductName, setNewProductName] = useState('');
   const [newProductCategory, setNewProductCategory] = useState('Food Products');
   const [newProductPrice, setNewProductPrice] = useState('');
-  const [newProductImage, setNewProductPriceImage] = useState('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=200');
+  const [newProductImage, setNewProductImage] = useState('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=200');
 
   const selectedBranch = pickupBranch || user?.branch || 'Simba Supermarket Remera';
   const role = user?.repRole || 'staff';
@@ -266,7 +266,6 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
           )}
         </div>
       </div>
-      </div>
 
       {/* Add Product Modal */}
       {isAddProductModalOpen && (
@@ -322,7 +321,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                   <input
                     type="text"
                     value={newProductImage}
-                    onChange={(e) => setNewProductPriceImage(e.target.value)}
+                    onChange={(e) => setNewProductImage(e.target.value)}
                     className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-3xl focus:ring-4 focus:ring-primary/10 outline-none font-bold dark:text-white text-xs"
                   />
                 </div>

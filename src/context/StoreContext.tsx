@@ -145,8 +145,12 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const getProductQuantity = (branch: string, productId: number) => {
     const currentBranchStock = branchStock[branch] || {};
-    // Default stock to 10 for demo if not set
-    return currentBranchStock[productId] !== undefined ? currentBranchStock[productId] : 10;
+    if (currentBranchStock[productId] !== undefined) {
+      return currentBranchStock[productId];
+    }
+    // Generate a deterministic pseudo-random stock quantity for realism
+    const pseudoRandom = (productId * branch.length * 7) % 45;
+    return pseudoRandom + 2; // Quantity between 2 and 46
   };
 
   const isProductInStock = (branch: string, productId: number) => {

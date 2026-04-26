@@ -42,15 +42,27 @@ const Hero: React.FC = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
             {user ? (
-              <button 
-                onClick={() => {
-                  const shopSection = document.getElementById('explore-categories');
-                  shopSection?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="px-10 py-5 bg-secondary text-primary rounded-[32px] font-black text-xl shadow-2xl hover:scale-105 transition-all active:scale-95 uppercase tracking-tighter"
-              >
-                {t('startShopping')}
-              </button>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button 
+                  onClick={() => {
+                    const shopSection = document.getElementById('explore-categories');
+                    shopSection?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="px-10 py-5 bg-secondary text-primary rounded-[32px] font-black text-xl shadow-2xl hover:scale-105 transition-all active:scale-95 uppercase tracking-tighter"
+                >
+                  {t('startShopping')}
+                </button>
+                <button 
+                  onClick={() => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    // Focus search bar if possible
+                    document.querySelector('input')?.focus();
+                  }}
+                  className="px-8 py-5 bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-[32px] font-black text-lg hover:bg-white/20 transition-all flex items-center justify-center gap-3"
+                >
+                  <span>✨</span> Ask AI Assistant
+                </button>
+              </div>
             ) : (
               <div className="flex gap-6 items-center bg-white/10 backdrop-blur-md p-4 rounded-3xl border border-white/10">
                 <div className="flex flex-col items-center gap-1">

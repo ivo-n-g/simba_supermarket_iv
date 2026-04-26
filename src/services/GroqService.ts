@@ -58,11 +58,20 @@ export const conversationalSearch = async (query: string, products: any[], langu
     const data = await response.json();
     const content = data.choices[0].message.content;
     
-    // Clean content in case of markdown blocks
-    const jsonStr = content.replace(/```json|```/g, '').trim();
-    return JSON.parse(jsonStr);
+    // Robust JSON extraction
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
+    }
+    
+    throw new Error('No JSON found in response');
   } catch (error) {
     console.error('Groq API Error:', error);
-    return { answer: 'Sorry, I couldn\'t process that right now.', productIds: [] };
+    return { 
+      answer: language === 'rw' ? 'Ntabwo nshoboye gushaka ibyo mwasabye ubu.' : 
+              language === 'fr' ? 'Je ne peux pas traiter votre demande pour le moment.' : 
+              'I couldn\'t process your search right now. Please try again.', 
+      productIds: [] 
+    };
   }
 };

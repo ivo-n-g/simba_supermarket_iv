@@ -12,7 +12,7 @@ import { StoreProvider, useStore } from './context/StoreContext';
 import { useLanguage } from './context/LanguageContext';
 
 function AppContent() {
-  const { user, logout } = useStore();
+  const { user, logout, customProducts } = useStore();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [aiResponse, setAiResponse] = useState<GroqResponse | null>(null);
@@ -21,30 +21,34 @@ function AppContent() {
   const [isBranchDashboardOpen, setIsBranchDashboardOpen] = useState(false);
   const { language, t } = useLanguage();
 
+  const allProducts = useMemo(() => {
+    return [...customProducts, ...productsData.products];
+  }, [customProducts]);
+
   // Extract unique categories and their counts
   const { categories, categoryCounts, totalCount } = useMemo(() => {
     const counts: Record<string, number> = {};
-    productsData.products.forEach(p => {
+    allProducts.forEach(p => {
       counts[p.category] = (counts[p.category] || 0) + 1;
     });
     
     return {
       categories: Object.keys(counts),
       categoryCounts: counts,
-      totalCount: productsData.products.length
+      totalCount: allProducts.length
     };
-  }, []);
+  }, [allProducts]);
 
   const filteredProducts = useMemo(() => {
     if (aiResponse) {
       if (aiResponse.productIds.length > 0) {
-        return productsData.products.filter(p => aiResponse.productIds.includes(p.id));
+        return allProducts.filter(p => aiResponse.productIds.includes(p.id));
       }
       return [];
     }
 
     const query = searchQuery.toLowerCase();
-    return productsData.products.filter(product => {
+    return allProducts.filter(product => {
       const p = product as any;
       const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
       
@@ -96,25 +100,27 @@ function AppContent() {
   // Representative-only view
   if (user?.role === 'representative') {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <header className="bg-primary p-4 flex justify-between items-center shadow-lg h-16">
-          <img src="/logo.png" alt="Simba" className="h-8 md:h-10 w-auto" />
-          <div className="flex items-center gap-4">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
+        <header className="bg-primary p-4 flex justify-between items-center shadow-2xl h-20 shrink-0 border-b border-white/5 px-4 md:px-12">
+          <img src="/logo.png" alt="Simba" className="h-10 md:h-12 w-auto" />
+          <div className="flex items-center gap-6">
             <div className="hidden md:block text-right">
-              <p className="text-white text-xs font-black uppercase tracking-widest">{user.name}</p>
-              <p className="text-secondary text-[10px] font-bold uppercase">{user.branch}</p>
+              <p className="text-white text-sm font-black uppercase tracking-widest">{user.name}</p>
+              <p className="text-secondary text-[11px] font-bold uppercase tracking-wider">{user.branch}</p>
             </div>
             <button 
               onClick={() => { if(window.confirm(t('logoutConfirm'))) logout(); }}
-              className="text-white font-black text-[10px] uppercase tracking-widest bg-white/10 px-4 py-2 rounded-xl hover:bg-white/20 transition-all border border-white/10"
+              className="text-white font-black text-xs uppercase tracking-widest bg-red-500/10 border border-red-500/20 px-6 py-3 rounded-2xl hover:bg-red-500 hover:text-white transition-all shadow-lg active:scale-95"
             >
               Logout
             </button>
           </div>
         </header>
-        <div className="relative h-[calc(100vh-4rem)]">
-           <BranchDashboard isOpen={true} onClose={() => {}} hideClose={true} />
-        </div>
+        <main className="flex-1 relative overflow-hidden flex items-center justify-center p-4 md:p-8">
+           <div className="w-full max-w-6xl h-full bg-white dark:bg-gray-900 rounded-[48px] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] overflow-hidden border-8 border-white/10">
+              <BranchDashboard isOpen={true} onClose={() => {}} hideClose={true} />
+           </div>
+        </main>
       </div>
     );
   }

@@ -12,10 +12,18 @@ interface BranchDashboardProps {
 type DashboardTab = 'orders' | 'inventory';
 
 const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hideClose }) => {
-  const { user, orders, updateOrderStatus, pickupBranch, updateStockAmount, getProductQuantity } = useStore();
+  const { user, orders, updateOrderStatus, pickupBranch, updateStockAmount, getProductQuantity, addNewProduct } = useStore();
   const { t, language } = useLanguage();
   const [activeTab, setActiveTab] = useState<DashboardTab>('orders');
   const [inventorySearch, setInventorySearch] = useState('');
+  const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
+  
+  // New Product Form State
+  const [newProductName, setNewProductName] = useState('');
+  const [newProductCategory, setNewProductCategory] = useState('Food Products');
+  const [newProductPrice, setNewProductPrice] = useState('');
+  const [newProductImage, setNewProductPriceImage] = useState('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=200');
+
   const selectedBranch = pickupBranch || user?.branch || 'Simba Supermarket Remera';
   const role = user?.repRole || 'staff';
 
@@ -28,6 +36,23 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
       return name.includes(query) || p.id.toString().includes(query);
     }).slice(0, 50); // Show first 50 results for performance
   }, [inventorySearch, language]);
+
+  const handleAddProduct = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newProductName || !newProductPrice) return;
+    
+    addNewProduct({
+      name: newProductName,
+      price: parseInt(newProductPrice),
+      image: newProductImage,
+      category: newProductCategory
+    });
+    
+    // Reset form
+    setNewProductName('');
+    setNewProductPrice('');
+    setIsAddProductModalOpen(false);
+  };
 
   if (!isOpen) return null;
 
@@ -164,17 +189,25 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                   <h3 className="font-black text-gray-800 dark:text-white uppercase tracking-tighter">Branch Inventory</h3>
                   <p className="text-xs text-gray-400 font-bold">Manage product availability for {selectedBranch}</p>
                 </div>
-                <div className="relative">
-                  <input 
-                    type="text" 
-                    placeholder="Search products..."
-                    value={inventorySearch}
-                    onChange={(e) => setInventorySearch(e.target.value)}
-                    className="pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-xl text-xs font-bold focus:ring-2 focus:ring-secondary outline-none w-full md:w-64 transition-all"
-                  />
-                  <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <input 
+                      type="text" 
+                      placeholder="Search products..."
+                      value={inventorySearch}
+                      onChange={(e) => setInventorySearch(e.target.value)}
+                      className="pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-xl text-xs font-bold focus:ring-2 focus:ring-secondary outline-none w-full md:w-64 transition-all"
+                    />
+                    <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  <button 
+                    onClick={() => setIsAddProductModalOpen(true)}
+                    className="px-4 py-2 bg-primary text-white rounded-xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-md flex items-center gap-2"
+                  >
+                    <span>+</span> New
+                  </button>
                 </div>
               </div>
               <div className="divide-y divide-gray-50 dark:divide-gray-700 max-h-[60vh] overflow-y-auto">
@@ -233,6 +266,78 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
           )}
         </div>
       </div>
+      </div>
+
+      {/* Add Product Modal */}
+      {isAddProductModalOpen && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+          <div className="bg-white dark:bg-gray-800 rounded-[40px] shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in duration-300 border-4 border-white/20">
+            <div className="p-8">
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="text-2xl font-black text-primary dark:text-secondary uppercase tracking-tight">Add New Product</h2>
+                <button onClick={() => setIsAddProductModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-2">✕</button>
+              </div>
+
+              <form onSubmit={handleAddProduct} className="space-y-6">
+                <div>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Product Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={newProductName}
+                    onChange={(e) => setNewProductName(e.target.value)}
+                    className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-3xl focus:ring-4 focus:ring-primary/10 outline-none transition-all font-bold dark:text-white"
+                    placeholder="e.g. Fresh Local Avocados"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Category</label>
+                    <select
+                      value={newProductCategory}
+                      onChange={(e) => setNewProductCategory(e.target.value)}
+                      className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-3xl focus:ring-4 focus:ring-primary/10 outline-none font-bold dark:text-white text-sm"
+                    >
+                      {['Food Products', 'Baby Products', 'Cleaning & Sanitary', 'Cosmetics & Personal Care', 'Kitchenware & Electronics'].map(c => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Price (RWF)</label>
+                    <input
+                      type="number"
+                      required
+                      value={newProductPrice}
+                      onChange={(e) => setNewProductPrice(e.target.value)}
+                      className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-3xl focus:ring-4 focus:ring-primary/10 outline-none font-bold dark:text-white"
+                      placeholder="5000"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Image URL (Optional)</label>
+                  <input
+                    type="text"
+                    value={newProductImage}
+                    onChange={(e) => setNewProductPriceImage(e.target.value)}
+                    className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-3xl focus:ring-4 focus:ring-primary/10 outline-none font-bold dark:text-white text-xs"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-secondary text-primary py-5 rounded-3xl font-black text-lg shadow-xl hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-tighter"
+                >
+                  Confirm & Add to Catalog
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -65,6 +65,8 @@ interface StoreContextType {
   updateStockAmount: (branch: string, productId: number, amount: number) => void;
   isProductInStock: (branch: string, productId: number) => boolean;
   getProductQuantity: (branch: string, productId: number) => number;
+  customProducts: Product[];
+  addNewProduct: (product: Omit<Product, 'id'>) => void;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -78,6 +80,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [pickupTime, setPickupTime] = useState<string>('');
   const [orders, setOrders] = useState<Order[]>([]);
   const [branchStock, setBranchStock] = useState<Record<string, Record<number, number>>>({});
+  const [customProducts, setCustomProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('simba_user_session');
@@ -90,6 +93,8 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     if (savedOrders) setOrders(JSON.parse(savedOrders));
     const savedStock = localStorage.getItem('simba_branch_stock');
     if (savedStock) setBranchStock(JSON.parse(savedStock));
+    const savedCustom = localStorage.getItem('simba_custom_products');
+    if (savedCustom) setCustomProducts(JSON.parse(savedCustom));
   }, []);
 
   useEffect(() => {
@@ -107,6 +112,18 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   useEffect(() => {
     localStorage.setItem('simba_branch_stock', JSON.stringify(branchStock));
   }, [branchStock]);
+
+  useEffect(() => {
+    localStorage.setItem('simba_custom_products', JSON.stringify(customProducts));
+  }, [customProducts]);
+
+  const addNewProduct = (product: Omit<Product, 'id'>) => {
+    const newProduct = {
+      ...product,
+      id: Math.floor(Math.random() * 90000) + 10000 // Generate a unique 5-digit ID
+    };
+    setCustomProducts(prev => [newProduct, ...prev]);
+  };
 
   const updateStockAmount = (branch: string, productId: number, amount: number) => {
     setBranchStock(prev => {
@@ -267,7 +284,8 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       addToCart, removeFromCart, updateQuantity, toggleWishlist, isInWishlist, checkout, 
       deliveryMethod, setDeliveryMethod, pickupBranch, setPickupBranch, 
       pickupTime, setPickupTime, cartCount, orders, updateOrderStatus,
-      branchStock, updateStockAmount, isProductInStock, getProductQuantity
+      branchStock, updateStockAmount, isProductInStock, getProductQuantity,
+      customProducts, addNewProduct
     }}>
       {children}
     </StoreContext.Provider>

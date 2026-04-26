@@ -69,6 +69,8 @@ interface StoreContextType {
   getProductQuantity: (branch: string, productId: number) => number;
   customProducts: Product[];
   addNewProduct: (product: Omit<Product, 'id'>) => void;
+  isBranchDashboardOpen: boolean;
+  setIsBranchDashboardOpen: (isOpen: boolean) => void;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -83,6 +85,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [orders, setOrders] = useState<Order[]>([]);
   const [branchStock, setBranchStock] = useState<Record<string, Record<number, number>>>({});
   const [customProducts, setCustomProducts] = useState<Product[]>([]);
+  const [isBranchDashboardOpen, setIsBranchDashboardOpen] = useState(false);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('simba_user_session');
@@ -287,7 +290,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       deliveryMethod, setDeliveryMethod, pickupBranch, setPickupBranch, 
       pickupTime, setPickupTime, cartCount, orders, updateOrderStatus,
       branchStock, updateStockAmount, isProductInStock, getProductQuantity,
-      customProducts, addNewProduct
+      customProducts, addNewProduct, isBranchDashboardOpen, setIsBranchDashboardOpen
     }}>
       {children}
     </StoreContext.Provider>

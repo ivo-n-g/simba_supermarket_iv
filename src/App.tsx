@@ -12,13 +12,12 @@ import { StoreProvider, useStore } from './context/StoreContext';
 import { useLanguage } from './context/LanguageContext';
 
 function AppContent() {
-  const { user, logout, customProducts } = useStore();
+  const { user, logout, customProducts, isBranchDashboardOpen, setIsBranchDashboardOpen } = useStore();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [aiResponse, setAiResponse] = useState<GroqResponse | null>(null);
   const [view, setView] = useState<'landing' | 'shop'>('landing');
   const [isContactOpen, setIsContactOpen] = useState(false);
-  const [isBranchDashboardOpen, setIsBranchDashboardOpen] = useState(false);
   const { language, t } = useLanguage();
 
   const allProducts = useMemo(() => {

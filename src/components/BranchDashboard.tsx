@@ -12,7 +12,7 @@ interface BranchDashboardProps {
 type DashboardTab = 'orders' | 'inventory';
 
 const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hideClose }) => {
-  const { user, orders, updateOrderStatus, pickupBranch, updateStockAmount, getProductQuantity, addNewProduct } = useStore();
+  const { user, logout, orders, updateOrderStatus, pickupBranch, updateStockAmount, getProductQuantity, addNewProduct } = useStore();
   const { t, language } = useLanguage();
   const [activeTab, setActiveTab] = useState<DashboardTab>('orders');
   const [inventorySearch, setInventorySearch] = useState('');
@@ -24,6 +24,17 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
   const [newProductUnit, setNewProductUnit] = useState('Pcs');
   const [newProductPrice, setNewProductPrice] = useState('');
   const [newProductImage, setNewProductImage] = useState('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=200');
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewProductImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const selectedBranch = pickupBranch || user?.branch || 'Simba Supermarket Remera';
   const role = user?.repRole || 'staff';
@@ -74,6 +85,15 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
               <span className={`px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] shadow-lg ${role === 'manager' ? 'bg-secondary text-primary' : 'bg-white/20 text-white border border-white/10'}`}>
                 {role === 'manager' ? 'Branch Manager' : 'Branch Staff'}
               </span>
+              <button 
+                onClick={() => { if(window.confirm(t('logoutConfirm') || 'Are you sure you want to logout?')) logout(); }}
+                className="p-3 bg-red-500/20 text-red-100 rounded-2xl hover:bg-red-500 hover:text-white transition-all border border-red-500/30 ml-2"
+                title="Logout"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+              </button>
               {!hideClose && (
                 <button onClick={onClose} className="p-3 bg-white/10 rounded-2xl hover:bg-white/20 transition-all">
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -334,13 +354,28 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Image URL (Optional)</label>
-                  <input
-                    type="text"
-                    value={newProductImage}
-                    onChange={(e) => setNewProductImage(e.target.value)}
-                    className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-3xl focus:ring-4 focus:ring-primary/10 outline-none font-bold dark:text-white text-xs"
-                  />
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Product Image</label>
+                  <div className="flex items-center gap-4">
+                    <div className="w-20 h-20 bg-gray-50 dark:bg-gray-700 border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-2xl overflow-hidden flex items-center justify-center shrink-0">
+                      {newProductImage ? (
+                        <img src={newProductImage} alt="Preview" className="w-full h-full object-contain p-2" />
+                      ) : (
+                        <span className="text-2xl text-gray-300">🖼️</span>
+                      )}
+                    </div>
+                    <label className="flex-1 cursor-pointer">
+                      <div className="w-full px-6 py-4 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-2xl text-center hover:bg-primary/10 transition-all">
+                        <span className="text-xs font-black text-primary dark:text-secondary uppercase tracking-widest">Choose File</span>
+                      </div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageUpload}
+                      />
+                    </label>
+                  </div>
+                  <p className="text-[9px] text-gray-400 font-bold mt-2 ml-1 italic">* Files are stored locally for the demo</p>
                 </div>
 
                 <button

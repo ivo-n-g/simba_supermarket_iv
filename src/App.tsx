@@ -12,7 +12,7 @@ import { StoreProvider, useStore } from './context/StoreContext';
 import { useLanguage } from './context/LanguageContext';
 
 function AppContent() {
-  const { user, logout, customProducts, isBranchDashboardOpen, setIsBranchDashboardOpen } = useStore();
+  const { user, customProducts, isBranchDashboardOpen, setIsBranchDashboardOpen } = useStore();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [aiResponse, setAiResponse] = useState<GroqResponse | null>(null);
@@ -99,27 +99,10 @@ function AppContent() {
   // Representative-only view
   if (user?.role === 'representative') {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
-        <header className="bg-primary p-4 flex justify-between items-center shadow-2xl h-20 shrink-0 border-b border-white/5 px-4 md:px-12">
-          <img src="/logo.png" alt="Simba" className="h-10 md:h-12 w-auto" />
-          <div className="flex items-center gap-6">
-            <div className="hidden md:block text-right">
-              <p className="text-white text-sm font-black uppercase tracking-widest">{user.name}</p>
-              <p className="text-secondary text-[11px] font-bold uppercase tracking-wider">{user.branch}</p>
-            </div>
-            <button 
-              onClick={() => { if(window.confirm(t('logoutConfirm'))) logout(); }}
-              className="text-white font-black text-xs uppercase tracking-widest bg-red-500/10 border border-red-500/20 px-6 py-3 rounded-2xl hover:bg-red-500 hover:text-white transition-all shadow-lg active:scale-95"
-            >
-              Logout
-            </button>
-          </div>
-        </header>
-        <main className="flex-1 relative overflow-hidden flex items-center justify-center p-4 md:p-8">
-           <div className="w-full max-w-6xl h-full bg-white dark:bg-gray-900 rounded-[48px] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] overflow-hidden border-8 border-white/10">
-              <BranchDashboard isOpen={true} onClose={() => {}} hideClose={true} />
-           </div>
-        </main>
+      <div className="min-h-screen bg-primary flex items-center justify-center p-0 md:p-6 lg:p-12 overflow-hidden">
+        <div className="w-full max-w-7xl h-full md:h-[90vh] bg-white dark:bg-gray-900 md:rounded-[60px] shadow-[0_64px_128px_-24px_rgba(0,0,0,0.5)] overflow-hidden relative border-[12px] border-white/5">
+           <BranchDashboard isOpen={true} onClose={() => {}} hideClose={true} />
+        </div>
       </div>
     );
   }

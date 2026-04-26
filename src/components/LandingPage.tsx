@@ -6,6 +6,12 @@ import productsData from '../../simba_products.json';
 interface LandingPageProps {
   categories: string[];
   onSelectCategory: (category: string) => void;
+  minPrice: number;
+  maxPrice: number;
+  setMinPrice: (price: number) => void;
+  setMaxPrice: (price: number) => void;
+  onlyInStock: boolean;
+  setOnlyInStock: (val: boolean) => void;
 }
 
 const categoryIcons: Record<string, string> = {
@@ -22,7 +28,16 @@ const categoryIcons: Record<string, string> = {
   'Sports & Wellness': '🏃',
 };
 
-const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ 
+  categories, 
+  onSelectCategory,
+  minPrice,
+  maxPrice,
+  setMinPrice,
+  setMaxPrice,
+  onlyInStock,
+  setOnlyInStock
+}) => {
   const { t, language } = useLanguage();
   const { pickupBranch, setPickupBranch, locations, closestBranchName } = useStore();
   
@@ -77,7 +92,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
 
       {/* Categories Section */}
       <section id="explore-categories" className="py-12 md:py-24 container mx-auto px-4 md:px-6">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-16 gap-6 text-center md:text-left">
+        <div className="flex flex-col md:flex-row md:items-start justify-between mb-8 md:mb-16 gap-8 text-center md:text-left">
           <div className="max-w-xl">
             <h2 className="text-3xl md:text-5xl font-black text-primary dark:text-secondary uppercase tracking-tighter mb-3">
               {t('exploreCategories')}
@@ -86,12 +101,56 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
               {t('exploreCategoriesDesc')}
             </p>
           </div>
-          <button 
-            onClick={() => onSelectCategory('All')}
-            className="text-primary dark:text-secondary font-black text-xs md:text-sm uppercase tracking-widest hover:underline whitespace-nowrap"
-          >
-            {t('viewAllProducts')} →
-          </button>
+          
+          {/* Quick Filters on Landing Page */}
+          <div className="bg-white dark:bg-gray-800/50 p-6 md:p-8 rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-700 flex flex-col gap-6 w-full md:w-auto shrink-0 min-w-[320px]">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-black text-primary dark:text-secondary uppercase tracking-[0.2em]">{t('filters')}</h3>
+              <div className="flex items-center gap-3">
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('onlyInStock')}</span>
+                <button 
+                  onClick={() => setOnlyInStock(!onlyInStock)}
+                  className={`w-10 h-5 rounded-full relative transition-all duration-300 ${onlyInStock ? 'bg-primary' : 'bg-gray-200 dark:bg-gray-700'}`}
+                >
+                  <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all duration-300 ${onlyInStock ? 'left-6' : 'left-1'}`}></div>
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex justify-between text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
+                <span>{t('priceRange')}</span>
+                <span className="text-primary dark:text-secondary">{maxPrice.toLocaleString()} RWF</span>
+              </div>
+              <div className="relative h-2 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center">
+                <input
+                  type="range"
+                  min="100"
+                  max="500000"
+                  step="100"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(Math.min(Number(e.target.value), maxPrice - 100))}
+                  className="absolute w-full h-1 bg-transparent appearance-none cursor-pointer accent-primary dark:accent-secondary z-20 pointer-events-auto"
+                />
+                <input
+                  type="range"
+                  min="100"
+                  max="500000"
+                  step="100"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(Math.max(Number(e.target.value), minPrice + 100))}
+                  className="absolute w-full h-1 bg-transparent appearance-none cursor-pointer accent-primary dark:accent-secondary z-10 pointer-events-auto"
+                />
+              </div>
+            </div>
+            
+            <button 
+              onClick={() => onSelectCategory('All')}
+              className="w-full py-4 bg-primary text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg"
+            >
+              {t('viewAllProducts')} →
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 md:gap-8">

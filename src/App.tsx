@@ -133,6 +133,12 @@ function AppContent() {
             <LandingPage 
               categories={categories} 
               onSelectCategory={handleSelectCategory} 
+              minPrice={minPrice}
+              maxPrice={maxPrice}
+              setMinPrice={setMinPrice}
+              setMaxPrice={setMaxPrice}
+              onlyInStock={onlyInStock}
+              setOnlyInStock={setOnlyInStock}
             />
           </>
         ) : (

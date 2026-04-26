@@ -8,7 +8,7 @@ interface CartDrawerProps {
   onClose: () => void;
 }
 
-type CheckoutStep = 'cart' | 'pickup-selection' | 'identity' | 'payment' | 'success';
+type CheckoutStep = 'cart' | 'pickup-selection' | 'pickup-time' | 'identity' | 'payment' | 'success';
 
 const branches = [
   { name: 'Simba Supermarket Gishushu', address: 'KG 8 Ave, Gishushu, Kigali' },
@@ -29,18 +29,21 @@ const branches = [
 const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const { 
     cart, removeFromCart, updateQuantity, checkout, 
-    deliveryMethod, setDeliveryMethod, pickupBranch, setPickupBranch, user 
+    deliveryMethod, setDeliveryMethod, pickupBranch, setPickupBranch, 
+    pickupTime, setPickupTime, user 
   } = useStore();
   
   const { t } = useLanguage();
   const [step, setStep] = useState<CheckoutStep>('cart');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'momo' | 'card' | 'cash'>('cash');
+  const [paymentMethod, setPaymentMethod] = useState<'momo' | 'card' | 'cash'>('momo');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [branchError, setBranchError] = useState(false);
+  const [timeError, setTimeError] = useState(false);
 
   const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
   const deliveryFee = deliveryMethod === 'delivery' ? 2000 : 0;
+  const deposit = deliveryMethod === 'pickup' ? 500 : 0;
   const totalPrice = subtotal + deliveryFee;
 
   const handleNextStep = () => {
@@ -53,6 +56,12 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
     } else if (step === 'pickup-selection') {
       if (!pickupBranch) {
         setBranchError(true);
+        return;
+      }
+      setStep('pickup-time');
+    } else if (step === 'pickup-time') {
+      if (!pickupTime) {
+        setTimeError(true);
         return;
       }
       proceedToIdentity();
@@ -82,8 +91,9 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
 
   const handleBack = () => {
     if (step === 'pickup-selection') setStep('cart');
+    else if (step === 'pickup-time') setStep('pickup-selection');
     else if (step === 'identity') {
-      if (deliveryMethod === 'pickup') setStep('pickup-selection');
+      if (deliveryMethod === 'pickup') setStep('pickup-time');
       else setStep('cart');
     }
     else if (step === 'payment') setStep('identity');
@@ -104,7 +114,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                   <h2 className="text-2xl font-black text-primary dark:text-secondary uppercase tracking-tight">{t('shoppingCart')}</h2>
                   {step !== 'success' && (
                     <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 uppercase tracking-widest font-black">
-                      {step === 'cart' ? 'Step 1 / 4' : step === 'pickup-selection' ? 'Step 2 / 4' : step === 'identity' ? 'Step 3 / 4' : 'Step 4 / 4'}
+                      {step === 'cart' ? 'Step 1 / 5' : step === 'pickup-selection' ? 'Step 2 / 5' : step === 'pickup-time' ? 'Step 3 / 5' : step === 'identity' ? 'Step 4 / 5' : 'Step 5 / 5'}
                     </p>
                   )}
                 </div>
@@ -186,6 +196,25 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                       ))}
                     </div>
                   </div>
+                ) : step === 'pickup-time' ? (
+                  <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                    <h3 className="text-sm font-black text-gray-800 dark:text-white uppercase tracking-[0.2em] ml-2">{t('pickupTime')}</h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      {['In 45 minutes', 'Today, 2:00 PM', 'Today, 4:00 PM', 'Today, 6:00 PM', 'Tomorrow, 10:00 AM', 'Tomorrow, 12:00 PM'].map((time) => (
+                        <button
+                          key={time}
+                          onClick={() => { setPickupTime(time); setTimeError(false); }}
+                          className={`p-4 rounded-2xl border-2 text-center transition-all ${
+                            pickupTime === time
+                              ? 'border-primary dark:border-secondary bg-primary/5 dark:bg-secondary/5'
+                              : 'border-gray-100 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50'
+                          }`}
+                        >
+                          <span className="text-[10px] font-black uppercase tracking-widest leading-tight">{time}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 ) : step === 'identity' ? (
                   <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                     <div className="bg-primary/5 dark:bg-primary/10 p-6 rounded-[32px] border border-primary/10 dark:border-primary/20 shadow-inner">
@@ -224,7 +253,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                     <h4 className="font-black text-gray-800 dark:text-white text-xs uppercase tracking-[0.2em] ml-2">{t('paymentMethod')}</h4>
                     <div className="space-y-4">
                       {[
-                        { id: 'momo', label: t('momo'), icon: '📱', disabled: true },
+                        { id: 'momo', label: t('momo'), icon: '📱', disabled: false },
                         { id: 'card', label: t('card'), icon: '💳', disabled: true },
                         { id: 'cash', label: t('cash'), icon: '💵', disabled: false }
                       ].map((m) => (
@@ -257,6 +286,17 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                         </button>
                       ))}
                     </div>
+                    {paymentMethod === 'momo' && deliveryMethod === 'pickup' && (
+                      <div className="p-5 bg-primary/5 dark:bg-secondary/5 rounded-[28px] border-2 border-dashed border-primary/20">
+                        <div className="flex items-center gap-3 mb-3">
+                          <span className="text-xl">💰</span>
+                          <span className="font-black text-primary dark:text-secondary uppercase tracking-tight">{t('momoDeposit')}</span>
+                        </div>
+                        <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-relaxed font-bold italic">
+                          {t('depositNote')}
+                        </p>
+                      </div>
+                    )}
                     {paymentMethod === 'cash' && (
                       <div className="p-5 bg-green-50 dark:bg-green-900/20 rounded-[28px] border border-green-100 dark:border-green-900/30">
                         <p className="text-[11px] text-green-700 dark:text-green-400 leading-relaxed font-bold italic">
@@ -296,11 +336,23 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                   </p>
                 )}
 
+                {timeError && step === 'pickup-time' && (
+                  <p className="text-[10px] text-red-500 font-black mb-4 ml-2 animate-shake flex items-center gap-2">
+                    <span>⚠️</span> Please select a pick-up time.
+                  </p>
+                )}
+
                 <div className="space-y-3 mb-8 bg-white dark:bg-gray-800/50 p-6 rounded-[32px] border border-gray-100 dark:border-gray-700 shadow-sm">
                   <div className="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-widest">
                     <p>{t('subtotal')}</p>
                     <p className="text-gray-900 dark:text-white">{subtotal.toLocaleString()} RWF</p>
                   </div>
+                  {deposit > 0 && paymentMethod === 'momo' && step === 'payment' && (
+                    <div className="flex justify-between text-xs font-bold text-primary dark:text-secondary uppercase tracking-widest pt-2 border-t border-gray-50 dark:border-gray-700">
+                      <p>{t('momoDeposit')}</p>
+                      <p>{deposit.toLocaleString()} RWF</p>
+                    </div>
+                  )}
                   <div className="flex justify-between text-2xl font-black text-primary dark:text-secondary pt-4 border-t-2 border-gray-50 dark:border-gray-700 tracking-tighter">
                     <p>TOTAL</p>
                     <p>{totalPrice.toLocaleString()} RWF</p>
@@ -327,7 +379,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                         {t('processing')}
                       </div>
                     ) : (
-                      step === 'payment' ? t('completePayment') : t('checkout')
+                      step === 'payment' ? (paymentMethod === 'momo' && deliveryMethod === 'pickup' ? `Pay ${deposit} RWF Deposit` : t('completePayment')) : t('checkout')
                     )}
                   </button>
                 </div>

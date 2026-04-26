@@ -106,8 +106,26 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+      {/* Trust Bar */}
+      <div className="bg-primary/5 dark:bg-white/5 py-4 overflow-hidden border-b border-gray-100 dark:border-gray-800">
+        <div className="container mx-auto px-6 flex justify-around items-center gap-8 whitespace-nowrap animate-pulse">
+          <div className="flex items-center gap-2">
+            <span className="text-primary dark:text-secondary font-black text-lg">{productsData.products.length}+</span>
+            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Premium Products</span>
+          </div>
+          <div className="hidden md:flex items-center gap-2">
+            <span className="text-primary dark:text-secondary font-black text-lg">{locations.length}</span>
+            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Kigali Branches</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-primary dark:text-secondary font-black text-lg">4.9/5</span>
+            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Customer Rating</span>
+          </div>
+        </div>
+      </div>
+
       {/* Categories Section */}
-      <section className="py-12 md:py-24 container mx-auto px-4 md:px-6">
+      <section id="explore-categories" className="py-12 md:py-24 container mx-auto px-4 md:px-6">
         <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-10 gap-4 text-center md:text-left">
           <div className="max-w-xl">
             <h2 className="text-3xl md:text-5xl font-black text-primary dark:text-secondary uppercase tracking-tighter mb-3">
@@ -215,7 +233,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
               <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 p-4 md:p-6 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-2xl md:rounded-3xl shadow-xl md:max-w-xs border border-white/20 animate-in fade-in slide-in-from-left-4">
                 <p className="text-[10px] font-black text-primary dark:text-secondary uppercase tracking-[0.2em] mb-1">Selected Branch</p>
                 <p className="text-xs md:text-sm font-bold text-gray-800 dark:text-white">{selectedLoc.name}</p>
-                <p className="text-[9px] text-gray-400 font-bold mt-1 uppercase leading-tight mb-4">{selectedLoc.address}</p>
+                <p className="text-[9px] text-gray-400 font-bold mt-1 uppercase leading-tight mb-2">{selectedLoc.address}</p>
+                
+                {/* Branch Reviews Mock */}
+                <div className="flex items-center gap-1 mb-4">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <span key={s} className="text-yellow-400 text-xs">★</span>
+                  ))}
+                  <span className="text-[10px] text-gray-400 font-bold ml-1">(24 {t('reviews')})</span>
+                </div>
 
                 <a 
                   href={`https://www.google.com/maps/dir/?api=1&destination=${selectedLoc.lat},${selectedLoc.lng}`}

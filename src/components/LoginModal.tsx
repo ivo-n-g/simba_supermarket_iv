@@ -9,7 +9,7 @@ interface LoginModalProps {
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
-  const { login, signup, handleGoogleSuccess } = useStore();
+  const { login, signup, forgotPassword, handleGoogleSuccess } = useStore();
   const { t } = useLanguage();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -17,8 +17,27 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [fullName, setFullName] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [isResetSent, setIsResetSent] = useState(false);
 
   if (!isOpen) return null;
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+    const exists = await forgotPassword(email);
+    if (exists) {
+      setIsResetSent(true);
+      setTimeout(() => {
+        setIsForgotPassword(false);
+        setIsResetSent(false);
+      }, 3000);
+    } else {
+      setError('No account found with this email.');
+    }
+    setIsLoading(false);
+  };
 
   const validateForm = () => {
     if (!email.includes('@')) {
@@ -72,7 +91,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-primary dark:text-secondary">
-              {isLogin ? t('login') : t('signUp')} to Simba
+              {isForgotPassword ? t('forgotPassword') : (isLogin ? t('login') : t('signUp'))} to Simba
             </h2>
             <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -90,89 +109,149 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {!isLogin && (
+          {isResetSent ? (
+            <div className="py-10 text-center space-y-4 animate-in fade-in zoom-in">
+              <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto text-green-600">
+                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <p className="font-bold text-gray-900 dark:text-white">{t('resetLinkSent')}</p>
+            </div>
+          ) : isForgotPassword ? (
+            <form onSubmit={handleForgotPassword} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('fullName')}</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('emailAddress')}</label>
                 <input
-                  type="text"
+                  type="email"
                   required
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 dark:text-white"
-                  placeholder={t('fullName')}
+                  placeholder={t('emailAddress')}
                 />
               </div>
-            )}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('emailAddress')}</label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 dark:text-white"
-                placeholder={t('emailAddress')}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('password')}</label>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 dark:text-white"
-                placeholder="••••••••"
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-opacity-90 transition-all shadow-lg active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-2"
-            >
-              {isLoading && (
-                <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-opacity-90 transition-all shadow-lg flex justify-center items-center gap-2"
+              >
+                {isLoading && (
+                  <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                )}
+                {t('sendMessage')}
+              </button>
+              <button 
+                type="button"
+                onClick={() => setIsForgotPassword(false)}
+                className="w-full text-sm font-bold text-gray-500 hover:text-primary transition-colors"
+              >
+                Back to {t('login')}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {!isLogin && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('fullName')}</label>
+                  <input
+                    type="text"
+                    required
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 dark:text-white"
+                    placeholder={t('fullName')}
+                  />
+                </div>
               )}
-              {isLogin ? t('signIn') : t('createAccount')}
-            </button>
-          </form>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('emailAddress')}</label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 dark:text-white"
+                  placeholder={t('emailAddress')}
+                />
+              </div>
+              <div>
+                <div className="flex justify-between items-center mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('password')}</label>
+                  {isLogin && (
+                    <button 
+                      type="button"
+                      onClick={() => setIsForgotPassword(true)}
+                      className="text-xs font-bold text-secondary hover:underline"
+                    >
+                      {t('forgotPassword')}
+                    </button>
+                  )}
+                </div>
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 dark:text-white"
+                  placeholder="••••••••"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-opacity-90 transition-all shadow-lg active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-2"
+              >
+                {isLoading && (
+                  <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                )}
+                {isLogin ? t('signIn') : t('createAccount')}
+              </button>
+            </form>
+          )}
 
-          <div className="relative my-8">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-gray-200 dark:border-gray-700"></span>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 uppercase">{t('orContinueWith')}</span>
-            </div>
-          </div>
+          {!isForgotPassword && (
+            <>
+              <div className="relative my-8">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-gray-200 dark:border-gray-700"></span>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 uppercase">{t('orContinueWith')}</span>
+                </div>
+              </div>
 
-          <div className="flex justify-center w-full">
-            <GoogleLogin
-              onSuccess={(res) => {
-                handleGoogleSuccess(res);
-                onClose();
-              }}
-              onError={() => setError('Google Login Failed')}
-              useOneTap
-              theme="filled_blue"
-              shape="pill"
-              width="350px"
-            />
-          </div>
+              <div className="flex justify-center w-full">
+                <GoogleLogin
+                  onSuccess={(res) => {
+                    handleGoogleSuccess(res);
+                    onClose();
+                  }}
+                  onError={() => setError('Google Login Failed')}
+                  useOneTap
+                  theme="filled_blue"
+                  shape="pill"
+                  width="350px"
+                />
+              </div>
 
-          <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-8">
-            {isLogin ? t('dontHaveAccount') : t('alreadyHaveAccount')}{' '}
-            <button 
-              onClick={() => { setIsLogin(!isLogin); setError(''); }}
-              className="text-secondary font-bold hover:underline"
-            >
-              {isLogin ? t('signUp') : t('login')}
-            </button>
-          </p>
+              <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-8">
+                {isLogin ? t('dontHaveAccount') : t('alreadyHaveAccount')}{' '}
+                <button 
+                  onClick={() => { setIsLogin(!isLogin); setError(''); }}
+                  className="text-secondary font-bold hover:underline"
+                >
+                  {isLogin ? t('signUp') : t('login')}
+                </button>
+              </p>
+            </>
+          )}
         </div>
       </div>
     </div>

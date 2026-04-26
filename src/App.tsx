@@ -6,6 +6,7 @@ import CategorySidebar from './components/CategorySidebar';
 import ProductGrid from './components/ProductGrid';
 import LandingPage from './components/LandingPage';
 import ContactModal from './components/ContactModal';
+import BranchDashboard from './components/BranchDashboard';
 import { StoreProvider } from './context/StoreContext';
 import { useLanguage } from './context/LanguageContext';
 
@@ -14,6 +15,7 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [view, setView] = useState<'landing' | 'shop'>('landing');
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isBranchDashboardOpen, setIsBranchDashboardOpen] = useState(false);
   const { language, t } = useLanguage();
 
   // Extract unique categories and their counts
@@ -75,7 +77,11 @@ function App() {
   return (
     <StoreProvider>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-        <Header onSearch={handleSearch} onLogoClick={resetToLanding} />
+        <Header 
+          onSearch={handleSearch} 
+          onLogoClick={resetToLanding} 
+          onOpenBranchDashboard={() => setIsBranchDashboardOpen(true)}
+        />
         
         <main>
           {view === 'landing' ? (
@@ -153,6 +159,7 @@ function App() {
         </footer>
 
         <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
+        <BranchDashboard isOpen={isBranchDashboardOpen} onClose={() => setIsBranchDashboardOpen(false)} />
       </div>
     </StoreProvider>
   );

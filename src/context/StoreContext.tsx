@@ -22,12 +22,25 @@ interface User {
   password?: string;
 }
 
+interface Order {
+  id: string;
+  customerName: string;
+  items: CartItem[];
+  total: number;
+  branch: string;
+  pickupTime: string;
+  status: 'pending' | 'assigned' | 'ready' | 'completed';
+  assignedStaff?: string;
+  timestamp: number;
+}
+
 interface StoreContextType {
   user: User | null;
   cart: CartItem[];
   wishlist: Product[];
   login: (email: string, password?: string) => Promise<boolean>;
   signup: (name: string, email: string, password?: string) => Promise<boolean>;
+  forgotPassword: (email: string) => Promise<boolean>;
   handleGoogleSuccess: (credentialResponse: any) => void;
   logout: () => void;
   addToCart: (product: { id: number; name: string; price: number; image: string }, quantity?: number) => void;
@@ -40,7 +53,11 @@ interface StoreContextType {
   setDeliveryMethod: (method: 'pickup' | 'delivery') => void;
   pickupBranch: string;
   setPickupBranch: (branch: string) => void;
+  pickupTime: string;
+  setPickupTime: (time: string) => void;
   cartCount: number;
+  orders: Order[];
+  updateOrderStatus: (orderId: string, status: Order['status'], staff?: string) => void;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -51,6 +68,8 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [wishlist, setWishlist] = useState<Product[]>([]);
   const [deliveryMethod, setDeliveryMethod] = useState<'pickup' | 'delivery'>('pickup');
   const [pickupBranch, setPickupBranch] = useState<string>('');
+  const [pickupTime, setPickupTime] = useState<string>('');
+  const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('simba_user_session');
@@ -59,6 +78,8 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     if (savedCart) setCart(JSON.parse(savedCart));
     const savedWishlist = localStorage.getItem('simba_wishlist');
     if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
+    const savedOrders = localStorage.getItem('simba_orders');
+    if (savedOrders) setOrders(JSON.parse(savedOrders));
   }, []);
 
   useEffect(() => {
@@ -68,6 +89,10 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   useEffect(() => {
     localStorage.setItem('simba_wishlist', JSON.stringify(wishlist));
   }, [wishlist]);
+
+  useEffect(() => {
+    localStorage.setItem('simba_orders', JSON.stringify(orders));
+  }, [orders]);
 
   const login = async (email: string, password?: string): Promise<boolean> => {
     const users: User[] = JSON.parse(localStorage.getItem('simba_users_db') || '[]');
@@ -92,6 +117,11 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setUser(sessionUser);
     localStorage.setItem('simba_user_session', JSON.stringify(sessionUser));
     return true;
+  };
+
+  const forgotPassword = async (email: string): Promise<boolean> => {
+    const users: User[] = JSON.parse(localStorage.getItem('simba_users_db') || '[]');
+    return users.some(u => u.email === email);
   };
 
   const handleGoogleSuccess = (credentialResponse: any) => {
@@ -152,26 +182,48 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const isInWishlist = (productId: number) => wishlist.some(p => p.id === productId);
 
   const checkout = async () => {
+    const newOrder: Order = {
+      id: Math.random().toString(36).substr(2, 9),
+      customerName: user?.name || 'Guest',
+      items: [...cart],
+      total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0) + (deliveryMethod === 'delivery' ? 2000 : 0),
+      branch: pickupBranch || 'Remera',
+      pickupTime: pickupTime || 'As soon as possible',
+      status: 'pending',
+      timestamp: Date.now()
+    };
+
     return new Promise<void>((resolve) => {
       setTimeout(() => {
+        setOrders(prev => [newOrder, ...prev]);
         setCart([]);
         resolve();
-      }, 1000);
+      }, 1500);
     });
+  };
+
+  const updateOrderStatus = (orderId: string, status: Order['status'], staff?: string) => {
+    setOrders(prev => prev.map(order => 
+      order.id === orderId 
+        ? { ...order, status, assignedStaff: staff || order.assignedStaff } 
+        : order
+    ));
   };
 
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <StoreContext.Provider value={{ 
-      user, cart, wishlist, login, signup, handleGoogleSuccess, logout, 
+      user, cart, wishlist, login, signup, forgotPassword, handleGoogleSuccess, logout, 
       addToCart, removeFromCart, updateQuantity, toggleWishlist, isInWishlist, checkout, 
-      deliveryMethod, setDeliveryMethod, pickupBranch, setPickupBranch, cartCount 
+      deliveryMethod, setDeliveryMethod, pickupBranch, setPickupBranch, 
+      pickupTime, setPickupTime, cartCount, orders, updateOrderStatus
     }}>
       {children}
     </StoreContext.Provider>
   );
 };
+
 
 export const useStore = () => {
   const context = useContext(StoreContext);

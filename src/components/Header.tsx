@@ -10,9 +10,10 @@ import ProfileDashboard from './ProfileDashboard';
 interface HeaderProps {
   onSearch: (query: string) => void;
   onLogoClick: () => void;
+  onOpenBranchDashboard: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick }) => {
+const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDashboard }) => {
   const [inputValue, setInputValue] = React.useState('');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
@@ -219,7 +220,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick }) => {
 
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
       <CartDrawer isOpen={isCartDrawerOpen} onClose={() => setIsCartDrawerOpen(false)} />
-      <ProfileDashboard isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
+      <ProfileDashboard 
+        isOpen={isProfileOpen} 
+        onClose={() => setIsProfileOpen(false)} 
+        onOpenBranchDashboard={onOpenBranchDashboard}
+      />
     </>
   );
 };

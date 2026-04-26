@@ -5,11 +5,12 @@ import { useLanguage } from '../context/LanguageContext';
 interface ProfileDashboardProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenBranchDashboard: () => void;
 }
 
-type DashboardTab = 'profile' | 'wishlist' | 'orders';
+type DashboardTab = 'profile' | 'wishlist' | 'orders' | 'branch';
 
-const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ isOpen, onClose }) => {
+const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ isOpen, onClose, onOpenBranchDashboard }) => {
   const { user, logout, wishlist, toggleWishlist, addToCart } = useStore();
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<DashboardTab>('profile');
@@ -42,11 +43,19 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ isOpen, onClose }) 
             {[
               { id: 'profile', label: t('profile'), icon: '👤' },
               { id: 'wishlist', label: t('wishlist'), icon: '❤️' },
-              { id: 'orders', label: t('myOrders'), icon: '📦' }
+              { id: 'orders', label: t('myOrders'), icon: '📦' },
+              { id: 'branch', label: t('branchDashboard'), icon: '🏪' }
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as DashboardTab)}
+                onClick={() => {
+                  if (tab.id === 'branch') {
+                    onOpenBranchDashboard();
+                    onClose();
+                  } else {
+                    setActiveTab(tab.id as DashboardTab);
+                  }
+                }}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all ${
                   activeTab === tab.id 
                     ? 'bg-primary text-white shadow-md shadow-primary/20' 

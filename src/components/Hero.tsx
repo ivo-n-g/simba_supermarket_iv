@@ -39,6 +39,37 @@ const Hero: React.FC = () => {
           <p className="text-lg md:text-3xl text-gray-200 font-bold mb-8 md:mb-10 opacity-95 max-w-lg leading-tight italic drop-shadow-lg">
             "{t('slogan')}"
           </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            {user ? (
+              <button 
+                onClick={() => {
+                  const shopSection = document.getElementById('explore-categories');
+                  shopSection?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="px-10 py-5 bg-secondary text-primary rounded-[32px] font-black text-xl shadow-2xl hover:scale-105 transition-all active:scale-95 uppercase tracking-tighter"
+              >
+                {t('startShopping')}
+              </button>
+            ) : (
+              <div className="flex gap-6 items-center bg-white/10 backdrop-blur-md p-4 rounded-3xl border border-white/10">
+                <div className="flex flex-col items-center gap-1">
+                  <span className="text-2xl">⚡</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">{t('fastDelivery')}</span>
+                </div>
+                <div className="w-px h-8 bg-white/20"></div>
+                <div className="flex flex-col items-center gap-1">
+                  <span className="text-2xl">🍃</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">{t('freshProducts')}</span>
+                </div>
+                <div className="w-px h-8 bg-white/20"></div>
+                <div className="flex flex-col items-center gap-1">
+                  <span className="text-2xl">📱</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">{t('momoPayment')}</span>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Action Card - Optimized for Mobile */}

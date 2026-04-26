@@ -398,6 +398,91 @@ const translations: Translations = {
     en: 'How can we help you?',
     rw: 'Ni gute twagufasha?',
     fr: 'Comment pouvons-nous vous aider ?',
+  },
+  pickupTime: {
+    en: 'Pick-up Time',
+    rw: 'Igihe cyo gufatira',
+    fr: 'Heure de retrait',
+  },
+  momoDeposit: {
+    en: 'Momo Deposit',
+    rw: 'Ingwate ya Momo',
+    fr: 'Dépôt Momo',
+  },
+  depositNote: {
+    en: 'A non-refundable deposit of 500 RWF is required to confirm your pick-up order.',
+    rw: 'Ingwate y-amafaranga 500 adasubizwa irakenewe kugira ngo wemeze ko uzafata ibyo waguze.',
+    fr: 'Un dépôt non remboursable de 500 RWF est requis pour confirmer votre commande de retrait.',
+  },
+  branchDashboard: {
+    en: 'Branch Dashboard',
+    rw: 'Imicungire y-ishami',
+    fr: 'Tableau de bord de la succursale',
+  },
+  manager: {
+    en: 'Manager',
+    rw: 'Umuyobozi',
+    fr: 'Directeur',
+  },
+  staff: {
+    en: 'Staff',
+    rw: 'Umukozi',
+    fr: 'Personnel',
+  },
+  assign: {
+    en: 'Assign',
+    rw: 'Ohereza',
+    fr: 'Assigner',
+  },
+  markReady: {
+    en: 'Mark Ready',
+    rw: 'Emeza ko byabonetse',
+    fr: 'Marquer comme prêt',
+  },
+  stock: {
+    en: 'Stock',
+    rw: 'Ibiherereye mu bubiko',
+    fr: 'Stock',
+  },
+  reviews: {
+    en: 'Reviews',
+    rw: 'Ibitekerezo',
+    fr: 'Avis',
+  },
+  rateExperience: {
+    en: 'Rate your experience',
+    rw: 'Vuga uko byagenze',
+    fr: 'Évaluez votre expérience',
+  },
+  startShopping: {
+    en: 'Start Shopping',
+    rw: 'Tangira guhaha',
+    fr: 'Commencer les achats',
+  },
+  freshProducts: {
+    en: 'Fresh products',
+    rw: 'Ibicuruzwa bishya',
+    fr: 'Produits frais',
+  },
+  fastDelivery: {
+    en: 'Fast delivery',
+    rw: 'Kugezwaho vuba',
+    fr: 'Livraison rapide',
+  },
+  momoPayment: {
+    en: 'MoMo payment',
+    rw: 'Kwishyura na MoMo',
+    fr: 'Paiement MoMo',
+  },
+  forgotPassword: {
+    en: 'Forgot Password?',
+    rw: 'Wibagiwe ijambo ry-ibanga?',
+    fr: 'Mot de passe oublié ?',
+  },
+  resetLinkSent: {
+    en: 'Reset link sent to your email!',
+    rw: 'Ihuza ryo guhindura ijambo ry-ibanga ryoherejwe kuri imeyili yawe!',
+    fr: 'Lien de réinitialisation envoyé à votre e-mail !',
   }
 };
 

@@ -6,6 +6,7 @@ import CategorySidebar from './components/CategorySidebar';
 import ProductGrid from './components/ProductGrid';
 import LandingPage from './components/LandingPage';
 import ContactModal from './components/ContactModal';
+import InfoModal from './components/InfoModal';
 import BranchDashboard from './components/BranchDashboard';
 import { GroqResponse } from './services/GroqService';
 import { StoreProvider, useStore } from './context/StoreContext';
@@ -21,6 +22,11 @@ function AppContent() {
   const [aiResponse, setAiResponse] = useState<GroqResponse | null>(null);
   const [view, setView] = useState<'landing' | 'shop'>('landing');
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [infoModal, setInfoModal] = useState<{ isOpen: boolean; title: string; content: string }>({
+    isOpen: false,
+    title: '',
+    content: ''
+  });
   const { language, t } = useLanguage();
 
   const allProducts = useMemo(() => {
@@ -207,8 +213,18 @@ function AppContent() {
             <div>
               <h4 className="font-black mb-6 uppercase text-xs tracking-[0.3em] opacity-40">{t('discover')}</h4>
               <ul className="space-y-3 text-sm font-bold">
-                <li className="hover:text-secondary cursor-pointer transition-colors">{t('aboutUs')}</li>
-                <li className="hover:text-secondary cursor-pointer transition-colors">{t('careers')}</li>
+                <li 
+                  className="hover:text-secondary cursor-pointer transition-colors"
+                  onClick={() => setInfoModal({ isOpen: true, title: t('aboutUs'), content: t('aboutUsContent') })}
+                >
+                  {t('aboutUs')}
+                </li>
+                <li 
+                  className="hover:text-secondary cursor-pointer transition-colors"
+                  onClick={() => setInfoModal({ isOpen: true, title: t('careers'), content: t('careersContent') })}
+                >
+                  {t('careers')}
+                </li>
                 <li 
                   className="hover:text-secondary cursor-pointer transition-colors font-bold"
                   onClick={() => setIsContactOpen(true)}
@@ -220,9 +236,24 @@ function AppContent() {
             <div>
               <h4 className="font-black mb-6 uppercase text-xs tracking-[0.3em] opacity-40">{t('help')}</h4>
               <ul className="space-y-3 text-sm font-bold">
-                <li className="hover:text-secondary cursor-pointer transition-colors">{t('faq')}</li>
-                <li className="hover:text-secondary cursor-pointer transition-colors">{t('privacyPolicy')}</li>
-                <li className="hover:text-secondary cursor-pointer transition-colors">{t('terms')}</li>
+                <li 
+                  className="hover:text-secondary cursor-pointer transition-colors"
+                  onClick={() => setInfoModal({ isOpen: true, title: t('faq'), content: t('faqContent') })}
+                >
+                  {t('faq')}
+                </li>
+                <li 
+                  className="hover:text-secondary cursor-pointer transition-colors"
+                  onClick={() => setInfoModal({ isOpen: true, title: t('privacyPolicy'), content: t('privacyPolicyContent') })}
+                >
+                  {t('privacyPolicy')}
+                </li>
+                <li 
+                  className="hover:text-secondary cursor-pointer transition-colors"
+                  onClick={() => setInfoModal({ isOpen: true, title: t('terms'), content: t('termsContent') })}
+                >
+                  {t('terms')}
+                </li>
               </ul>
             </div>
           </div>
@@ -239,6 +270,12 @@ function AppContent() {
       </footer>
 
       <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
+      <InfoModal 
+        isOpen={infoModal.isOpen} 
+        onClose={() => setInfoModal({ ...infoModal, isOpen: false })}
+        title={infoModal.title}
+        content={infoModal.content}
+      />
       <BranchDashboard isOpen={isBranchDashboardOpen} onClose={() => setIsBranchDashboardOpen(false)} />
     </div>
   );

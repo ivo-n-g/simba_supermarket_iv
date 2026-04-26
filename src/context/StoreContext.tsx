@@ -322,6 +322,12 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     return new Promise<void>((resolve) => {
       setTimeout(() => {
+        // Decrease stock per branch
+        cart.forEach(item => {
+          const currentQty = getProductQuantity(newOrder.branch, item.id);
+          updateStockAmount(newOrder.branch, item.id, Math.max(0, currentQty - item.quantity));
+        });
+
         setOrders(prev => [newOrder, ...prev]);
         setCart([]);
         resolve();

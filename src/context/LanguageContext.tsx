@@ -863,6 +863,31 @@ const translations: Translations = {
     en: 'All rights reserved.',
     rw: 'Uburenganzira bwose burabitswe.',
     fr: 'Tous droits réservés.',
+  },
+  aboutUsContent: {
+    en: 'Simba Supermarket is Rwanda\'s leading retail chain, dedicated to providing fresh products and premium service to our community since 1990.',
+    rw: 'Simba Supermarket niyo muryango wa mbere w-ubucuruzi mu Rwanda, wiyemeje kugeza ku baturage ibicuruzwa bishya n-ubufasha buhebuje kuva mu 1990.',
+    fr: 'Simba Supermarché est la principale chaîne de vente au détail du Rwanda, dédiée à la fourniture de produits frais et d\'un service premium à notre communauté depuis 1990.',
+  },
+  careersContent: {
+    en: 'Join the Simba family! We are always looking for passionate individuals to join our branch teams and delivery network.',
+    rw: 'Injira mu muryango wa Simba! Turahora dushaka abantu bafite ishyaka ryo gukora mu makipe y-amashami yacu no mu bageza ibicuruzwa ku bakiriya.',
+    fr: 'Rejoignez la famille Simba ! Nous sommes toujours à la recherche de personnes passionnées pour rejoindre nos équipes en succursale et notre réseau de livraison.',
+  },
+  faqContent: {
+    en: 'Find answers to common questions about orders, payments, and branch locations.',
+    rw: 'Sanga ibisubizo by-ibibazo bikunze kubazwa ku bijyanye na komande, ubwishyu, n-aho amashami yacu aherereye.',
+    fr: 'Trouvez des réponses aux questions courantes sur les commandes, les paiements et l\'emplacement des succursales.',
+  },
+  privacyPolicyContent: {
+    en: 'Your privacy is important to us. We protect your data and ensure safe transactions across all Simba platforms.',
+    rw: 'Uburenganzira bwawe ni ingenzi kuri twe. Turinda amakuru yawe kandi tukizera ko ubwishyu bwose bukorwa mu mutekano kuri Simba.',
+    fr: 'Votre vie privée est importante pour nous. Nous protégeons vos données et assurons des transactions sécurisées sur toutes les plateformes Simba.',
+  },
+  termsContent: {
+    en: 'By using our service, you agree to Simba Supermarket\'s terms and conditions regarding orders and deliveries.',
+    rw: 'Iyo ukoresheje serivisi zacu, uba wemeye amategeko n-amabwiriza ya Simba Supermarket yerekeye komande no kugeza ibintu ku bakiriya.',
+    fr: 'En utilisant notre service, vous acceptez les termes et conditions de Simba Supermarché concernant les commandes et les livraisons.',
   }
 };
 

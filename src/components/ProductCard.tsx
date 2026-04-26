@@ -8,9 +8,10 @@ interface ProductCardProps {
   price: number;
   image: string;
   unit: string;
+  category: string;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit, category }) => {
   const { addToCart, toggleWishlist, isInWishlist, pickupBranch, isProductInStock, getProductQuantity } = useStore();
   const { t } = useLanguage();
   const [localQuantity, setLocalQuantity] = useState(1);
@@ -31,7 +32,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit 
   const handleToggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    toggleWishlist({ id, name, price, image });
+    toggleWishlist({ id, name, price, image, category, unit });
   };
 
   const increment = (e: React.MouseEvent) => {

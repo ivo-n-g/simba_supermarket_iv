@@ -13,6 +13,8 @@ interface Product {
   name: string;
   price: number;
   image: string;
+  category: string;
+  unit: string;
 }
 
 interface User {
@@ -118,7 +120,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   }, [customProducts]);
 
   const addNewProduct = (product: Omit<Product, 'id'>) => {
-    const newProduct = {
+    const newProduct: Product = {
       ...product,
       id: Math.floor(Math.random() * 90000) + 10000 // Generate a unique 5-digit ID
     };

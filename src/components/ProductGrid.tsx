@@ -46,6 +46,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products, selectedCategory, s
             price={product.price}
             image={product.image}
             unit={product.unit}
+            category={product.category}
           />
         ))}
       </div>

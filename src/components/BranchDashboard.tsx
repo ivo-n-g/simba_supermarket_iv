@@ -21,6 +21,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
   // New Product Form State
   const [newProductName, setNewProductName] = useState('');
   const [newProductCategory, setNewProductCategory] = useState('Food Products');
+  const [newProductUnit, setNewProductUnit] = useState('Pcs');
   const [newProductPrice, setNewProductPrice] = useState('');
   const [newProductImage, setNewProductImage] = useState('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=200');
 
@@ -45,12 +46,14 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
       name: newProductName,
       price: parseInt(newProductPrice),
       image: newProductImage,
-      category: newProductCategory
+      category: newProductCategory,
+      unit: newProductUnit
     });
     
     // Reset form
     setNewProductName('');
     setNewProductPrice('');
+    setNewProductUnit('Pcs');
     setIsAddProductModalOpen(false);
   };
 
@@ -303,6 +306,20 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                       ))}
                     </select>
                   </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Unit</label>
+                    <input
+                      type="text"
+                      required
+                      value={newProductUnit}
+                      onChange={(e) => setNewProductUnit(e.target.value)}
+                      className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-3xl focus:ring-4 focus:ring-primary/10 outline-none font-bold dark:text-white text-sm"
+                      placeholder="e.g. Pcs, Kg, L"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4">
                   <div>
                     <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Price (RWF)</label>
                     <input

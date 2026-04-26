@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
+import productsData from '../../simba_products.json';
 
 interface BranchDashboardProps {
   isOpen: boolean;
@@ -11,13 +12,22 @@ type DashboardTab = 'orders' | 'inventory';
 
 const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose }) => {
   const { orders, updateOrderStatus, pickupBranch } = useStore();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [role, setRole] = useState<'manager' | 'staff'>('manager');
   const [activeTab, setActiveTab] = useState<DashboardTab>('orders');
+  const [inventorySearch, setInventorySearch] = useState('');
   const selectedBranch = pickupBranch || 'Simba Supermarket Remera';
   const [outOfStockItems, setOutOfStockItems] = useState<number[]>([]);
 
   const filteredOrders = orders.filter(order => order.branch === selectedBranch);
+
+  const filteredInventory = useMemo(() => {
+    const query = inventorySearch.toLowerCase();
+    return productsData.products.filter(p => {
+      const name = ((p as any)[`name_${language}`] || p.name).toLowerCase();
+      return name.includes(query) || p.id.toString().includes(query);
+    }).slice(0, 50); // Show first 50 results for performance
+  }, [inventorySearch, language]);
 
   if (!isOpen) return null;
 
@@ -147,30 +157,55 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose }) =>
             </div>
           ) : (
             <div className="bg-white dark:bg-gray-800 rounded-[32px] overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700">
-              <div className="p-6 border-b border-gray-50 dark:border-gray-700">
-                <h3 className="font-black text-gray-800 dark:text-white uppercase tracking-tighter">Branch Inventory</h3>
-                <p className="text-xs text-gray-400 font-bold">Manage product availability for {selectedBranch}</p>
+              <div className="p-6 border-b border-gray-50 dark:border-gray-700 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <h3 className="font-black text-gray-800 dark:text-white uppercase tracking-tighter">Branch Inventory</h3>
+                  <p className="text-xs text-gray-400 font-bold">Manage product availability for {selectedBranch}</p>
+                </div>
+                <div className="relative">
+                  <input 
+                    type="text" 
+                    placeholder="Search products..."
+                    value={inventorySearch}
+                    onChange={(e) => setInventorySearch(e.target.value)}
+                    className="pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-xl text-xs font-bold focus:ring-2 focus:ring-secondary outline-none w-full md:w-64 transition-all"
+                  />
+                  <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
               </div>
-              <div className="divide-y divide-gray-50 dark:divide-gray-700">
-                {[13001, 13002, 13003, 15001].map(id => (
-                  <div key={id} className="p-4 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gray-50 dark:bg-gray-900 rounded-xl flex items-center justify-center text-xs font-bold text-gray-400">#{id}</div>
-                      <div>
-                        <p className="font-bold text-sm dark:text-white text-gray-800">Product {id}</p>
-                        <span className={`text-[9px] font-black uppercase tracking-widest ${outOfStockItems.includes(id) ? 'text-red-500' : 'text-green-500'}`}>
-                          {outOfStockItems.includes(id) ? 'Out of Stock' : 'In Stock'}
-                        </span>
+              <div className="divide-y divide-gray-50 dark:divide-gray-700 max-h-[60vh] overflow-y-auto">
+                {filteredInventory.length === 0 ? (
+                  <div className="p-10 text-center text-gray-400 italic font-bold">No products found.</div>
+                ) : (
+                  filteredInventory.map(product => (
+                    <div key={product.id} className="p-4 flex items-center justify-between hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
+                      <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 bg-gray-50 dark:bg-gray-900 rounded-xl overflow-hidden flex items-center justify-center border border-gray-100 dark:border-gray-700">
+                          <img src={product.image} alt={product.name} className="w-full h-full object-contain p-1" />
+                        </div>
+                        <div>
+                          <p className="font-black text-xs md:text-sm dark:text-white text-gray-800 uppercase tracking-tight line-clamp-1">
+                            {(product as any)[`name_${language}`] || product.name}
+                          </p>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-[9px] font-black text-primary dark:text-secondary bg-primary/5 px-1.5 py-0.5 rounded">#{product.id}</span>
+                            <span className={`text-[9px] font-black uppercase tracking-widest ${outOfStockItems.includes(product.id) ? 'text-red-500' : 'text-green-500'}`}>
+                              {outOfStockItems.includes(product.id) ? 'Out of Stock' : 'In Stock'}
+                            </span>
+                          </div>
+                        </div>
                       </div>
+                      <button 
+                        onClick={() => toggleStock(product.id)}
+                        className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${outOfStockItems.includes(product.id) ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200'}`}
+                      >
+                        {outOfStockItems.includes(product.id) ? 'Mark In Stock' : 'Mark Out of Stock'}
+                      </button>
                     </div>
-                    <button 
-                      onClick={() => toggleStock(id)}
-                      className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${outOfStockItems.includes(id) ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
-                    >
-                      {outOfStockItems.includes(id) ? 'Mark In Stock' : 'Mark Out of Stock'}
-                    </button>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           )}

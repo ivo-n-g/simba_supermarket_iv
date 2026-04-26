@@ -24,7 +24,7 @@ const categoryIcons: Record<string, string> = {
 
 const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory }) => {
   const { t, language } = useLanguage();
-  const { pickupBranch, setPickupBranch, locations } = useStore();
+  const { pickupBranch, setPickupBranch, locations, closestBranchName } = useStore();
   
   const [selectedLoc, setSelectedLoc] = useState<Location>(
     locations.find(l => l.name === pickupBranch) || locations[1]
@@ -147,7 +147,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
                   }`}
                 >
                   <div className="text-left">
-                    <h3 className="text-sm md:text-lg font-black uppercase tracking-tight">{loc.name.replace('Simba Supermarket ', '')}</h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-sm md:text-lg font-black uppercase tracking-tight">{loc.name.replace('Simba Supermarket ', '')}</h3>
+                      {loc.name === closestBranchName && (
+                        <span className="bg-secondary text-primary text-[8px] font-black px-2 py-0.5 rounded-full animate-pulse">NEAREST</span>
+                      )}
+                    </div>
                     <p className={`text-[9px] md:text-[11px] font-bold uppercase tracking-widest mt-1 opacity-60 ${selectedLoc.name === loc.name ? 'text-primary' : 'text-gray-400'}`}>
                       {loc.address}
                     </p>
@@ -173,6 +178,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
                       <p className="text-base md:text-2xl font-black text-gray-800 dark:text-white uppercase tracking-tighter">{selectedLoc.name}</p>
                       <p className="text-[9px] md:text-xs text-gray-400 font-bold mt-1 uppercase leading-tight mb-4 tracking-widest">{selectedLoc.address}</p>
                       
+                      {selectedLoc.name === closestBranchName && (
+                        <div className="inline-flex items-center gap-2 mb-4 bg-green-50 dark:bg-green-900/30 px-3 py-1.5 rounded-full border border-green-100 dark:border-green-800 animate-in slide-in-from-left duration-500">
+                          <span className="text-sm">📍</span>
+                          <span className="text-[9px] font-black text-green-600 dark:text-green-400 uppercase tracking-widest">Located Closest to You</span>
+                        </div>
+                      )}
+
                       {/* Branch Reviews Varied */}
                       <div className="flex items-center gap-1 mb-4">
                         <div className="flex text-yellow-400">

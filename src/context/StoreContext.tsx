@@ -97,6 +97,7 @@ interface StoreContextType {
   isBranchDashboardOpen: boolean;
   setIsBranchDashboardOpen: (isOpen: boolean) => void;
   locations: Location[];
+  closestBranchName: string;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -112,6 +113,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [branchStock, setBranchStock] = useState<Record<string, Record<number, number>>>({});
   const [customProducts, setCustomProducts] = useState<Product[]>([]);
   const [isBranchDashboardOpen, setIsBranchDashboardOpen] = useState(false);
+  const [closestBranchName, setClosestBranchName] = useState('');
 
   useEffect(() => {
     const savedUser = localStorage.getItem('simba_user_session');
@@ -145,6 +147,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         });
         
         // Auto-select if no branch is manually selected
+        setClosestBranchName(closest.name);
         setPickupBranch(prev => prev || closest.name);
       });
     }
@@ -343,7 +346,8 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       deliveryMethod, setDeliveryMethod, pickupBranch, setPickupBranch, 
       pickupTime, setPickupTime, cartCount, orders, updateOrderStatus,
       branchStock, updateStockAmount, isProductInStock, getProductQuantity,
-      customProducts, addNewProduct, isBranchDashboardOpen, setIsBranchDashboardOpen, locations
+      customProducts, addNewProduct, isBranchDashboardOpen, setIsBranchDashboardOpen, locations,
+      closestBranchName
     }}>
       {children}
     </StoreContext.Provider>

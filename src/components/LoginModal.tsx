@@ -6,6 +6,7 @@ import { GoogleLogin } from '@react-oauth/google';
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenBranchDashboard?: () => void;
 }
 
 const branches = [
@@ -20,7 +21,7 @@ const branches = [
   'Simba Supermarket Nyanza',
 ];
 
-const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
+const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDashboard }) => {
   const { login, signup, forgotPassword, handleGoogleSuccess } = useStore();
   const { t } = useLanguage();
   const [isLogin, setIsLogin] = useState(true);
@@ -81,6 +82,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         const success = await login(email, password, role, role === 'representative' ? selectedBranch : undefined);
         if (success) {
           onClose();
+          if (role === 'representative' && onOpenBranchDashboard) {
+            onOpenBranchDashboard();
+          }
         } else {
           setError(`Invalid ${role === 'representative' ? 'representative' : ''} email or password.`);
         }
@@ -88,6 +92,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         const success = await signup(fullName, email, password, role, role === 'representative' ? selectedBranch : undefined);
         if (success) {
           onClose();
+          if (role === 'representative' && onOpenBranchDashboard) {
+            onOpenBranchDashboard();
+          }
         } else {
           setError('User with this email already exists.');
         }
@@ -259,7 +266,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             </form>
           )}
 
-          {!isForgotPassword && (
+          {!isForgotPassword && isLogin && (
             <>
               <div className="relative my-8">
                 <div className="absolute inset-0 flex items-center">
@@ -283,17 +290,19 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                   width="350px"
                 />
               </div>
-
-              <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-8">
-                {isLogin ? t('dontHaveAccount') : t('alreadyHaveAccount')}{' '}
-                <button 
-                  onClick={() => { setIsLogin(!isLogin); setError(''); }}
-                  className="text-secondary font-bold hover:underline"
-                >
-                  {isLogin ? t('signUp') : t('login')}
-                </button>
-              </p>
             </>
+          )}
+
+          {!isForgotPassword && (
+            <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-8">
+              {isLogin ? t('dontHaveAccount') : t('alreadyHaveAccount')}{' '}
+              <button 
+                onClick={() => { setIsLogin(!isLogin); setError(''); }}
+                className="text-secondary font-bold hover:underline"
+              >
+                {isLogin ? t('signUp') : t('login')}
+              </button>
+            </p>
           )}
         </div>
       </div>

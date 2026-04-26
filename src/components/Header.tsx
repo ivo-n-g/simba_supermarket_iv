@@ -285,8 +285,16 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
         </div>
       </header>
 
-      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
-      <CartDrawer isOpen={isCartDrawerOpen} onClose={() => setIsCartDrawerOpen(false)} />
+      <LoginModal 
+        isOpen={isLoginModalOpen} 
+        onClose={() => setIsLoginModalOpen(false)} 
+        onOpenBranchDashboard={onOpenBranchDashboard}
+      />
+      <CartDrawer 
+        isOpen={isCartDrawerOpen} 
+        onClose={() => setIsCartDrawerOpen(false)} 
+        onOpenBranchDashboard={onOpenBranchDashboard}
+      />
       <ProfileDashboard 
         isOpen={isProfileOpen} 
         onClose={() => setIsProfileOpen(false)} 

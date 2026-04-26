@@ -6,6 +6,7 @@ import LoginModal from './LoginModal';
 interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenBranchDashboard?: () => void;
 }
 
 type CheckoutStep = 'cart' | 'pickup-selection' | 'pickup-time' | 'identity' | 'payment' | 'success';
@@ -26,7 +27,7 @@ const branches = [
   { name: 'Simba Supermarket Nyanza', address: 'KK 15 Rd, Nyanza, Kigali' },
 ];
 
-const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
+const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDashboard }) => {
   const { 
     cart, removeFromCart, updateQuantity, checkout, 
     deliveryMethod, setDeliveryMethod, pickupBranch, setPickupBranch, 
@@ -388,7 +389,11 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
       </div>
-      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+      <LoginModal 
+        isOpen={isLoginModalOpen} 
+        onClose={() => setIsLoginModalOpen(false)} 
+        onOpenBranchDashboard={onOpenBranchDashboard}
+      />
     </>
   );
 };

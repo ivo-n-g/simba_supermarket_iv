@@ -20,6 +20,8 @@ interface User {
   email: string;
   photoURL?: string;
   password?: string;
+  role: 'customer' | 'representative';
+  branch?: string;
 }
 
 interface Order {
@@ -38,8 +40,8 @@ interface StoreContextType {
   user: User | null;
   cart: CartItem[];
   wishlist: Product[];
-  login: (email: string, password?: string) => Promise<boolean>;
-  signup: (name: string, email: string, password?: string) => Promise<boolean>;
+  login: (email: string, password?: string, role?: User['role'], branch?: string) => Promise<boolean>;
+  signup: (name: string, email: string, password?: string, role?: User['role'], branch?: string) => Promise<boolean>;
   forgotPassword: (email: string) => Promise<boolean>;
   handleGoogleSuccess: (credentialResponse: any) => void;
   logout: () => void;
@@ -94,9 +96,18 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     localStorage.setItem('simba_orders', JSON.stringify(orders));
   }, [orders]);
 
-  const login = async (email: string, password?: string): Promise<boolean> => {
+  const login = async (email: string, password?: string, role: User['role'] = 'customer', branch?: string): Promise<boolean> => {
     const users: User[] = JSON.parse(localStorage.getItem('simba_users_db') || '[]');
-    const foundUser = users.find(u => u.email === email && (!password || u.password === password));
+    const foundUser = users.find(u => u.email === email && (!password || u.password === password) && u.role === role);
+    
+    // For demo: if logging in as representative and no user found, allow it if branch is selected
+    if (!foundUser && role === 'representative' && branch) {
+      const repUser: User = { name: email.split('@')[0], email, role: 'representative', branch };
+      setUser(repUser);
+      localStorage.setItem('simba_user_session', JSON.stringify(repUser));
+      return true;
+    }
+
     if (foundUser) {
       const sessionUser = { ...foundUser };
       delete sessionUser.password;
@@ -107,13 +118,13 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return false;
   };
 
-  const signup = async (name: string, email: string, password?: string): Promise<boolean> => {
+  const signup = async (name: string, email: string, password?: string, role: User['role'] = 'customer', branch?: string): Promise<boolean> => {
     const users: User[] = JSON.parse(localStorage.getItem('simba_users_db') || '[]');
-    if (users.find(u => u.email === email)) return false;
-    const newUser = { name, email, password };
+    if (users.find(u => u.email === email && u.role === role)) return false;
+    const newUser: User = { name, email, password, role, branch };
     users.push(newUser);
     localStorage.setItem('simba_users_db', JSON.stringify(users));
-    const sessionUser = { name, email };
+    const sessionUser: User = { name, email, role, branch };
     setUser(sessionUser);
     localStorage.setItem('simba_user_session', JSON.stringify(sessionUser));
     return true;
@@ -128,10 +139,11 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     const token = credentialResponse.credential;
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      const googleUser = {
+      const googleUser: User = {
         name: payload.name,
         email: payload.email,
-        photoURL: payload.picture
+        photoURL: payload.picture,
+        role: 'customer'
       };
       setUser(googleUser);
       localStorage.setItem('simba_user_session', JSON.stringify(googleUser));

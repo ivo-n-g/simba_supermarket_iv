@@ -45,7 +45,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ isOpen, onClose, on
               { id: 'wishlist', label: t('wishlist'), icon: '❤️' },
               { id: 'orders', label: t('myOrders'), icon: '📦' },
               { id: 'branch', label: t('branchDashboard'), icon: '🏪' }
-            ].map((tab) => (
+            ].filter(tab => tab.id !== 'branch' || user.role === 'representative').map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => {
@@ -102,6 +102,12 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ isOpen, onClose, on
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">{t('emailAddress')}</label>
                     <p className="font-bold text-gray-800 dark:text-white">{user.email}</p>
                   </div>
+                  {user.role === 'representative' && user.branch && (
+                    <div className="p-4 bg-primary/5 dark:bg-primary/10 rounded-2xl border border-primary/10 dark:border-primary/20 md:col-span-2">
+                      <label className="text-[10px] font-black text-primary dark:text-secondary uppercase tracking-widest block mb-1">Assigned Branch</label>
+                      <p className="font-black text-gray-800 dark:text-white uppercase tracking-tight">{user.branch}</p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

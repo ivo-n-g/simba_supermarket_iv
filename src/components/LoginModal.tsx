@@ -8,13 +8,27 @@ interface LoginModalProps {
   onClose: () => void;
 }
 
+const branches = [
+  'Simba Supermarket Remera',
+  'Simba Supermarket Kimironko',
+  'Simba Supermarket Kacyiru',
+  'Simba Supermarket Nyamirambo',
+  'Simba Supermarket Gikondo',
+  'Simba Supermarket Kanombe',
+  'Simba Supermarket Kinyinya',
+  'Simba Supermarket Kibagabaga',
+  'Simba Supermarket Nyanza',
+];
+
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const { login, signup, forgotPassword, handleGoogleSuccess } = useStore();
   const { t } = useLanguage();
   const [isLogin, setIsLogin] = useState(true);
+  const [role, setRole] = useState<'customer' | 'representative'>('customer');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [selectedBranch, setSelectedBranch] = useState(branches[0]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
@@ -64,14 +78,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     setIsLoading(true);
     try {
       if (isLogin) {
-        const success = await login(email, password);
+        const success = await login(email, password, role, role === 'representative' ? selectedBranch : undefined);
         if (success) {
           onClose();
         } else {
-          setError('Invalid email or password.');
+          setError(`Invalid ${role === 'representative' ? 'representative' : ''} email or password.`);
         }
       } else {
-        const success = await signup(fullName, email, password);
+        const success = await signup(fullName, email, password, role, role === 'representative' ? selectedBranch : undefined);
         if (success) {
           onClose();
         } else {
@@ -99,6 +113,23 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               </svg>
             </button>
           </div>
+
+          {!isForgotPassword && (
+            <div className="flex p-1 bg-gray-100 dark:bg-gray-700 rounded-xl mb-6">
+              <button
+                onClick={() => setRole('customer')}
+                className={`flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-lg transition-all ${role === 'customer' ? 'bg-white dark:bg-gray-600 text-primary dark:text-secondary shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+              >
+                Customer
+              </button>
+              <button
+                onClick={() => setRole('representative')}
+                className={`flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-lg transition-all ${role === 'representative' ? 'bg-white dark:bg-gray-600 text-primary dark:text-secondary shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+              >
+                Representative
+              </button>
+            </div>
+          )}
 
           {error && (
             <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 rounded-lg text-red-600 dark:text-red-400 text-sm font-medium flex items-center gap-2 animate-shake">
@@ -154,6 +185,18 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             </form>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
+              {role === 'representative' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Assigned Branch</label>
+                  <select
+                    value={selectedBranch}
+                    onChange={(e) => setSelectedBranch(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 dark:text-white text-sm"
+                  >
+                    {branches.map(b => <option key={b} value={b}>{b}</option>)}
+                  </select>
+                </div>
+              )}
               {!isLogin && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('fullName')}</label>

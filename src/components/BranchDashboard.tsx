@@ -6,11 +6,12 @@ import productsData from '../../simba_products.json';
 interface BranchDashboardProps {
   isOpen: boolean;
   onClose: () => void;
+  hideClose?: boolean;
 }
 
 type DashboardTab = 'orders' | 'inventory';
 
-const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose }) => {
+const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hideClose }) => {
   const { orders, updateOrderStatus, pickupBranch, updateStockAmount, getProductQuantity } = useStore();
   const { t, language } = useLanguage();
   const [role, setRole] = useState<'manager' | 'staff'>('manager');
@@ -47,11 +48,13 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose }) =>
               <span className="bg-secondary text-primary px-3 py-1 rounded-xl text-sm">{selectedBranch.split(' ').pop()}</span>
               {t('branchDashboard')}
             </h2>
-            <button onClick={onClose} className="p-3 bg-white/10 rounded-2xl hover:bg-white/20 transition-all">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+            {!hideClose && (
+              <button onClick={onClose} className="p-3 bg-white/10 rounded-2xl hover:bg-white/20 transition-all">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
           </div>
           
           <div className="flex justify-between items-end">

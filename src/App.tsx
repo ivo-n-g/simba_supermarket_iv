@@ -7,12 +7,14 @@ import ProductGrid from './components/ProductGrid';
 import LandingPage from './components/LandingPage';
 import ContactModal from './components/ContactModal';
 import BranchDashboard from './components/BranchDashboard';
+import { GroqResponse } from './services/GroqService';
 import { StoreProvider } from './context/StoreContext';
 import { useLanguage } from './context/LanguageContext';
 
 function App() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [aiResponse, setAiResponse] = useState<GroqResponse | null>(null);
   const [view, setView] = useState<'landing' | 'shop'>('landing');
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isBranchDashboardOpen, setIsBranchDashboardOpen] = useState(false);
@@ -33,6 +35,10 @@ function App() {
   }, []);
 
   const filteredProducts = useMemo(() => {
+    if (aiResponse && aiResponse.productIds.length > 0) {
+      return productsData.products.filter(p => aiResponse.productIds.includes(p.id));
+    }
+
     const query = searchQuery.toLowerCase();
     return productsData.products.filter(product => {
       const p = product as any;
@@ -52,7 +58,7 @@ function App() {
       const matchesSearch = searchableText.includes(query);
       return matchesCategory && matchesSearch;
     });
-  }, [selectedCategory, searchQuery, language]);
+  }, [selectedCategory, searchQuery, language, aiResponse]);
 
   const handleSelectCategory = (category: string) => {
     setSelectedCategory(category);
@@ -61,16 +67,25 @@ function App() {
   };
 
   const handleSearch = (query: string) => {
+    setAiResponse(null);
     setSearchQuery(query);
     if (query.trim() && view !== 'shop') {
       setView('shop');
     }
   };
 
+  const handleAiSearch = (response: GroqResponse) => {
+    setAiResponse(response);
+    setSearchQuery(''); // Clear manual search query
+    setView('shop');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const resetToLanding = () => {
     setView('landing');
     setSelectedCategory('All');
     setSearchQuery('');
+    setAiResponse(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -81,6 +96,7 @@ function App() {
           onSearch={handleSearch} 
           onLogoClick={resetToLanding} 
           onOpenBranchDashboard={() => setIsBranchDashboardOpen(true)}
+          onAiSearch={handleAiSearch}
         />
         
         <main>
@@ -103,6 +119,27 @@ function App() {
               />
               
               <div className="flex-1 bg-white dark:bg-gray-800/50 shadow-sm md:rounded-[32px] md:my-8 overflow-hidden">
+                {aiResponse && (
+                  <div className="p-6 md:p-8 bg-secondary/10 border-b border-secondary/20 animate-in fade-in slide-in-from-top-4 duration-500">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 bg-secondary text-primary rounded-2xl flex items-center justify-center text-xl shadow-lg shrink-0">✨</div>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start mb-2">
+                          <h3 className="font-black text-primary uppercase text-xs tracking-widest">AI Assistant</h3>
+                          <button 
+                            onClick={() => setAiResponse(null)}
+                            className="text-[10px] font-black text-gray-400 hover:text-red-500 uppercase tracking-widest transition-colors"
+                          >
+                            Clear Results
+                          </button>
+                        </div>
+                        <p className="text-gray-800 dark:text-white font-bold leading-relaxed">
+                          {aiResponse.answer}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <ProductGrid 
                   products={filteredProducts}
                   selectedCategory={selectedCategory}

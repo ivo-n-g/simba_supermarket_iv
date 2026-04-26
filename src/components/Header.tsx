@@ -6,18 +6,22 @@ import productsData from '../../simba_products.json';
 import LoginModal from './LoginModal';
 import CartDrawer from './CartDrawer';
 import ProfileDashboard from './ProfileDashboard';
+import { conversationalSearch, GroqResponse } from '../services/GroqService';
 
 interface HeaderProps {
   onSearch: (query: string) => void;
   onLogoClick: () => void;
   onOpenBranchDashboard: () => void;
+  onAiSearch: (response: GroqResponse) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDashboard }) => {
+const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDashboard, onAiSearch }) => {
   const [inputValue, setInputValue] = React.useState('');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isAiMode, setIsAiMode] = useState(false);
+  const [isAiLoading, setIsAiLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [history, setHistory] = useState<string[]>([]);
   const { user, cartCount } = useStore();
@@ -56,11 +60,27 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
     setShowSuggestions(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(inputValue);
-    addToHistory(inputValue);
-    setShowSuggestions(false);
+    if (!inputValue.trim()) return;
+
+    if (isAiMode) {
+      setIsAiLoading(true);
+      setShowSuggestions(false);
+      try {
+        const result = await conversationalSearch(inputValue, productsData.products, language);
+        onAiSearch(result);
+        addToHistory(inputValue);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsAiLoading(false);
+      }
+    } else {
+      onSearch(inputValue);
+      addToHistory(inputValue);
+      setShowSuggestions(false);
+    }
   };
 
   const handleSuggestionClick = (query: string) => {
@@ -110,19 +130,37 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
           
           {/* Desktop Search Bar */}
           <div className="hidden md:block relative flex-1 max-w-xl mx-4" ref={desktopSearchRef}>
-            <form onSubmit={handleSubmit} className="relative">
+            <form onSubmit={handleSubmit} className="relative group">
               <input
                 type="text"
-                placeholder={t('searchPlaceholder')}
+                placeholder={isAiMode ? "Ask AI: 'I need fresh milk' or 'Breakfast ideas'..." : t('searchPlaceholder')}
                 value={inputValue}
                 onChange={handleSearch}
-                onFocus={() => setShowSuggestions(true)}
-                className="w-full h-11 md:h-12 py-2 px-10 md:px-12 rounded-xl md:rounded-2xl text-gray-900 bg-white/10 backdrop-blur-md border border-white/20 focus:bg-white focus:text-gray-900 focus:outline-none focus:ring-4 focus:ring-secondary/20 transition-all text-sm placeholder:text-gray-300"
+                onFocus={() => !isAiMode && setShowSuggestions(true)}
+                className={`w-full h-11 md:h-12 py-2 pl-10 pr-24 md:pl-12 md:pr-28 rounded-xl md:rounded-2xl text-gray-900 bg-white/10 backdrop-blur-md border focus:bg-white focus:text-gray-900 focus:outline-none focus:ring-4 transition-all text-sm placeholder:text-gray-300 ${isAiMode ? 'border-secondary/50 focus:ring-secondary/20' : 'border-white/20 focus:ring-secondary/20'}`}
               />
               <div className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+                {isAiLoading ? (
+                  <svg className="animate-spin h-5 w-5 text-secondary" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                ) : isAiMode ? (
+                  <span className="text-lg">✨</span>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                )}
+              </div>
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setIsAiMode(!isAiMode)}
+                  className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${isAiMode ? 'bg-secondary text-primary shadow-lg' : 'bg-white/10 text-white hover:bg-white/20'}`}
+                >
+                  {isAiMode ? 'AI ON' : 'AI OFF'}
+                </button>
               </div>
             </form>
 
@@ -179,18 +217,36 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
         
         {/* Mobile Search Bar */}
         <div className="md:hidden bg-primary/95 dark:bg-gray-900 px-2 pb-3 border-b border-white/5 relative" ref={mobileSearchRef}>
-          <form onSubmit={handleSubmit} className="relative">
-            <input
-              type="text"
-              placeholder={t('searchPlaceholder')}
-              value={inputValue}
-              onChange={handleSearch}
-              onFocus={() => setShowSuggestions(true)}
-              className="w-full h-10 py-2 pl-9 pr-8 rounded-xl text-gray-900 bg-white/10 backdrop-blur-md border border-white/5 focus:bg-white focus:text-gray-900 outline-none transition-all text-xs placeholder:text-gray-300"
-            />
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+          <form onSubmit={handleSubmit} className="relative flex items-center gap-2">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                placeholder={isAiMode ? "Ask AI..." : t('searchPlaceholder')}
+                value={inputValue}
+                onChange={handleSearch}
+                onFocus={() => !isAiMode && setShowSuggestions(true)}
+                className={`w-full h-10 py-2 pl-9 pr-8 rounded-xl text-gray-900 bg-white/10 backdrop-blur-md border focus:bg-white focus:text-gray-900 outline-none transition-all text-xs placeholder:text-gray-300 ${isAiMode ? 'border-secondary/50' : 'border-white/5'}`}
+              />
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300">
+                {isAiLoading ? (
+                  <svg className="animate-spin h-4 w-4 text-secondary" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                ) : isAiMode ? (
+                  <span className="text-sm">✨</span>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                )}
+              </div>
             </div>
+            <button
+              type="button"
+              onClick={() => setIsAiMode(!isAiMode)}
+              className={`px-3 h-10 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${isAiMode ? 'bg-secondary text-primary shadow-lg' : 'bg-white/10 text-white'}`}
+            >
+              {isAiMode ? 'AI ON' : 'AI OFF'}
+            </button>
           </form>
 
           {showSuggestions && (inputValue || history.length > 0) && (

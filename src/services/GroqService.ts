@@ -8,34 +8,40 @@ export interface GroqResponse {
 
 export const conversationalSearch = async (query: string, products: any[], language: string): Promise<GroqResponse> => {
   if (!GROQ_API_KEY) {
-    console.error('Groq API Key missing');
-    return { answer: 'AI Search is currently unavailable.', productIds: [] };
+    console.error('Groq API Key missing in environment variables');
+    return { 
+      answer: 'AI Search is currently unavailable. Please ensure VITE_GROQ_API_KEY is set.', 
+      productIds: [] 
+    };
   }
 
-  // Simplify product data to save tokens
+  // Simplify product data to save tokens and provide better context
   const contextProducts = products.map(p => ({
     id: p.id,
     name: p[`name_${language}`] || p.name,
     category: p[`category_${language}`] || p.category,
     price: p.price
-  })).slice(0, 100); // Limit to first 100 products for demo context efficiency
+  })).slice(0, 150); 
 
   const prompt = `
-    You are a helpful assistant for Simba Supermarket in Rwanda.
+    You are the Simba Supermarket AI Assistant. 
+    Current Language: ${language}
     User Query: "${query}"
-    Language: ${language}
     
-    Here is a list of some products we have:
-    ${JSON.stringify(contextProducts)}
+    Catalog (JSON): ${JSON.stringify(contextProducts)}
 
-    Tasks:
-    1. Respond to the user in ${language === 'rw' ? 'Kinyarwanda' : language === 'fr' ? 'French' : 'English'}.
-    2. If they ask for specific products, identify them from the list.
-    3. Return a JSON object with two fields:
-       - "answer": A short, friendly natural language response.
-       - "productIds": An array of product IDs that match the query.
+    Instructions:
+    1. Analyze if any products in the catalog match the user's intent.
+    2. Create a friendly response in ${language === 'rw' ? 'Kinyarwanda' : language === 'fr' ? 'French' : 'English'}.
+    3. Return a valid JSON object ONLY.
+    
+    Required JSON Structure:
+    {
+      "answer": "Your natural language response here",
+      "productIds": [123, 456] 
+    }
 
-    IMPORTANT: Return ONLY the JSON object. Do not include markdown formatting or extra text.
+    Note: If no products match, provide a helpful response and return an empty array for productIds.
   `;
 
   try {
@@ -56,12 +62,21 @@ export const conversationalSearch = async (query: string, products: any[], langu
     });
 
     const data = await response.json();
+    if (data.error) {
+      throw new Error(data.error.message || 'API Error');
+    }
     const content = data.choices[0].message.content;
+    console.log('Groq Raw Response:', content);
     
     // Robust JSON extraction
     const jsonMatch = content.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
+      const parsed = JSON.parse(jsonMatch[0]);
+      // Ensure productIds are always numbers
+      if (parsed.productIds) {
+        parsed.productIds = parsed.productIds.map((id: any) => Number(id)).filter((id: number) => !isNaN(id));
+      }
+      return parsed;
     }
     
     throw new Error('No JSON found in response');

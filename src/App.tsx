@@ -35,8 +35,12 @@ function App() {
   }, []);
 
   const filteredProducts = useMemo(() => {
-    if (aiResponse && aiResponse.productIds.length > 0) {
-      return productsData.products.filter(p => aiResponse.productIds.includes(p.id));
+    if (aiResponse) {
+      console.log('Filtering by AI productIds:', aiResponse.productIds);
+      if (aiResponse.productIds.length > 0) {
+        return productsData.products.filter(p => aiResponse.productIds.includes(p.id));
+      }
+      return []; // Return empty if AI found no matches to avoid confusion with full list
     }
 
     const query = searchQuery.toLowerCase();

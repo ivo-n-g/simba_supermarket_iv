@@ -68,11 +68,14 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
       setIsAiLoading(true);
       setShowSuggestions(false);
       try {
+        console.log('Starting AI Search for:', inputValue);
         const result = await conversationalSearch(inputValue, productsData.products, language);
+        console.log('AI Search Result received:', result);
         onAiSearch(result);
         addToHistory(inputValue);
+        setInputValue(''); // Clear input after successful AI search
       } catch (err) {
-        console.error(err);
+        console.error('Header AI Search Error:', err);
       } finally {
         setIsAiLoading(false);
       }

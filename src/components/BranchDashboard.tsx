@@ -71,73 +71,86 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[110] overflow-hidden">
-      <div className="absolute inset-0 bg-primary/20 backdrop-blur-xl" onClick={onClose} />
-      
-      <div className="absolute inset-y-0 right-0 w-full max-w-4xl bg-gray-50 dark:bg-gray-900 shadow-2xl flex flex-col transform transition-transform duration-500">
-        <div className="px-6 py-8 bg-primary text-white flex flex-col gap-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-3xl font-black uppercase tracking-tighter flex items-center gap-3">
-              <span className="bg-secondary text-primary px-3 py-1 rounded-xl text-sm">{selectedBranch.split(' ').pop()}</span>
+    <div className="fixed inset-0 z-[110] overflow-hidden flex flex-col bg-gray-50 dark:bg-gray-900">
+      {/* Centered Header */}
+      <div className="px-6 py-10 bg-primary text-white flex flex-col gap-8 shadow-2xl shrink-0">
+        <div className="max-w-6xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+          <div className="flex flex-col items-center md:items-start gap-2">
+            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter flex items-center gap-3">
+              <span className="bg-secondary text-primary px-4 py-1.5 rounded-2xl text-base">{selectedBranch.split(' ').pop()}</span>
               {t('branchDashboard')}
             </h2>
-            <div className="flex items-center gap-2">
-              <span className={`px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] shadow-lg ${role === 'manager' ? 'bg-secondary text-primary' : 'bg-white/20 text-white border border-white/10'}`}>
+            <p className="text-white/50 text-xs font-bold uppercase tracking-[0.3em] ml-1">Operational Control Center</p>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col items-center md:items-end">
+              <span className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg mb-1 ${role === 'manager' ? 'bg-secondary text-primary' : 'bg-white/10 text-white border border-white/10'}`}>
                 {role === 'manager' ? 'Branch Manager' : 'Branch Staff'}
               </span>
-              <button 
-                onClick={() => { if(window.confirm(t('logoutConfirm') || 'Are you sure you want to logout?')) logout(); }}
-                className="p-3 bg-red-500/20 text-red-100 rounded-2xl hover:bg-red-500 hover:text-white transition-all border border-red-500/30 ml-2"
-                title="Logout"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              <p className="text-[10px] text-white/40 font-black uppercase">{user?.name}</p>
+            </div>
+            
+            <button 
+              onClick={() => { if(window.confirm(t('logoutConfirm') || 'Are you sure you want to logout?')) logout(); }}
+              className="p-4 bg-red-500/20 text-red-100 rounded-3xl hover:bg-red-500 hover:text-white transition-all border border-red-500/30 shadow-xl group"
+              title="Logout"
+            >
+              <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
+
+            {!hideClose && (
+              <button onClick={onClose} className="p-4 bg-white/10 rounded-3xl hover:bg-white/20 transition-all border border-white/10">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-              {!hideClose && (
-                <button onClick={onClose} className="p-3 bg-white/10 rounded-2xl hover:bg-white/20 transition-all">
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              )}
-            </div>
-          </div>
-          
-          <div className="flex justify-end items-end">
-            <div className="flex gap-6 border-b border-white/10 w-full md:w-auto">
-              <button 
-                onClick={() => setActiveTab('orders')}
-                className={`flex-1 md:flex-none pb-2 text-xs font-black uppercase tracking-widest transition-all border-b-2 ${activeTab === 'orders' ? 'border-secondary text-secondary' : 'border-transparent opacity-40 hover:opacity-100'}`}
-              >
-                Orders
-              </button>
-              <button 
-                onClick={() => setActiveTab('inventory')}
-                className={`flex-1 md:flex-none pb-2 text-xs font-black uppercase tracking-widest transition-all border-b-2 ${activeTab === 'inventory' ? 'border-secondary text-secondary' : 'border-transparent opacity-40 hover:opacity-100'}`}
-              >
-                Inventory
-              </button>
-            </div>
+            )}
           </div>
         </div>
+        
+        {/* Centered Tabs */}
+        <div className="flex justify-center items-end">
+          <div className="flex gap-12 border-b border-white/10 w-full max-w-2xl px-10">
+            <button 
+              onClick={() => setActiveTab('orders')}
+              className={`flex-1 pb-4 text-sm font-black uppercase tracking-[0.2em] transition-all border-b-4 ${activeTab === 'orders' ? 'border-secondary text-secondary' : 'border-transparent opacity-30 hover:opacity-100'}`}
+            >
+              Orders
+            </button>
+            <button 
+              onClick={() => setActiveTab('inventory')}
+              className={`flex-1 pb-4 text-sm font-black uppercase tracking-[0.2em] transition-all border-b-4 ${activeTab === 'inventory' ? 'border-secondary text-secondary' : 'border-transparent opacity-30 hover:opacity-100'}`}
+            >
+              Inventory
+            </button>
+          </div>
+        </div>
+      </div>
 
-        <div className="flex-1 overflow-y-auto p-6 md:p-8">
+      {/* Main Content Area - Centered */}
+      <div className="flex-1 overflow-y-auto p-6 md:p-12 lg:p-20">
+        <div className="max-w-6xl mx-auto w-full h-full">
           {activeTab === 'orders' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
               {filteredOrders.length === 0 ? (
-                <div className="col-span-full py-20 text-center opacity-30 italic font-bold text-gray-400">
-                  No orders found for this branch.
+                <div className="col-span-full py-40 text-center flex flex-col items-center gap-6">
+                  <div className="w-32 h-32 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center text-6xl opacity-20">📦</div>
+                  <p className="opacity-20 italic font-black text-2xl text-gray-400 uppercase tracking-[0.3em]">
+                    No orders found
+                  </p>
                 </div>
               ) : (
                 filteredOrders.map(order => (
-                  <div key={order.id} className="bg-white dark:bg-gray-800 p-6 rounded-[32px] shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col gap-4">
+                  <div key={order.id} className="bg-white dark:bg-gray-800 p-8 rounded-[48px] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] border border-gray-100 dark:border-gray-700 flex flex-col gap-6 w-full transform hover:scale-[1.03] transition-all duration-500">
                     <div className="flex justify-between items-start">
-                      <div>
-                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Order ID</span>
-                        <span className="font-black text-primary dark:text-secondary">#{order.id}</span>
+                      <div className="text-left">
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Ref ID</span>
+                        <span className="font-black text-2xl text-primary dark:text-secondary">#{order.id}</span>
                       </div>
-                      <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
+                      <span className={`px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm ${
                         order.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
                         order.status === 'assigned' ? 'bg-blue-100 text-blue-700' :
                         order.status === 'ready' ? 'bg-green-100 text-green-700' :
@@ -147,56 +160,59 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                       </span>
                     </div>
 
-                    <div className="border-t border-b border-gray-50 dark:border-gray-700 py-4 space-y-2">
-                      <div className="flex justify-between text-xs">
-                        <span className="text-gray-400 font-bold uppercase">Customer</span>
-                        <span className="font-black dark:text-white">{order.customerName}</span>
+                    <div className="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-[32px] space-y-3">
+                      <div className="flex justify-between text-xs items-center">
+                        <span className="text-gray-400 font-bold uppercase tracking-widest">Customer</span>
+                        <span className="font-black dark:text-white text-sm">{order.customerName}</span>
                       </div>
-                      <div className="flex justify-between text-xs">
-                        <span className="text-gray-400 font-bold uppercase">Time</span>
-                        <span className="font-black text-primary dark:text-secondary">{order.pickupTime}</span>
+                      <div className="flex justify-between text-xs items-center">
+                        <span className="text-gray-400 font-bold uppercase tracking-widest">Time</span>
+                        <span className="font-black text-primary dark:text-secondary text-sm">{order.pickupTime}</span>
                       </div>
                     </div>
 
-                    <div className="space-y-1 max-h-24 overflow-y-auto pr-2">
+                    <div className="space-y-2 max-h-40 overflow-y-auto pr-2 scrollbar-hide">
                       {order.items.map((item, i) => (
-                        <div key={i} className="flex justify-between text-[10px] font-bold text-gray-500">
-                          <span>{item.quantity}x {item.name}</span>
-                          <span>{(item.price * item.quantity).toLocaleString()} RWF</span>
+                        <div key={i} className="flex justify-between text-xs font-bold text-gray-500 bg-white dark:bg-gray-800 p-3 rounded-2xl border border-gray-50 dark:border-gray-700 shadow-sm">
+                          <span className="flex items-center gap-2">
+                            <span className="w-6 h-6 bg-primary/5 rounded-lg flex items-center justify-center text-[10px] text-primary">{item.quantity}</span>
+                            {item.name}
+                          </span>
+                          <span className="font-black">{(item.price * item.quantity).toLocaleString()} RWF</span>
                         </div>
                       ))}
                     </div>
 
-                    <div className="mt-auto pt-4 flex flex-col gap-2">
+                    <div className="mt-auto pt-6 flex flex-col gap-4">
                       {order.assignedStaff && (
-                        <div className="flex items-center gap-2 mb-2 p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-100 dark:border-gray-600">
-                          <span className="text-[10px]">👤</span>
-                          <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Assigned: {order.assignedStaff}</span>
+                        <div className="flex items-center justify-center gap-3 p-4 bg-primary text-white rounded-[24px] shadow-lg">
+                          <span className="text-sm">👤</span>
+                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-center">Assigned: {order.assignedStaff}</span>
                         </div>
                       )}
-                      <div className="flex gap-2">
+                      <div className="flex gap-3">
                         {role === 'manager' && order.status === 'pending' && (
                           <button 
                             onClick={() => updateOrderStatus(order.id, 'assigned', user?.name || 'Staff Member')}
-                            className="flex-1 py-3 bg-primary text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-md active:scale-95"
+                            className="flex-1 py-5 bg-primary text-white rounded-[24px] text-xs font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-xl active:scale-95 border-b-4 border-black/20"
                           >
-                            {t('assign')} To Me
+                            Assign To Me
                           </button>
                         )}
                         {(role === 'staff' || role === 'manager') && order.status === 'assigned' && order.assignedStaff === user?.name && (
                           <button 
                             onClick={() => updateOrderStatus(order.id, 'ready')}
-                            className="flex-1 py-3 bg-secondary text-primary rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-md active:scale-95"
+                            className="flex-1 py-5 bg-secondary text-primary rounded-[24px] text-xs font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-xl active:scale-95 border-b-4 border-black/10"
                           >
-                            {t('markReady')}
+                            Mark as Ready
                           </button>
                         )}
                         {order.status === 'ready' && role === 'manager' && (
                           <button 
                             onClick={() => updateOrderStatus(order.id, 'completed')}
-                            className="flex-1 py-3 bg-green-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-md active:scale-95"
+                            className="flex-1 py-5 bg-green-600 text-white rounded-[24px] text-xs font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-xl active:scale-95 border-b-4 border-green-800/30"
                           >
-                            Complete Order
+                            Finish Order
                           </button>
                         )}
                       </div>
@@ -206,79 +222,79 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
               )}
             </div>
           ) : (
-            <div className="bg-white dark:bg-gray-800 rounded-[32px] overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700">
-              <div className="p-6 border-b border-gray-50 dark:border-gray-700 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <h3 className="font-black text-gray-800 dark:text-white uppercase tracking-tighter">Branch Inventory</h3>
-                  <p className="text-xs text-gray-400 font-bold">Manage product availability for {selectedBranch}</p>
+            <div className="bg-white dark:bg-gray-800 rounded-[60px] overflow-hidden shadow-[0_64px_128px_-24px_rgba(0,0,0,0.1)] border border-gray-100 dark:border-gray-700 flex flex-col">
+              <div className="p-10 md:p-14 border-b border-gray-50 dark:border-gray-700 flex flex-col items-center justify-center gap-10 text-center">
+                <div className="flex flex-col items-center gap-3">
+                  <h3 className="text-4xl font-black text-gray-800 dark:text-white uppercase tracking-tighter">Inventory Control</h3>
+                  <p className="text-base text-gray-400 font-bold uppercase tracking-widest opacity-60">Manage product availability for {selectedBranch}</p>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="relative">
+                
+                <div className="flex flex-col md:flex-row items-center gap-6 w-full max-w-4xl">
+                  <div className="relative flex-1 w-full">
                     <input 
                       type="text" 
-                      placeholder="Search products..."
+                      placeholder="Search items in catalog..."
                       value={inventorySearch}
                       onChange={(e) => setInventorySearch(e.target.value)}
-                      className="pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-xl text-xs font-bold focus:ring-2 focus:ring-secondary outline-none w-full md:w-64 transition-all"
+                      className="pl-16 pr-8 py-6 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-[32px] text-lg font-bold focus:ring-8 focus:ring-secondary/10 outline-none w-full transition-all shadow-inner"
                     />
-                    <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    <svg className="w-6 h-6 absolute left-6 top-1/2 -translate-y-1/2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                   </div>
                   <button 
                     onClick={() => setIsAddProductModalOpen(true)}
-                    className="px-4 py-2 bg-primary text-white rounded-xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-md flex items-center gap-2"
+                    className="w-full md:w-auto px-12 py-6 bg-primary text-white rounded-[32px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] flex items-center justify-center gap-4"
                   >
-                    <span>+</span> New
+                    <span className="text-2xl">+</span> Add New Product
                   </button>
                 </div>
               </div>
-              <div className="divide-y divide-gray-50 dark:divide-gray-700 max-h-[60vh] overflow-y-auto">
+
+              <div className="divide-y divide-gray-50 dark:divide-gray-700 overflow-y-auto max-h-[50vh] px-4 md:px-10">
                 {filteredInventory.length === 0 ? (
-                  <div className="p-10 text-center text-gray-400 italic font-bold">No products found.</div>
+                  <div className="p-20 text-center text-gray-400 italic font-black text-xl uppercase tracking-widest opacity-20">Catalog is empty.</div>
                 ) : (
                   filteredInventory.map(product => {
                     const quantity = getProductQuantity(selectedBranch, product.id);
                     return (
-                      <div key={product.id} className="p-4 flex items-center justify-between hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
-                        <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 bg-gray-50 dark:bg-gray-900 rounded-xl overflow-hidden flex items-center justify-center border border-gray-100 dark:border-gray-700">
-                            <img src={product.image} alt={product.name} className="w-full h-full object-contain p-1" />
+                      <div key={product.id} className="p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-10 hover:bg-gray-50/50 dark:hover:bg-gray-700/20 transition-all rounded-[40px] my-2">
+                        <div className="flex flex-col md:flex-row items-center gap-10 flex-1">
+                          <div className="w-32 h-32 bg-gray-50 dark:bg-gray-950 rounded-[40px] overflow-hidden flex items-center justify-center border-8 border-white dark:border-gray-800 shadow-2xl p-4 shrink-0 transform -rotate-3">
+                            <img src={product.image} alt={product.name} className="w-full h-full object-contain" />
                           </div>
-                          <div>
-                            <p className="font-black text-xs md:text-sm dark:text-white text-gray-800 uppercase tracking-tight line-clamp-1">
+                          <div className="flex flex-col items-center md:items-start gap-3">
+                            <p className="font-black text-xl md:text-3xl dark:text-white text-gray-800 uppercase tracking-tighter line-clamp-2 leading-none">
                               {(product as any)[`name_${language}`] || product.name}
                             </p>
-                            <div className="flex items-center gap-2 mt-0.5">
-                              <span className="text-[9px] font-black text-primary dark:text-secondary bg-primary/5 px-1.5 py-0.5 rounded">#{product.id}</span>
-                              <span className={`text-[9px] font-black uppercase tracking-widest ${quantity === 0 ? 'text-red-500' : quantity < 5 ? 'text-orange-500' : 'text-green-500'}`}>
-                                {quantity === 0 ? 'Out of Stock' : `${quantity} in stock`}
+                            <div className="flex flex-wrap justify-center md:justify-start items-center gap-4">
+                              <span className="text-[10px] font-black text-primary dark:text-secondary bg-primary/5 dark:bg-secondary/10 px-4 py-1.5 rounded-full border border-primary/10 tracking-widest">SKU: #{product.id}</span>
+                              <span className={`text-[11px] font-black uppercase tracking-[0.2em] px-5 py-1.5 rounded-full shadow-sm ${quantity === 0 ? 'bg-red-50 text-red-500 border border-red-100' : quantity < 5 ? 'bg-orange-50 text-orange-600 border border-orange-100' : 'bg-green-50 text-green-600 border border-green-100'}`}>
+                                {quantity === 0 ? 'Sold Out' : `${quantity} in Stock`}
                               </span>
                             </div>
                           </div>
                         </div>
                         
-                        <div className="flex items-center gap-2">
-                          <div className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-xl p-1 border border-gray-200 dark:border-gray-600">
-                            <button 
-                              onClick={() => updateStockAmount(selectedBranch, product.id, quantity - 1)}
-                              className="w-8 h-8 flex items-center justify-center hover:bg-white dark:hover:bg-gray-600 rounded-lg transition-all font-black text-primary dark:text-secondary"
-                            >
-                              -
-                            </button>
-                            <input 
-                              type="number" 
-                              value={quantity}
-                              onChange={(e) => updateStockAmount(selectedBranch, product.id, parseInt(e.target.value) || 0)}
-                              className="w-12 bg-transparent text-center font-black text-xs text-primary dark:text-secondary outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            />
-                            <button 
-                              onClick={() => updateStockAmount(selectedBranch, product.id, quantity + 1)}
-                              className="w-8 h-8 flex items-center justify-center hover:bg-white dark:hover:bg-gray-600 rounded-lg transition-all font-black text-primary dark:text-secondary"
-                            >
-                              +
-                            </button>
-                          </div>
+                        <div className="flex items-center justify-center gap-4 bg-gray-50 dark:bg-gray-900 p-2 rounded-[32px] border border-gray-100 dark:border-gray-700 shadow-inner scale-125 md:scale-150">
+                          <button 
+                            onClick={() => updateStockAmount(selectedBranch, product.id, quantity - 1)}
+                            className="w-10 h-10 flex items-center justify-center bg-white dark:bg-gray-800 hover:bg-primary hover:text-white dark:hover:bg-primary rounded-full transition-all font-black text-primary dark:text-secondary shadow-md"
+                          >
+                            -
+                          </button>
+                          <input 
+                            type="number" 
+                            value={quantity}
+                            onChange={(e) => updateStockAmount(selectedBranch, product.id, parseInt(e.target.value) || 0)}
+                            className="w-12 bg-transparent text-center font-black text-sm text-primary dark:text-secondary outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          />
+                          <button 
+                            onClick={() => updateStockAmount(selectedBranch, product.id, quantity + 1)}
+                            className="w-10 h-10 flex items-center justify-center bg-white dark:bg-gray-800 hover:bg-primary hover:text-white dark:hover:bg-primary rounded-full transition-all font-black text-primary dark:text-secondary shadow-md"
+                          >
+                            +
+                          </button>
                         </div>
                       </div>
                     );
@@ -290,36 +306,39 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
         </div>
       </div>
 
-      {/* Add Product Modal */}
+      {/* Add Product Modal - Centered */}
       {isAddProductModalOpen && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-          <div className="bg-white dark:bg-gray-800 rounded-[40px] shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in duration-300 border-4 border-white/20">
-            <div className="p-8">
-              <div className="flex justify-between items-center mb-8">
-                <h2 className="text-2xl font-black text-primary dark:text-secondary uppercase tracking-tight">Add New Product</h2>
-                <button onClick={() => setIsAddProductModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-2">✕</button>
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-6 bg-primary/20 backdrop-blur-xl">
+          <div className="bg-white dark:bg-gray-800 rounded-[60px] shadow-[0_64px_128px_-24px_rgba(0,0,0,0.4)] w-full max-w-2xl overflow-hidden animate-in zoom-in slide-in-from-bottom-10 duration-500 border-[12px] border-white/10">
+            <div className="p-10 md:p-16">
+              <div className="flex justify-between items-center mb-12">
+                <div className="text-left">
+                  <h2 className="text-3xl font-black text-primary dark:text-secondary uppercase tracking-tight">New Inventory</h2>
+                  <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Fill in the product details</p>
+                </div>
+                <button onClick={() => setIsAddProductModalOpen(false)} className="text-gray-400 hover:text-red-500 p-4 bg-gray-50 dark:bg-gray-900 rounded-full transition-all text-xl">✕</button>
               </div>
 
-              <form onSubmit={handleAddProduct} className="space-y-6">
+              <form onSubmit={handleAddProduct} className="space-y-10">
                 <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Product Name</label>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">Display Name</label>
                   <input
                     type="text"
                     required
                     value={newProductName}
                     onChange={(e) => setNewProductName(e.target.value)}
-                    className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-3xl focus:ring-4 focus:ring-primary/10 outline-none transition-all font-bold dark:text-white"
-                    placeholder="e.g. Fresh Local Avocados"
+                    className="w-full px-8 py-6 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-[32px] focus:ring-8 focus:ring-secondary/10 outline-none transition-all font-black text-lg dark:text-white placeholder:opacity-30"
+                    placeholder="e.g. Premium Basmati Rice"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Category</label>
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">Category</label>
                     <select
                       value={newProductCategory}
                       onChange={(e) => setNewProductCategory(e.target.value)}
-                      className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-3xl focus:ring-4 focus:ring-primary/10 outline-none font-bold dark:text-white text-sm"
+                      className="w-full px-8 py-6 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-[32px] focus:ring-8 focus:ring-secondary/10 outline-none font-black dark:text-white text-sm"
                     >
                       {['Food Products', 'Baby Products', 'Cleaning & Sanitary', 'Cosmetics & Personal Care', 'Kitchenware & Electronics'].map(c => (
                         <option key={c} value={c}>{c}</option>
@@ -327,45 +346,45 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Unit</label>
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">Sale Unit</label>
                     <input
                       type="text"
                       required
                       value={newProductUnit}
                       onChange={(e) => setNewProductUnit(e.target.value)}
-                      className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-3xl focus:ring-4 focus:ring-primary/10 outline-none font-bold dark:text-white text-sm"
+                      className="w-full px-8 py-6 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-[32px] focus:ring-8 focus:ring-secondary/10 outline-none font-black dark:text-white text-sm"
                       placeholder="e.g. Pcs, Kg, L"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1 gap-6">
                   <div>
-                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Price (RWF)</label>
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">Unit Price (RWF)</label>
                     <input
                       type="number"
                       required
                       value={newProductPrice}
                       onChange={(e) => setNewProductPrice(e.target.value)}
-                      className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-3xl focus:ring-4 focus:ring-primary/10 outline-none font-bold dark:text-white"
-                      placeholder="5000"
+                      className="w-full px-8 py-6 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-[32px] focus:ring-8 focus:ring-secondary/10 outline-none font-black text-xl text-primary dark:text-secondary"
+                      placeholder="0"
                     />
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Product Image</label>
-                  <div className="flex items-center gap-4">
-                    <div className="w-20 h-20 bg-gray-50 dark:bg-gray-700 border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-2xl overflow-hidden flex items-center justify-center shrink-0">
+                <div className="bg-gray-50 dark:bg-gray-900 p-8 rounded-[40px] border-2 border-dashed border-gray-100 dark:border-gray-700">
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 text-center">Visual Identity</label>
+                  <div className="flex flex-col md:flex-row items-center gap-8">
+                    <div className="w-32 h-32 bg-white dark:bg-gray-800 rounded-[40px] shadow-2xl overflow-hidden flex items-center justify-center border-4 border-white dark:border-gray-700 shrink-0">
                       {newProductImage ? (
-                        <img src={newProductImage} alt="Preview" className="w-full h-full object-contain p-2" />
+                        <img src={newProductImage} alt="Preview" className="w-full h-full object-contain p-4" />
                       ) : (
-                        <span className="text-2xl text-gray-300">🖼️</span>
+                        <span className="text-4xl grayscale opacity-20">🖼️</span>
                       )}
                     </div>
-                    <label className="flex-1 cursor-pointer">
-                      <div className="w-full px-6 py-4 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-2xl text-center hover:bg-primary/10 transition-all">
-                        <span className="text-xs font-black text-primary dark:text-secondary uppercase tracking-widest">Choose File</span>
+                    <label className="flex-1 w-full cursor-pointer">
+                      <div className="w-full px-10 py-6 bg-primary text-white rounded-[32px] text-center hover:scale-[1.02] transition-all shadow-lg active:scale-95 font-black uppercase text-xs tracking-widest">
+                        Upload Image File
                       </div>
                       <input
                         type="file"
@@ -375,14 +394,13 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                       />
                     </label>
                   </div>
-                  <p className="text-[9px] text-gray-400 font-bold mt-2 ml-1 italic">* Files are stored locally for the demo</p>
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-secondary text-primary py-5 rounded-3xl font-black text-lg shadow-xl hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-tighter"
+                  className="w-full bg-secondary text-primary py-8 rounded-[32px] font-black text-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-tighter border-b-8 border-black/10"
                 >
-                  Confirm & Add to Catalog
+                  Confirm & Sync Catalog
                 </button>
               </form>
             </div>

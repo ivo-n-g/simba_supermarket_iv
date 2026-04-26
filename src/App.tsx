@@ -99,10 +99,8 @@ function AppContent() {
   // Representative-only view
   if (user?.role === 'representative') {
     return (
-      <div className="min-h-screen bg-primary flex items-center justify-center p-0 md:p-6 lg:p-12 overflow-hidden">
-        <div className="w-full max-w-7xl h-full md:h-[90vh] bg-white dark:bg-gray-900 md:rounded-[60px] shadow-[0_64px_128px_-24px_rgba(0,0,0,0.5)] overflow-hidden relative border-[12px] border-white/5">
-           <BranchDashboard isOpen={true} onClose={() => {}} hideClose={true} />
-        </div>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">
+        <BranchDashboard isOpen={true} onClose={() => {}} hideClose={true} />
       </div>
     );
   }

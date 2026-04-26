@@ -60,7 +60,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit,
         {!inStock && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
             <span className="bg-red-500 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">
-              Out of Stock
+              {t('outOfStock')}
             </span>
           </div>
         )}
@@ -85,7 +85,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit,
             {price.toLocaleString()} RWF
           </span>
           <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${stockAmount === 0 ? 'bg-red-50 text-red-500' : stockAmount < 5 ? 'bg-orange-50 text-orange-500' : 'bg-green-50 text-green-600'}`}>
-            {stockAmount === 0 ? 'Out of Stock' : `${stockAmount} left`}
+            {stockAmount === 0 ? t('outOfStock') : `${stockAmount} ${t('left')}`}
           </span>
         </div>
         <h3 className="text-gray-800 dark:text-gray-100 font-semibold text-[11px] md:text-sm line-clamp-2 min-h-[2rem] md:min-h-[2.5rem] mt-0.5 md:mt-1 leading-tight">

@@ -115,7 +115,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                   <h2 className="text-2xl font-black text-primary dark:text-secondary uppercase tracking-tight">{t('shoppingCart')}</h2>
                   {step !== 'success' && (
                     <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 uppercase tracking-widest font-black">
-                      {step === 'cart' ? 'Step 1 / 5' : step === 'pickup-selection' ? 'Step 2 / 5' : step === 'pickup-time' ? 'Step 3 / 5' : step === 'identity' ? 'Step 4 / 5' : 'Step 5 / 5'}
+                      {step === 'cart' ? `${t('step')} 1 / 5` : step === 'pickup-selection' ? `${t('step')} 2 / 5` : step === 'pickup-time' ? `${t('step')} 3 / 5` : step === 'identity' ? `${t('step')} 4 / 5` : `${t('step')} 5 / 5`}
                     </p>
                   )}
                 </div>
@@ -232,18 +232,18 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                       </div>
                       <div className="bg-white/50 dark:bg-white/5 p-2 px-3 rounded-xl inline-flex items-center gap-2">
                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                        <span className="text-[10px] text-primary dark:text-secondary font-black uppercase tracking-widest">Verified Session</span>
+                        <span className="text-[10px] text-primary dark:text-secondary font-black uppercase tracking-widest">{t('verifiedSession')}</span>
                       </div>
                     </div>
                     <div className="space-y-6">
                       <h4 className="font-black text-gray-800 dark:text-white text-xs uppercase tracking-[0.2em] ml-2">{t('confirmDetails')}</h4>
                       <div className="space-y-4">
                         <div className="flex flex-col gap-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Delivery Address</label>
+                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">{t('deliveryAddress')}</label>
                           <input type="text" defaultValue="Kigali, Rwanda" className="w-full p-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-primary/10 dark:text-white transition-all" />
                         </div>
                         <div className="flex flex-col gap-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Phone Number</label>
+                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">{t('phoneNumber')}</label>
                           <input type="text" placeholder="+250..." className="w-full p-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-primary/10 dark:text-white transition-all" />
                         </div>
                       </div>
@@ -301,7 +301,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                     {paymentMethod === 'cash' && (
                       <div className="p-5 bg-green-50 dark:bg-green-900/20 rounded-[28px] border border-green-100 dark:border-green-900/30">
                         <p className="text-[11px] text-green-700 dark:text-green-400 leading-relaxed font-bold italic">
-                          Payment will be collected upon delivery or branch pickup.
+                          {t('paymentCollected')}
                         </p>
                       </div>
                     )}

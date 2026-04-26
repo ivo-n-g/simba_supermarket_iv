@@ -140,12 +140,12 @@ function AppContent() {
                     <div className="w-10 h-10 bg-secondary text-primary rounded-2xl flex items-center justify-center text-xl shadow-lg shrink-0">✨</div>
                     <div className="flex-1">
                       <div className="flex justify-between items-start mb-2">
-                        <h3 className="font-black text-primary uppercase text-xs tracking-widest">AI Assistant</h3>
+                        <h3 className="font-black text-primary uppercase text-xs tracking-widest">{t('aiAssistant')}</h3>
                         <button 
                           onClick={() => setAiResponse(null)}
                           className="text-[10px] font-black text-gray-400 hover:text-red-500 uppercase tracking-widest transition-colors"
                         >
-                          Clear Results
+                          {t('clearResults')}
                         </button>
                       </div>
                       <p className="text-gray-800 dark:text-white font-bold leading-relaxed">
@@ -177,10 +177,10 @@ function AppContent() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16 text-left">
             <div>
-              <h4 className="font-black mb-6 uppercase text-xs tracking-[0.3em] opacity-40">Discover</h4>
+              <h4 className="font-black mb-6 uppercase text-xs tracking-[0.3em] opacity-40">{t('discover')}</h4>
               <ul className="space-y-3 text-sm font-bold">
-                <li className="hover:text-secondary cursor-pointer transition-colors">About Us</li>
-                <li className="hover:text-secondary cursor-pointer transition-colors">Careers</li>
+                <li className="hover:text-secondary cursor-pointer transition-colors">{t('aboutUs')}</li>
+                <li className="hover:text-secondary cursor-pointer transition-colors">{t('careers')}</li>
                 <li 
                   className="hover:text-secondary cursor-pointer transition-colors font-bold"
                   onClick={() => setIsContactOpen(true)}
@@ -190,16 +190,16 @@ function AppContent() {
               </ul>
             </div>
             <div>
-              <h4 className="font-black mb-6 uppercase text-xs tracking-[0.3em] opacity-40">Help</h4>
+              <h4 className="font-black mb-6 uppercase text-xs tracking-[0.3em] opacity-40">{t('help')}</h4>
               <ul className="space-y-3 text-sm font-bold">
-                <li className="hover:text-secondary cursor-pointer transition-colors">FAQ</li>
-                <li className="hover:text-secondary cursor-pointer transition-colors">Privacy Policy</li>
-                <li className="hover:text-secondary cursor-pointer transition-colors">Terms</li>
+                <li className="hover:text-secondary cursor-pointer transition-colors">{t('faq')}</li>
+                <li className="hover:text-secondary cursor-pointer transition-colors">{t('privacyPolicy')}</li>
+                <li className="hover:text-secondary cursor-pointer transition-colors">{t('terms')}</li>
               </ul>
             </div>
           </div>
           <div className="pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-gray-400 text-sm font-medium">© 2025 Simba {t('supermarket')}. All rights reserved.</p>
+            <p className="text-gray-400 text-sm font-medium">© 2025 Simba {t('supermarket')}. {t('allRightsReserved')}</p>
             <div className="flex gap-6">
               <span className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-all cursor-pointer">IG</span>
               <span className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-all cursor-pointer">FB</span>

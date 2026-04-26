@@ -128,13 +128,13 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDa
                 onClick={() => setRole('customer')}
                 className={`flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-lg transition-all ${role === 'customer' ? 'bg-white dark:bg-gray-600 text-primary dark:text-secondary shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
               >
-                Customer
+                {t('customer')}
               </button>
               <button
                 onClick={() => setRole('representative')}
                 className={`flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-lg transition-all ${role === 'representative' ? 'bg-white dark:bg-gray-600 text-primary dark:text-secondary shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
               >
-                Representative
+                {t('representative')}
               </button>
             </div>
           )}
@@ -196,7 +196,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDa
               {role === 'representative' && (
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Assigned Branch</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('assignedBranch')}</label>
                     <select
                       value={selectedBranch}
                       onChange={(e) => setSelectedBranch(e.target.value)}
@@ -206,21 +206,21 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDa
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Staff Role</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('staffRole')}</label>
                     <div className="flex p-1 bg-gray-100 dark:bg-gray-900 rounded-lg h-10">
                       <button
                         type="button"
                         onClick={() => setRepRole('manager')}
                         className={`flex-1 text-[10px] font-black uppercase rounded-md transition-all ${repRole === 'manager' ? 'bg-white dark:bg-gray-700 text-primary dark:text-secondary shadow-sm' : 'text-gray-400'}`}
                       >
-                        Manager
+                        {t('manager')}
                       </button>
                       <button
                         type="button"
                         onClick={() => setRepRole('staff')}
                         className={`flex-1 text-[10px] font-black uppercase rounded-md transition-all ${repRole === 'staff' ? 'bg-white dark:bg-gray-700 text-primary dark:text-secondary shadow-sm' : 'text-gray-400'}`}
                       >
-                        Staff
+                        {t('staff')}
                       </button>
                     </div>
                   </div>

@@ -483,6 +483,351 @@ const translations: Translations = {
     en: 'Reset link sent to your email!',
     rw: 'Ihuza ryo guhindura ijambo ry-ibanga ryoherejwe kuri imeyili yawe!',
     fr: 'Lien de réinitialisation envoyé à votre e-mail !',
+  },
+  premiumProducts: {
+    en: 'Premium Products',
+    rw: 'Ibicuruzwa Byiza',
+    fr: 'Produits de qualité',
+  },
+  kigaliBranches: {
+    en: 'Kigali Branches',
+    rw: 'Amashami ya Kigali',
+    fr: 'Succursales de Kigali',
+  },
+  customerRating: {
+    en: 'Customer Rating',
+    rw: 'Uko abakiriya babona',
+    fr: 'Avis des clients',
+  },
+  exploreCategoriesDesc: {
+    en: 'Fresh quality products from Simba Supermarket, now closer to you than ever.',
+    rw: 'Ibicuruzwa byiza bishya bya Simba, ubu biri hafi yawe kuruta mbere.',
+    fr: 'Des produits frais de qualité de Simba Supermarché, maintenant plus près de vous.',
+  },
+  viewAllProducts: {
+    en: 'View All Products',
+    rw: 'Reba ibicuruzwa byose',
+    fr: 'Voir tous les produits',
+  },
+  visitUs: {
+    en: 'Visit Us',
+    rw: 'Dusure',
+    fr: 'Rendez-nous visite',
+  },
+  acrossKigali: {
+    en: 'Across Kigali',
+    rw: 'Muri Kigali hose',
+    fr: 'À travers Kigali',
+  },
+  findNearest: {
+    en: 'Find your nearest Simba branch for fresh products, premium quality, and the best shopping experience in Rwanda.',
+    rw: 'Shaka ishami rya Simba rikwegereye ubone ibicuruzwa bishya byiza n-uburambe mu guhaha mu Rwanda.',
+    fr: 'Trouvez votre succursale Simba la plus proche pour des produits frais et la meilleure expérience d\'achat au Rwanda.',
+  },
+  selectedBranch: {
+    en: 'Selected Branch',
+    rw: 'Ishami wahisemo',
+    fr: 'Succursale sélectionnée',
+  },
+  nearest: {
+    en: 'NEAREST',
+    rw: 'Hafi',
+    fr: 'PLUS PROCHE',
+  },
+  locatedClosest: {
+    en: 'Located Closest to You',
+    rw: 'Iherereye hafi yawe',
+    fr: 'Situé au plus près de vous',
+  },
+  getDirections: {
+    en: 'Get Directions',
+    rw: 'Reba icyerekezo',
+    fr: 'Obtenir l\'itinéraire',
+  },
+  freshEveryday: {
+    en: 'Fresh Everyday',
+    rw: 'Bishya buri munsi',
+    fr: 'Frais tous les jours',
+  },
+  sourcedDirectly: {
+    en: 'Sourced directly from local farmers across Rwanda.',
+    rw: 'Bivanwa mu baturage mu Rwanda hose.',
+    fr: 'Provenant directement des agriculteurs locaux du Rwanda.',
+  },
+  kigaliDelivery: {
+    en: 'Kigali Delivery',
+    rw: 'Kugeza Kigali',
+    fr: 'Livraison à Kigali',
+  },
+  doorstepDelivery: {
+    en: 'Doorstep delivery within 45 minutes of ordering.',
+    rw: 'Kugezwaho iwawe mu minota 45 umaze gutumiza.',
+    fr: 'Livraison à domicile dans les 45 minutes suivant la commande.',
+  },
+  trustedBrand: {
+    en: 'Trusted Brand',
+    rw: 'Iduka ryizewe',
+    fr: 'Marque de confiance',
+  },
+  servingRwandan: {
+    en: 'Serving the Rwandan community for over 20 years.',
+    rw: 'Dukorera abanyarwanda imyaka irenga 20.',
+    fr: 'Au service de la communauté rwandaise depuis plus de 20 ans.',
+  },
+  premiumShopping: {
+    en: 'Premium Shopping',
+    rw: 'Guhaha byo ku rwego rwo hejuru',
+    fr: 'Achats de qualité supérieure',
+  },
+  askAIAssistant: {
+    en: 'Ask AI Assistant',
+    rw: 'Baza AI',
+    fr: 'Demander à l\'assistant IA',
+  },
+  safeFastSignIn: {
+    en: 'Safe & Fast Sign-in',
+    rw: 'Kwinjira byihuse kandi byizewe',
+    fr: 'Connexion sûre et rapide',
+  },
+  operationalControlCenter: {
+    en: 'Operational Control Center',
+    rw: 'Igenzura ry\'imikorere',
+    fr: 'Centre de contrôle opérationnel',
+  },
+  branchManager: {
+    en: 'Branch Manager',
+    rw: 'Umuyobozi w\'ishami',
+    fr: 'Directeur de succursale',
+  },
+  branchStaff: {
+    en: 'Branch Staff',
+    rw: 'Umukozi w\'ishami',
+    fr: 'Personnel de succursale',
+  },
+  orders: {
+    en: 'Orders',
+    rw: 'Komande',
+    fr: 'Commandes',
+  },
+  inventory: {
+    en: 'Inventory',
+    rw: 'Ibicuruzwa',
+    fr: 'Inventaire',
+  },
+  noOrdersFoundBranch: {
+    en: 'No orders found for this branch.',
+    rw: 'Nta komande zabonetse kuri iri shami.',
+    fr: 'Aucune commande trouvée pour cette succursale.',
+  },
+  refId: {
+    en: 'Ref ID',
+    rw: 'Numero',
+    fr: 'Réf ID',
+  },
+  customer: {
+    en: 'Customer',
+    rw: 'Umukiriya',
+    fr: 'Client',
+  },
+  time: {
+    en: 'Time',
+    rw: 'Igihe',
+    fr: 'Temps',
+  },
+  assigned: {
+    en: 'Assigned',
+    rw: 'Yahawe',
+    fr: 'Assigné',
+  },
+  assignToMe: {
+    en: 'Assign To Me',
+    rw: 'Nyigabanye',
+    fr: 'M\'assigner',
+  },
+  markAsReady: {
+    en: 'Mark as Ready',
+    rw: 'Yabonetse',
+    fr: 'Marquer comme prêt',
+  },
+  finishOrder: {
+    en: 'Finish Order',
+    rw: 'Soza komande',
+    fr: 'Terminer la commande',
+  },
+  inventoryControl: {
+    en: 'Inventory Control',
+    rw: 'Igenzura ry\'ibicuruzwa',
+    fr: 'Contrôle des stocks',
+  },
+  manageProductAvailability: {
+    en: 'Manage product availability for',
+    rw: 'Genzura ibicuruzwa bihari kuri',
+    fr: 'Gérer la disponibilité des produits pour',
+  },
+  searchItems: {
+    en: 'Search items in catalog...',
+    rw: 'Shaka ibicuruzwa...',
+    fr: 'Rechercher des articles dans le catalogue...',
+  },
+  addNewProduct: {
+    en: 'Add New Product',
+    rw: 'Ongeramo igicuruzwa gishya',
+    fr: 'Ajouter un nouveau produit',
+  },
+  catalogIsEmpty: {
+    en: 'Catalog is empty.',
+    rw: 'Nta bicuruzwa bihari.',
+    fr: 'Le catalogue est vide.',
+  },
+  sku: {
+    en: 'SKU',
+    rw: 'SKU',
+    fr: 'SKU',
+  },
+  soldOut: {
+    en: 'Sold Out',
+    rw: 'Byashize',
+    fr: 'Épuisé',
+  },
+  outOfStock: {
+    en: 'Out of Stock',
+    rw: 'Ntabwo bihari',
+    fr: 'Rupture de stock',
+  },
+  left: {
+    en: 'left',
+    rw: 'bisigaye',
+    fr: 'restants',
+  },
+  inStock: {
+    en: 'in Stock',
+    rw: 'Bihari',
+    fr: 'en stock',
+  },
+  newInventory: {
+    en: 'New Inventory',
+    rw: 'Ibicuruzwa bishya',
+    fr: 'Nouvel inventaire',
+  },
+  fillProductDetails: {
+    en: 'Fill in the product details',
+    rw: 'Uzuza amakuru y\'igicuruzwa',
+    fr: 'Remplissez les détails du produit',
+  },
+  displayName: {
+    en: 'Display Name',
+    rw: 'Izina',
+    fr: 'Nom d\'affichage',
+  },
+  saleUnit: {
+    en: 'Sale Unit',
+    rw: 'Ingano',
+    fr: 'Unité de vente',
+  },
+  unitPrice: {
+    en: 'Unit Price (RWF)',
+    rw: 'Igiciro (RWF)',
+    fr: 'Prix unitaire (RWF)',
+  },
+  visualIdentity: {
+    en: 'Visual Identity',
+    rw: 'Ifoto',
+    fr: 'Identité visuelle',
+  },
+  uploadImageFile: {
+    en: 'Upload Image File',
+    rw: 'Shyiraho ifoto',
+    fr: 'Télécharger une image',
+  },
+  confirmSyncCatalog: {
+    en: 'Confirm & Sync Catalog',
+    rw: 'Emeza & Bika',
+    fr: 'Confirmer et synchroniser le catalogue',
+  },
+  representative: {
+    en: 'Representative',
+    rw: 'Uhagarariye Ishami',
+    fr: 'Représentant',
+  },
+  assignedBranch: {
+    en: 'Assigned Branch',
+    rw: 'Ishami ryawe',
+    fr: 'Succursale assignée',
+  },
+  staffRole: {
+    en: 'Staff Role',
+    rw: 'Ushinzwe',
+    fr: 'Rôle',
+  },
+  paymentCollected: {
+    en: 'Payment will be collected upon delivery or branch pickup.',
+    rw: 'Ubishyura uhabwa ibicuruzwa.',
+    fr: 'Le paiement sera perçu à la livraison ou au retrait.',
+  },
+  verifiedSession: {
+    en: 'Verified Session',
+    rw: 'Konti Yizewe',
+    fr: 'Session vérifiée',
+  },
+  deliveryAddress: {
+    en: 'Delivery Address',
+    rw: 'Aho kubigeza',
+    fr: 'Adresse de livraison',
+  },
+  phoneNumber: {
+    en: 'Phone Number',
+    rw: 'Numero ya Terefone',
+    fr: 'Numéro de téléphone',
+  },
+  aiAssistant: {
+    en: 'AI Assistant',
+    rw: 'Ubufasha bwa AI',
+    fr: 'Assistant IA',
+  },
+  clearResults: {
+    en: 'Clear Results',
+    rw: 'Siba ibyabonetse',
+    fr: 'Effacer les résultats',
+  },
+  discover: {
+    en: 'Discover',
+    rw: 'Vumbura',
+    fr: 'Découvrir',
+  },
+  aboutUs: {
+    en: 'About Us',
+    rw: 'Abo turibo',
+    fr: 'À propos de nous',
+  },
+  careers: {
+    en: 'Careers',
+    rw: 'Akazi',
+    fr: 'Carrières',
+  },
+  help: {
+    en: 'Help',
+    rw: 'Ubufasha',
+    fr: 'Aide',
+  },
+  faq: {
+    en: 'FAQ',
+    rw: 'Ibibazo bikunze kubazwa',
+    fr: 'FAQ',
+  },
+  privacyPolicy: {
+    en: 'Privacy Policy',
+    rw: 'Amabwiriza y\'ibanga',
+    fr: 'Politique de confidentialité',
+  },
+  terms: {
+    en: 'Terms',
+    rw: 'Amategeko',
+    fr: 'Conditions',
+  },
+  allRightsReserved: {
+    en: 'All rights reserved.',
+    rw: 'Uburenganzira bwose burabitswe.',
+    fr: 'Tous droits réservés.',
   }
 };
 

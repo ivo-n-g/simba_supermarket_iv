@@ -80,13 +80,13 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
               <span className="bg-secondary text-primary px-4 py-1.5 rounded-2xl text-base">{selectedBranch.split(' ').pop()}</span>
               {t('branchDashboard')}
             </h2>
-            <p className="text-white/50 text-xs font-bold uppercase tracking-[0.3em] ml-1">Operational Control Center</p>
+            <p className="text-white/50 text-xs font-bold uppercase tracking-[0.3em] ml-1">{t('operationalControlCenter')}</p>
           </div>
 
           <div className="flex items-center gap-4">
             <div className="flex flex-col items-center md:items-end">
               <span className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg mb-1 ${role === 'manager' ? 'bg-secondary text-primary' : 'bg-white/10 text-white border border-white/10'}`}>
-                {role === 'manager' ? 'Branch Manager' : 'Branch Staff'}
+                {role === 'manager' ? t('branchManager') : t('branchStaff')}
               </span>
               <p className="text-[10px] text-white/40 font-black uppercase">{user?.name}</p>
             </div>
@@ -94,7 +94,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
             <button 
               onClick={() => { if(window.confirm(t('logoutConfirm') || 'Are you sure you want to logout?')) logout(); }}
               className="p-4 bg-red-500/20 text-red-100 rounded-3xl hover:bg-red-500 hover:text-white transition-all border border-red-500/30 shadow-xl group"
-              title="Logout"
+              title={t('logout')}
             >
               <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -118,13 +118,13 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
               onClick={() => setActiveTab('orders')}
               className={`flex-1 pb-4 text-sm font-black uppercase tracking-[0.2em] transition-all border-b-4 ${activeTab === 'orders' ? 'border-secondary text-secondary' : 'border-transparent opacity-30 hover:opacity-100'}`}
             >
-              Orders
+              {t('orders')}
             </button>
             <button 
               onClick={() => setActiveTab('inventory')}
               className={`flex-1 pb-4 text-sm font-black uppercase tracking-[0.2em] transition-all border-b-4 ${activeTab === 'inventory' ? 'border-secondary text-secondary' : 'border-transparent opacity-30 hover:opacity-100'}`}
             >
-              Inventory
+              {t('inventory')}
             </button>
           </div>
         </div>
@@ -139,7 +139,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                 <div className="col-span-full py-40 text-center flex flex-col items-center gap-6">
                   <div className="w-32 h-32 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center text-6xl opacity-20">📦</div>
                   <p className="opacity-20 italic font-black text-2xl text-gray-400 uppercase tracking-[0.3em]">
-                    No orders found
+                    {t('noOrdersFoundBranch')}
                   </p>
                 </div>
               ) : (
@@ -147,7 +147,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                   <div key={order.id} className="bg-white dark:bg-gray-800 p-8 rounded-[48px] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] border border-gray-100 dark:border-gray-700 flex flex-col gap-6 w-full transform hover:scale-[1.03] transition-all duration-500">
                     <div className="flex justify-between items-start">
                       <div className="text-left">
-                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Ref ID</span>
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">{t('refId')}</span>
                         <span className="font-black text-2xl text-primary dark:text-secondary">#{order.id}</span>
                       </div>
                       <span className={`px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm ${
@@ -162,11 +162,11 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
 
                     <div className="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-[32px] space-y-3">
                       <div className="flex justify-between text-xs items-center">
-                        <span className="text-gray-400 font-bold uppercase tracking-widest">Customer</span>
+                        <span className="text-gray-400 font-bold uppercase tracking-widest">{t('customer')}</span>
                         <span className="font-black dark:text-white text-sm">{order.customerName}</span>
                       </div>
                       <div className="flex justify-between text-xs items-center">
-                        <span className="text-gray-400 font-bold uppercase tracking-widest">Time</span>
+                        <span className="text-gray-400 font-bold uppercase tracking-widest">{t('time')}</span>
                         <span className="font-black text-primary dark:text-secondary text-sm">{order.pickupTime}</span>
                       </div>
                     </div>
@@ -187,7 +187,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                       {order.assignedStaff && (
                         <div className="flex items-center justify-center gap-3 p-4 bg-primary text-white rounded-[24px] shadow-lg">
                           <span className="text-sm">👤</span>
-                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-center">Assigned: {order.assignedStaff}</span>
+                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-center">{t('assigned')}: {order.assignedStaff}</span>
                         </div>
                       )}
                       <div className="flex gap-3">
@@ -196,7 +196,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                             onClick={() => updateOrderStatus(order.id, 'assigned', user?.name || 'Staff Member')}
                             className="flex-1 py-5 bg-primary text-white rounded-[24px] text-xs font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-xl active:scale-95 border-b-4 border-black/20"
                           >
-                            Assign To Me
+                            {t('assignToMe')}
                           </button>
                         )}
                         {(role === 'staff' || role === 'manager') && order.status === 'assigned' && order.assignedStaff === user?.name && (
@@ -204,7 +204,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                             onClick={() => updateOrderStatus(order.id, 'ready')}
                             className="flex-1 py-5 bg-secondary text-primary rounded-[24px] text-xs font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-xl active:scale-95 border-b-4 border-black/10"
                           >
-                            Mark as Ready
+                            {t('markAsReady')}
                           </button>
                         )}
                         {order.status === 'ready' && role === 'manager' && (
@@ -212,7 +212,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                             onClick={() => updateOrderStatus(order.id, 'completed')}
                             className="flex-1 py-5 bg-green-600 text-white rounded-[24px] text-xs font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-xl active:scale-95 border-b-4 border-green-800/30"
                           >
-                            Finish Order
+                            {t('finishOrder')}
                           </button>
                         )}
                       </div>
@@ -225,15 +225,15 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
             <div className="bg-white dark:bg-gray-800 rounded-[60px] overflow-hidden shadow-[0_64px_128px_-24px_rgba(0,0,0,0.1)] border border-gray-100 dark:border-gray-700 flex flex-col">
               <div className="p-10 md:p-14 border-b border-gray-50 dark:border-gray-700 flex flex-col items-center justify-center gap-10 text-center">
                 <div className="flex flex-col items-center gap-3">
-                  <h3 className="text-4xl font-black text-gray-800 dark:text-white uppercase tracking-tighter">Inventory Control</h3>
-                  <p className="text-base text-gray-400 font-bold uppercase tracking-widest opacity-60">Manage product availability for {selectedBranch}</p>
+                  <h3 className="text-4xl font-black text-gray-800 dark:text-white uppercase tracking-tighter">{t('inventoryControl')}</h3>
+                  <p className="text-base text-gray-400 font-bold uppercase tracking-widest opacity-60">{t('manageProductAvailability')} {selectedBranch}</p>
                 </div>
                 
                 <div className="flex flex-col md:flex-row items-center gap-6 w-full max-w-4xl">
                   <div className="relative flex-1 w-full">
                     <input 
                       type="text" 
-                      placeholder="Search items in catalog..."
+                      placeholder={t('searchItems')}
                       value={inventorySearch}
                       onChange={(e) => setInventorySearch(e.target.value)}
                       className="pl-16 pr-8 py-6 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-[32px] text-lg font-bold focus:ring-8 focus:ring-secondary/10 outline-none w-full transition-all shadow-inner"
@@ -246,14 +246,14 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                     onClick={() => setIsAddProductModalOpen(true)}
                     className="w-full md:w-auto px-12 py-6 bg-primary text-white rounded-[32px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] flex items-center justify-center gap-4"
                   >
-                    <span className="text-2xl">+</span> Add New Product
+                    <span className="text-2xl">+</span> {t('addNewProduct')}
                   </button>
                 </div>
               </div>
 
               <div className="divide-y divide-gray-50 dark:divide-gray-700 overflow-y-auto max-h-[50vh] px-4 md:px-10">
                 {filteredInventory.length === 0 ? (
-                  <div className="p-20 text-center text-gray-400 italic font-black text-xl uppercase tracking-widest opacity-20">Catalog is empty.</div>
+                  <div className="p-20 text-center text-gray-400 italic font-black text-xl uppercase tracking-widest opacity-20">{t('catalogIsEmpty')}</div>
                 ) : (
                   filteredInventory.map(product => {
                     const quantity = getProductQuantity(selectedBranch, product.id);
@@ -268,9 +268,9 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                               {(product as any)[`name_${language}`] || product.name}
                             </p>
                             <div className="flex flex-wrap justify-center md:justify-start items-center gap-4">
-                              <span className="text-[10px] font-black text-primary dark:text-secondary bg-primary/5 dark:bg-secondary/10 px-4 py-1.5 rounded-full border border-primary/10 tracking-widest">SKU: #{product.id}</span>
+                              <span className="text-[10px] font-black text-primary dark:text-secondary bg-primary/5 dark:bg-secondary/10 px-4 py-1.5 rounded-full border border-primary/10 tracking-widest">{t('sku')}: #{product.id}</span>
                               <span className={`text-[11px] font-black uppercase tracking-[0.2em] px-5 py-1.5 rounded-full shadow-sm ${quantity === 0 ? 'bg-red-50 text-red-500 border border-red-100' : quantity < 5 ? 'bg-orange-50 text-orange-600 border border-orange-100' : 'bg-green-50 text-green-600 border border-green-100'}`}>
-                                {quantity === 0 ? 'Sold Out' : `${quantity} in Stock`}
+                                {quantity === 0 ? t('soldOut') : `${quantity} ${t('inStock')}`}
                               </span>
                             </div>
                           </div>
@@ -313,15 +313,15 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
             <div className="p-10 md:p-16">
               <div className="flex justify-between items-center mb-12">
                 <div className="text-left">
-                  <h2 className="text-3xl font-black text-primary dark:text-secondary uppercase tracking-tight">New Inventory</h2>
-                  <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Fill in the product details</p>
+                  <h2 className="text-3xl font-black text-primary dark:text-secondary uppercase tracking-tight">{t('newInventory')}</h2>
+                  <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">{t('fillProductDetails')}</p>
                 </div>
                 <button onClick={() => setIsAddProductModalOpen(false)} className="text-gray-400 hover:text-red-500 p-4 bg-gray-50 dark:bg-gray-900 rounded-full transition-all text-xl">✕</button>
               </div>
 
               <form onSubmit={handleAddProduct} className="space-y-10">
                 <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">Display Name</label>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">{t('displayName')}</label>
                   <input
                     type="text"
                     required
@@ -341,12 +341,12 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                       className="w-full px-8 py-6 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-[32px] focus:ring-8 focus:ring-secondary/10 outline-none font-black dark:text-white text-sm"
                     >
                       {['Food Products', 'Baby Products', 'Cleaning & Sanitary', 'Cosmetics & Personal Care', 'Kitchenware & Electronics'].map(c => (
-                        <option key={c} value={c}>{c}</option>
+                        <option key={c} value={c}>{t(c)}</option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">Sale Unit</label>
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">{t('saleUnit')}</label>
                     <input
                       type="text"
                       required
@@ -360,7 +360,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
 
                 <div className="grid grid-cols-1 gap-6">
                   <div>
-                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">Unit Price (RWF)</label>
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">{t('unitPrice')}</label>
                     <input
                       type="number"
                       required
@@ -373,7 +373,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                 </div>
 
                 <div className="bg-gray-50 dark:bg-gray-900 p-8 rounded-[40px] border-2 border-dashed border-gray-100 dark:border-gray-700">
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 text-center">Visual Identity</label>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 text-center">{t('visualIdentity')}</label>
                   <div className="flex flex-col md:flex-row items-center gap-8">
                     <div className="w-32 h-32 bg-white dark:bg-gray-800 rounded-[40px] shadow-2xl overflow-hidden flex items-center justify-center border-4 border-white dark:border-gray-700 shrink-0">
                       {newProductImage ? (
@@ -384,7 +384,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                     </div>
                     <label className="flex-1 w-full cursor-pointer">
                       <div className="w-full px-10 py-6 bg-primary text-white rounded-[32px] text-center hover:scale-[1.02] transition-all shadow-lg active:scale-95 font-black uppercase text-xs tracking-widest">
-                        Upload Image File
+                        {t('uploadImageFile')}
                       </div>
                       <input
                         type="file"
@@ -400,7 +400,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                   type="submit"
                   className="w-full bg-secondary text-primary py-8 rounded-[32px] font-black text-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-tighter border-b-8 border-black/10"
                 >
-                  Confirm & Sync Catalog
+                  {t('confirmSyncCatalog')}
                 </button>
               </form>
             </div>

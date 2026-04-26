@@ -62,15 +62,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
         <div className="container mx-auto px-6 flex justify-around items-center gap-8 whitespace-nowrap animate-pulse">
           <div className="flex items-center gap-2">
             <span className="text-primary dark:text-secondary font-black text-lg">{productsData.products.length}+</span>
-            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Premium Products</span>
+            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{t('premiumProducts')}</span>
           </div>
           <div className="hidden md:flex items-center gap-2">
             <span className="text-primary dark:text-secondary font-black text-lg">{locations.length}</span>
-            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Kigali Branches</span>
+            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{t('kigaliBranches')}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-primary dark:text-secondary font-black text-lg">4.9/5</span>
-            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Customer Rating</span>
+            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{t('customerRating')}</span>
           </div>
         </div>
       </div>
@@ -83,7 +83,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
               {t('exploreCategories')}
             </h2>
             <p className="text-gray-500 dark:text-gray-400 font-medium text-sm md:text-lg">
-              Fresh quality products from Simba Supermarket, now closer to you than ever.
+              {t('exploreCategoriesDesc')}
             </p>
           </div>
           <button 
@@ -123,10 +123,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center mb-12 md:mb-20">
             <h2 className="text-3xl md:text-6xl font-black uppercase tracking-tighter mb-4 md:mb-6 leading-none">
-              Visit Us <span className="text-secondary">Across Kigali</span>
+              {t('visitUs')} <span className="text-secondary">{t('acrossKigali')}</span>
             </h2>
             <p className="text-gray-300 font-bold text-sm md:text-xl max-w-2xl mx-auto leading-relaxed">
-              Find your nearest Simba branch for fresh products, premium quality, and the best shopping experience in Rwanda.
+              {t('findNearest')}
             </p>
           </div>
 
@@ -150,7 +150,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
                     <div className="flex items-center gap-2">
                       <h3 className="text-sm md:text-lg font-black uppercase tracking-tight">{loc.name.replace('Simba Supermarket ', '')}</h3>
                       {loc.name === closestBranchName && (
-                        <span className="bg-secondary text-primary text-[8px] font-black px-2 py-0.5 rounded-full animate-pulse">NEAREST</span>
+                        <span className="bg-secondary text-primary text-[8px] font-black px-2 py-0.5 rounded-full animate-pulse">{t('nearest')}</span>
                       )}
                     </div>
                     <p className={`text-[9px] md:text-[11px] font-bold uppercase tracking-widest mt-1 opacity-60 ${selectedLoc.name === loc.name ? 'text-primary' : 'text-gray-400'}`}>
@@ -174,14 +174,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
                 <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 md:right-8 bg-white dark:bg-gray-800 p-6 md:p-10 rounded-[32px] md:rounded-[48px] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] animate-in fade-in zoom-in duration-1000 border-2 md:border-4 border-white/20 dark:border-gray-700/50">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="text-left">
-                      <p className="text-[10px] font-black text-primary dark:text-secondary uppercase tracking-[0.2em] mb-1">Selected Branch</p>
+                      <p className="text-[10px] font-black text-primary dark:text-secondary uppercase tracking-[0.2em] mb-1">{t('selectedBranch')}</p>
                       <p className="text-base md:text-2xl font-black text-gray-800 dark:text-white uppercase tracking-tighter">{selectedLoc.name}</p>
                       <p className="text-[9px] md:text-xs text-gray-400 font-bold mt-1 uppercase leading-tight mb-4 tracking-widest">{selectedLoc.address}</p>
                       
                       {selectedLoc.name === closestBranchName && (
                         <div className="inline-flex items-center gap-2 mb-4 bg-green-50 dark:bg-green-900/30 px-3 py-1.5 rounded-full border border-green-100 dark:border-green-800 animate-in slide-in-from-left duration-500">
                           <span className="text-sm">📍</span>
-                          <span className="text-[9px] font-black text-green-600 dark:text-green-400 uppercase tracking-widest">Located Closest to You</span>
+                          <span className="text-[9px] font-black text-green-600 dark:text-green-400 uppercase tracking-widest">{t('locatedClosest')}</span>
                         </div>
                       )}
 
@@ -205,7 +205,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
                       rel="noopener noreferrer"
                       className="bg-secondary text-primary px-8 py-4 rounded-3xl font-black text-xs md:text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all text-center shadow-lg whitespace-nowrap"
                     >
-                      Get Directions
+                      {t('getDirections')}
                     </a>
                   </div>
                 </div>
@@ -225,9 +225,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ categories, onSelectCategory 
       <section className="py-20 md:py-32 container mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-around gap-12 text-center md:text-left">
           {[
-            { title: "Fresh Everyday", desc: "Sourced directly from local farmers across Rwanda.", icon: "🍃" },
-            { title: "Kigali Delivery", desc: "Doorstep delivery within 45 minutes of ordering.", icon: "⚡" },
-            { title: "Trusted Brand", desc: "Serving the Rwandan community for over 20 years.", icon: "💎" }
+            { title: t('freshEveryday'), desc: t('sourcedDirectly'), icon: "🍃" },
+            { title: t('kigaliDelivery'), desc: t('doorstepDelivery'), icon: "⚡" },
+            { title: t('trustedBrand'), desc: t('servingRwandan'), icon: "💎" }
           ].map((f, i) => (
             <div key={i} className="flex flex-col items-center md:items-start gap-4">
               <span className="text-5xl md:text-6xl filter drop-shadow-xl">{f.icon}</span>

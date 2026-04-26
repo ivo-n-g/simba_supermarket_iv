@@ -30,7 +30,7 @@ const Hero: React.FC = () => {
       <div className="container mx-auto px-4 md:px-6 relative z-20 flex flex-col lg:flex-row items-center justify-between gap-10 md:gap-16">
         <div className="text-center lg:text-left text-white max-w-2xl animate-in fade-in slide-in-from-left-12 duration-1000">
           <div className="inline-block px-4 py-1.5 md:px-5 md:py-2 rounded-full bg-secondary text-primary border-2 border-secondary/50 shadow-2xl mb-6 md:mb-8">
-            <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.4em]">Premium Shopping</span>
+            <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.4em]">{t('premiumShopping')}</span>
           </div>
           <h2 className="text-4xl md:text-9xl font-black mb-4 md:mb-6 tracking-tighter leading-[0.85] drop-shadow-2xl">
             Simba <br/>
@@ -60,7 +60,7 @@ const Hero: React.FC = () => {
                   }}
                   className="px-8 py-5 bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-[32px] font-black text-lg hover:bg-white/20 transition-all flex items-center justify-center gap-3"
                 >
-                  <span>✨</span> Ask AI Assistant
+                  <span>✨</span> {t('askAIAssistant')}
                 </button>
               </div>
             ) : (
@@ -92,7 +92,7 @@ const Hero: React.FC = () => {
                 {t('getStarted')}
               </h3>
               <p className="text-gray-500 dark:text-gray-400 text-xs md:text-sm font-bold opacity-80 uppercase tracking-widest">
-                Safe & Fast Sign-in
+                {t('safeFastSignIn')}
               </p>
             </div>
             

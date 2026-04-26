@@ -10,19 +10,19 @@ export interface Location {
 }
 
 export const locations: Location[] = [
-  { name: 'Simba Supermarket Gishushu', lat: -1.9515, lng: 30.1030, address: 'KG 8 Ave, Gishushu, Kigali', rating: 4.8, reviewCount: 156 },
-  { name: 'Simba Supermarket Town', lat: -1.9443, lng: 30.0617, address: 'KN 2 St, Kigali City Center', rating: 4.5, reviewCount: 342 },
-  { name: 'Simba Supermarket Kimironko', lat: -1.9351, lng: 30.1265, address: 'KG 11 Ave, Kimironko, Kigali', rating: 4.7, reviewCount: 89 },
-  { name: 'Simba Supermarket Kicukiro', lat: -1.9774, lng: 30.1044, address: 'KK 15 Rd, Kicukiro, Kigali', rating: 4.6, reviewCount: 124 },
-  { name: 'Simba Supermarket Nyarutarama', lat: -1.9311, lng: 30.0984, address: 'KG 9 Ave, Nyarutarama, Kigali', rating: 4.9, reviewCount: 67 },
-  { name: 'Simba Supermarket Nyamirambo', lat: -1.9723, lng: 30.0456, address: 'KN 162 St, Nyamirambo, Kigali', rating: 4.4, reviewCount: 215 },
-  { name: 'Simba Supermarket Remera', lat: -1.9587, lng: 30.1189, address: 'KG 11 Ave, Remera, Kigali', rating: 4.7, reviewCount: 198 },
-  { name: 'Simba Supermarket Kacyiru', lat: -1.9395, lng: 30.0877, address: 'KG 7 Ave, Kacyiru, Kigali', rating: 4.6, reviewCount: 54 },
-  { name: 'Simba Supermarket Gikondo', lat: -1.9719, lng: 30.0761, address: 'KK 12 Rd, Gikondo, Kigali', rating: 4.3, reviewCount: 112 },
-  { name: 'Simba Supermarket Kanombe', lat: -1.9635, lng: 30.1548, address: 'KK 1 Ave, Kanombe, Kigali', rating: 4.5, reviewCount: 78 },
-  { name: 'Simba Supermarket Kinyinya', lat: -1.9162, lng: 30.1107, address: 'KG 19 Ave, Kinyinya, Kigali', rating: 4.2, reviewCount: 43 },
-  { name: 'Simba Supermarket Kibagabaga', lat: -1.9318, lng: 30.1167, address: 'KG 14 Ave, Kibagabaga, Kigali', rating: 4.8, reviewCount: 92 },
-  { name: 'Simba Supermarket Nyanza', lat: -2.0005, lng: 30.0858, address: 'KK 15 Rd, Nyanza, Kigali', rating: 4.1, reviewCount: 31 },
+  { name: 'Simba Supermarket Town', lat: -1.9460, lng: 30.0598, address: 'KN 4 Ave, UTC Building, Town', rating: 4.8, reviewCount: 342 },
+  { name: 'Simba Supermarket Gishushu', lat: -1.9515, lng: 30.1035, address: 'KG 622 St, Gishushu', rating: 4.7, reviewCount: 156 },
+  { name: 'Simba Supermarket Kigali Heights', lat: -1.9530, lng: 30.0933, address: 'KG 7 Ave, Kigali Heights', rating: 4.9, reviewCount: 184 },
+  { name: 'Simba Supermarket Kimironko', lat: -1.9498, lng: 30.1247, address: 'KG 11 Ave, near Kimironko Market', rating: 4.7, reviewCount: 89 },
+  { name: 'Simba Supermarket Kicukiro', lat: -1.9732, lng: 30.1035, address: 'KK 15 Rd, Kicukiro Center', rating: 4.6, reviewCount: 124 },
+  { name: 'Simba Supermarket Remera', lat: -1.9587, lng: 30.1130, address: 'Amahoro Stadium Area, Remera', rating: 4.7, reviewCount: 198 },
+  { name: 'Simba Supermarket Kacyiru', lat: -1.9420, lng: 30.0880, address: 'Near Police HQ, Kacyiru', rating: 4.6, reviewCount: 54 },
+  { name: 'Simba Supermarket Nyamirambo', lat: -1.9770, lng: 30.0460, address: 'Near Green Mosque, Nyamirambo', rating: 4.4, reviewCount: 215 },
+  { name: 'Simba Supermarket Gikondo', lat: -1.9710, lng: 30.0750, address: 'Magerwa Rd, Gikondo', rating: 4.3, reviewCount: 112 },
+  { name: 'Simba Supermarket Kanombe', lat: -1.9680, lng: 30.1380, address: 'Airport Rd, Kanombe', rating: 4.5, reviewCount: 78 },
+  { name: 'Simba Supermarket Kinyinya', lat: -1.9160, lng: 30.1110, address: 'Kinyinya Center', rating: 4.2, reviewCount: 43 },
+  { name: 'Simba Supermarket Kibagabaga', lat: -1.9280, lng: 30.1160, address: 'Kibagabaga Hospital Rd', rating: 4.8, reviewCount: 92 },
+  { name: 'Simba Supermarket Nyanza', lat: -2.0000, lng: 30.0860, address: 'Nyanza Bus Park Area', rating: 4.1, reviewCount: 31 },
 ];
 
 interface CartItem {

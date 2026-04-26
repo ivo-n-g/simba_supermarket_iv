@@ -73,7 +73,7 @@ interface StoreContextType {
   forgotPassword: (email: string) => Promise<boolean>;
   handleGoogleSuccess: (credentialResponse: any) => void;
   logout: () => void;
-  addToCart: (product: { id: number; name: string; price: number; image: string }, quantity?: number) => void;
+  addToCart: (product: { id: number; name: string; price: number; image: string; category: string; unit: string }, quantity?: number) => void;
   removeFromCart: (productId: number) => void;
   updateQuantity: (productId: number, quantity: number) => void;
   toggleWishlist: (product: Product) => void;
@@ -272,7 +272,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     localStorage.removeItem('simba_user_session');
   };
 
-  const addToCart = (product: { id: number; name: string; price: number; image: string }, quantity: number = 1) => {
+  const addToCart = (product: { id: number; name: string; price: number; image: string; category: string; unit: string }, quantity: number = 1) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
       if (existingItem) {

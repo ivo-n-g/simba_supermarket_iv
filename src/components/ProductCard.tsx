@@ -9,9 +9,10 @@ interface ProductCardProps {
   image: string;
   unit: string;
   category: string;
+  onClick: () => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit, category }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit, category, onClick }) => {
   const { addToCart, toggleWishlist, isInWishlist, pickupBranch, isProductInStock, getProductQuantity } = useStore();
   const { t } = useLanguage();
   const [localQuantity, setLocalQuantity] = useState(1);
@@ -25,7 +26,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit,
     e.preventDefault();
     e.stopPropagation();
     if (!inStock) return;
-    addToCart({ id, name, price, image }, localQuantity);
+    addToCart({ id, name, price, image, category, unit }, localQuantity);
     setLocalQuantity(1);
   };
 
@@ -50,7 +51,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit,
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-2 md:p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md dark:hover:shadow-primary/10 transition-all relative group flex flex-col h-full">
+    <div 
+      onClick={onClick}
+      className="bg-white dark:bg-gray-800 p-2 md:p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md dark:hover:shadow-primary/10 transition-all relative group flex flex-col h-full cursor-pointer overflow-hidden"
+    >
       <div className="aspect-square mb-2 md:mb-3 relative overflow-hidden rounded-lg bg-gray-50 dark:bg-gray-700/50">
         <img
           src={image}
@@ -98,7 +102,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit,
         {/* Action Controls */}
         <div className="mt-3 space-y-2">
           {/* Quantity and Add to Cart Row */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
             <div className="flex items-center border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden h-8 md:h-10">
               <button 
                 onClick={decrement}

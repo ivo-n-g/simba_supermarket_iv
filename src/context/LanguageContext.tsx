@@ -859,6 +859,26 @@ const translations: Translations = {
     rw: 'Amategeko',
     fr: 'Conditions',
   },
+  backToResults: {
+    en: 'Back to Results',
+    rw: 'Subira inyuma',
+    fr: 'Retour aux résultats',
+  },
+  description: {
+    en: 'Description',
+    rw: 'Ibisobanuro',
+    fr: 'Description',
+  },
+  unit: {
+    en: 'Unit',
+    rw: 'Igipimo',
+    fr: 'Unité',
+  },
+  category: {
+    en: 'Category',
+    rw: 'Icyiciro',
+    fr: 'Catégorie',
+  },
   allRightsReserved: {
     en: 'All rights reserved.',
     rw: 'Uburenganzira bwose burabitswe.',

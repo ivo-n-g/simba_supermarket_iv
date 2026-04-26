@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import CategorySidebar from './components/CategorySidebar';
 import ProductGrid from './components/ProductGrid';
+import ProductDetail from './components/ProductDetail';
 import LandingPage from './components/LandingPage';
 import ContactModal from './components/ContactModal';
 import InfoModal from './components/InfoModal';
@@ -16,11 +17,12 @@ function AppContent() {
   const { user, customProducts, isBranchDashboardOpen, setIsBranchDashboardOpen, pickupBranch, isProductInStock } = useStore();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
   const [minPrice, setMinPrice] = useState(100);
   const [maxPrice, setMaxPrice] = useState(500000);
   const [onlyInStock, setOnlyInStock] = useState(false);
   const [aiResponse, setAiResponse] = useState<GroqResponse | null>(null);
-  const [view, setView] = useState<'landing' | 'shop'>('landing');
+  const [view, setView] = useState<'landing' | 'shop' | 'details'>('landing');
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [infoModal, setInfoModal] = useState<{ isOpen: boolean; title: string; content: string }>({
     isOpen: false,
@@ -94,13 +96,21 @@ function AppContent() {
   const handleSelectCategory = (category: string) => {
     setSelectedCategory(category);
     setView('shop');
+    setSelectedProductId(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleProductClick = (id: number) => {
+    setSelectedProductId(id);
+    setView('details');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSearch = (query: string) => {
     setAiResponse(null);
     setSearchQuery(query);
-    if (query.trim() && view !== 'shop') {
+    setSelectedProductId(null);
+    if (query.trim() && (view === 'landing' || view === 'details')) {
       setView('shop');
     }
   };
@@ -108,6 +118,7 @@ function AppContent() {
   const handleAiSearch = (response: GroqResponse) => {
     setAiResponse(response);
     setSearchQuery('');
+    setSelectedProductId(null);
     setView('shop');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -117,6 +128,7 @@ function AppContent() {
     setSelectedCategory('All');
     setSearchQuery('');
     setAiResponse(null);
+    setSelectedProductId(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -138,7 +150,7 @@ function AppContent() {
         onAiSearch={handleAiSearch}
       />
       
-      <main key={view + searchQuery + (aiResponse ? 'ai' : '')} className="animate-fade-in-up">
+      <main key={view + searchQuery + (aiResponse ? 'ai' : '') + selectedProductId} className="animate-fade-in-up">
         {view === 'landing' ? (
           <>
             <Hero />
@@ -153,6 +165,11 @@ function AppContent() {
               setOnlyInStock={setOnlyInStock}
             />
           </>
+        ) : view === 'details' && selectedProductId ? (
+          <ProductDetail 
+            productId={selectedProductId} 
+            onBack={() => setView('shop')} 
+          />
         ) : (
           <div className="container mx-auto flex flex-col md:flex-row min-h-screen">
             <CategorySidebar 
@@ -195,6 +212,7 @@ function AppContent() {
                 products={filteredProducts}
                 selectedCategory={selectedCategory}
                 searchQuery={searchQuery}
+                onProductClick={handleProductClick}
               />
             </div>
           </div>

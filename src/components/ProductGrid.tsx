@@ -18,9 +18,10 @@ interface ProductGridProps {
   products: Product[];
   selectedCategory: string;
   searchQuery: string;
+  onProductClick: (id: number) => void;
 }
 
-const ProductGrid: React.FC<ProductGridProps> = ({ products, selectedCategory, searchQuery }) => {
+const ProductGrid: React.FC<ProductGridProps> = ({ products, selectedCategory, searchQuery, onProductClick }) => {
   const { t, language } = useLanguage();
 
   const getProductName = (product: Product) => {
@@ -47,6 +48,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products, selectedCategory, s
             image={product.image}
             unit={product.unit}
             category={product.category}
+            onClick={() => onProductClick(product.id)}
           />
         ))}
       </div>

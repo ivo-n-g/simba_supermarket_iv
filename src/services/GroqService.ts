@@ -1,4 +1,4 @@
-const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
+const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY || (window as any).process?.env?.VITE_GROQ_API_KEY;
 const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 export interface GroqResponse {
@@ -8,9 +8,9 @@ export interface GroqResponse {
 
 export const conversationalSearch = async (query: string, products: any[], language: string): Promise<GroqResponse> => {
   if (!GROQ_API_KEY) {
-    console.error('Groq API Key missing in environment variables');
+    console.error('Groq API Key missing. Please check .env.local');
     return { 
-      answer: 'AI Search is currently unavailable. Please ensure VITE_GROQ_API_KEY is set.', 
+      answer: 'AI Search is currently unavailable. Please ensure the VITE_GROQ_API_KEY is set in your .env.local file and RESTART your development server.', 
       productIds: [] 
     };
   }

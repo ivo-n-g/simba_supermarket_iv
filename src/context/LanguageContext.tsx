@@ -404,6 +404,16 @@ const translations: Translations = {
     rw: 'Igiciro',
     fr: 'Gamme de prix',
   },
+  onlyInStock: {
+    en: 'Only In Stock',
+    rw: 'Ibihari gusa',
+    fr: 'En stock uniquement',
+  },
+  filters: {
+    en: 'Filters',
+    rw: 'Akayunguruzo',
+    fr: 'Filtres',
+  },
   pickupTime: {
     en: 'Pick-up Time',
     rw: 'Igihe cyo gufatira',

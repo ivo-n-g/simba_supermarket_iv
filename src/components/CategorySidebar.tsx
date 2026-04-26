@@ -12,6 +12,8 @@ interface CategorySidebarProps {
   maxPrice: number;
   setMinPrice: (price: number) => void;
   setMaxPrice: (price: number) => void;
+  onlyInStock: boolean;
+  setOnlyInStock: (val: boolean) => void;
 }
 
 const categoryIcons: Record<string, React.ReactNode> = {
@@ -81,7 +83,9 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
   minPrice,
   maxPrice,
   setMinPrice,
-  setMaxPrice
+  setMaxPrice,
+  onlyInStock,
+  setOnlyInStock
 }) => {
   const { t, language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
@@ -172,7 +176,20 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
 
           {/* Price Range Filter */}
           <div className="mt-10 pt-10 border-t border-gray-100 dark:border-gray-800">
-            <h3 className="text-sm font-black text-primary dark:text-secondary uppercase tracking-[0.2em] mb-8">{t('priceRange')}</h3>
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-sm font-black text-primary dark:text-secondary uppercase tracking-[0.2em]">{t('filters')}</h3>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('onlyInStock')}</span>
+                <button 
+                  onClick={() => setOnlyInStock(!onlyInStock)}
+                  className={`w-10 h-5 rounded-full relative transition-all duration-300 ${onlyInStock ? 'bg-primary' : 'bg-gray-200 dark:bg-gray-700'}`}
+                >
+                  <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all duration-300 ${onlyInStock ? 'left-6' : 'left-1'}`}></div>
+                </button>
+              </div>
+            </div>
+            
+            <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6">{t('priceRange')}</h4>
             
             <div className="space-y-8 px-2">
               <div className="flex justify-between items-center bg-gray-50 dark:bg-gray-800/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-inner">

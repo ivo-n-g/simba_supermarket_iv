@@ -12,11 +12,12 @@ import { StoreProvider, useStore } from './context/StoreContext';
 import { useLanguage } from './context/LanguageContext';
 
 function AppContent() {
-  const { user, customProducts, isBranchDashboardOpen, setIsBranchDashboardOpen } = useStore();
+  const { user, customProducts, isBranchDashboardOpen, setIsBranchDashboardOpen, pickupBranch, isProductInStock } = useStore();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [minPrice, setMinPrice] = useState(100);
   const [maxPrice, setMaxPrice] = useState(500000);
+  const [onlyInStock, setOnlyInStock] = useState(false);
   const [aiResponse, setAiResponse] = useState<GroqResponse | null>(null);
   const [view, setView] = useState<'landing' | 'shop'>('landing');
   const [isContactOpen, setIsContactOpen] = useState(false);
@@ -52,11 +53,16 @@ function AppContent() {
     }
 
     const query = searchQuery.toLowerCase();
+    const currentBranch = pickupBranch || 'Simba Supermarket Remera';
+
     return products.filter(product => {
       const p = product as any;
       const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
       const matchesPrice = product.price >= minPrice && product.price <= maxPrice;
       
+      const inStock = isProductInStock(currentBranch, product.id);
+      const matchesStock = !onlyInStock || inStock;
+
       const searchableText = [
         p.name,
         p.name_en,
@@ -69,9 +75,9 @@ function AppContent() {
       ].filter(Boolean).join(' ').toLowerCase();
 
       const matchesSearch = searchableText.includes(query);
-      return matchesCategory && matchesSearch && matchesPrice;
+      return matchesCategory && matchesSearch && matchesPrice && matchesStock;
     });
-  }, [selectedCategory, searchQuery, language, aiResponse, minPrice, maxPrice, allProducts]);
+  }, [selectedCategory, searchQuery, language, aiResponse, minPrice, maxPrice, allProducts, onlyInStock, pickupBranch, isProductInStock]);
 
   const handleSelectCategory = (category: string) => {
     setSelectedCategory(category);
@@ -141,6 +147,8 @@ function AppContent() {
               maxPrice={maxPrice}
               setMinPrice={setMinPrice}
               setMaxPrice={setMaxPrice}
+              onlyInStock={onlyInStock}
+              setOnlyInStock={setOnlyInStock}
             />
             
             <div className="flex-1 bg-white dark:bg-gray-800/50 shadow-sm md:rounded-[32px] md:my-8 overflow-hidden">

@@ -99,7 +99,7 @@ function App() {
           onAiSearch={handleAiSearch}
         />
         
-        <main>
+        <main key={view + searchQuery + (aiResponse ? 'ai' : '')} className="animate-fade-in-up">
           {view === 'landing' ? (
             <>
               <Hero />

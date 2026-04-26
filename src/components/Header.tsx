@@ -77,9 +77,13 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
         setIsAiLoading(false);
       }
     } else {
-      onSearch(inputValue);
-      addToHistory(inputValue);
-      setShowSuggestions(false);
+      setIsAiLoading(true); // Reuse loading state for standard search feedback
+      setTimeout(() => {
+        onSearch(inputValue);
+        addToHistory(inputValue);
+        setShowSuggestions(false);
+        setIsAiLoading(false);
+      }, 300);
     }
   };
 

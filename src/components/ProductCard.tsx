@@ -11,12 +11,14 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit }) => {
-  const { addToCart, toggleWishlist, isInWishlist, pickupBranch, isProductInStock } = useStore();
+  const { addToCart, toggleWishlist, isInWishlist, pickupBranch, isProductInStock, getProductQuantity } = useStore();
   const { t } = useLanguage();
   const [localQuantity, setLocalQuantity] = useState(1);
 
   const isWishlisted = isInWishlist(id);
-  const inStock = isProductInStock(pickupBranch || 'Simba Supermarket Remera', id);
+  const currentBranch = pickupBranch || 'Simba Supermarket Remera';
+  const inStock = isProductInStock(currentBranch, id);
+  const stockAmount = getProductQuantity(currentBranch, id);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -77,9 +79,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit 
       </div>
       
       <div className="flex flex-col flex-1">
-        <span className="text-primary dark:text-secondary font-bold text-sm md:text-lg">
-          {price.toLocaleString()} RWF
-        </span>
+        <div className="flex justify-between items-start">
+          <span className="text-primary dark:text-secondary font-bold text-sm md:text-lg">
+            {price.toLocaleString()} RWF
+          </span>
+          <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${stockAmount === 0 ? 'bg-red-50 text-red-500' : stockAmount < 5 ? 'bg-orange-50 text-orange-500' : 'bg-green-50 text-green-600'}`}>
+            {stockAmount === 0 ? 'Out of Stock' : `${stockAmount} left`}
+          </span>
+        </div>
         <h3 className="text-gray-800 dark:text-gray-100 font-semibold text-[11px] md:text-sm line-clamp-2 min-h-[2rem] md:min-h-[2.5rem] mt-0.5 md:mt-1 leading-tight">
           {name}
         </h3>

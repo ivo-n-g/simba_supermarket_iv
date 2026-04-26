@@ -11,14 +11,12 @@ interface BranchDashboardProps {
 type DashboardTab = 'orders' | 'inventory';
 
 const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose }) => {
-  const { orders, updateOrderStatus, pickupBranch, branchStock, toggleStock } = useStore();
+  const { orders, updateOrderStatus, pickupBranch, updateStockAmount, getProductQuantity } = useStore();
   const { t, language } = useLanguage();
   const [role, setRole] = useState<'manager' | 'staff'>('manager');
   const [activeTab, setActiveTab] = useState<DashboardTab>('orders');
   const [inventorySearch, setInventorySearch] = useState('');
   const selectedBranch = pickupBranch || 'Simba Supermarket Remera';
-
-  const outOfStockItems = branchStock[selectedBranch] || [];
 
   const filteredOrders = orders.filter(order => order.branch === selectedBranch);
 
@@ -180,32 +178,52 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose }) =>
                 {filteredInventory.length === 0 ? (
                   <div className="p-10 text-center text-gray-400 italic font-bold">No products found.</div>
                 ) : (
-                  filteredInventory.map(product => (
-                    <div key={product.id} className="p-4 flex items-center justify-between hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
-                      <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 bg-gray-50 dark:bg-gray-900 rounded-xl overflow-hidden flex items-center justify-center border border-gray-100 dark:border-gray-700">
-                          <img src={product.image} alt={product.name} className="w-full h-full object-contain p-1" />
+                  filteredInventory.map(product => {
+                    const quantity = getProductQuantity(selectedBranch, product.id);
+                    return (
+                      <div key={product.id} className="p-4 flex items-center justify-between hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
+                        <div className="flex items-center gap-4">
+                          <div className="w-14 h-14 bg-gray-50 dark:bg-gray-900 rounded-xl overflow-hidden flex items-center justify-center border border-gray-100 dark:border-gray-700">
+                            <img src={product.image} alt={product.name} className="w-full h-full object-contain p-1" />
+                          </div>
+                          <div>
+                            <p className="font-black text-xs md:text-sm dark:text-white text-gray-800 uppercase tracking-tight line-clamp-1">
+                              {(product as any)[`name_${language}`] || product.name}
+                            </p>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              <span className="text-[9px] font-black text-primary dark:text-secondary bg-primary/5 px-1.5 py-0.5 rounded">#{product.id}</span>
+                              <span className={`text-[9px] font-black uppercase tracking-widest ${quantity === 0 ? 'text-red-500' : quantity < 5 ? 'text-orange-500' : 'text-green-500'}`}>
+                                {quantity === 0 ? 'Out of Stock' : `${quantity} in stock`}
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-black text-xs md:text-sm dark:text-white text-gray-800 uppercase tracking-tight line-clamp-1">
-                            {(product as any)[`name_${language}`] || product.name}
-                          </p>
-                          <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[9px] font-black text-primary dark:text-secondary bg-primary/5 px-1.5 py-0.5 rounded">#{product.id}</span>
-                            <span className={`text-[9px] font-black uppercase tracking-widest ${outOfStockItems.includes(product.id) ? 'text-red-500' : 'text-green-500'}`}>
-                              {outOfStockItems.includes(product.id) ? 'Out of Stock' : 'In Stock'}
-                            </span>
+                        
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-xl p-1 border border-gray-200 dark:border-gray-600">
+                            <button 
+                              onClick={() => updateStockAmount(selectedBranch, product.id, quantity - 1)}
+                              className="w-8 h-8 flex items-center justify-center hover:bg-white dark:hover:bg-gray-600 rounded-lg transition-all font-black text-primary dark:text-secondary"
+                            >
+                              -
+                            </button>
+                            <input 
+                              type="number" 
+                              value={quantity}
+                              onChange={(e) => updateStockAmount(selectedBranch, product.id, parseInt(e.target.value) || 0)}
+                              className="w-12 bg-transparent text-center font-black text-xs text-primary dark:text-secondary outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            />
+                            <button 
+                              onClick={() => updateStockAmount(selectedBranch, product.id, quantity + 1)}
+                              className="w-8 h-8 flex items-center justify-center hover:bg-white dark:hover:bg-gray-600 rounded-lg transition-all font-black text-primary dark:text-secondary"
+                            >
+                              +
+                            </button>
                           </div>
                         </div>
                       </div>
-                      <button 
-                        onClick={() => toggleStock(selectedBranch, product.id)}
-                        className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${outOfStockItems.includes(product.id) ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200'}`}
-                      >
-                        {outOfStockItems.includes(product.id) ? 'Mark In Stock' : 'Mark Out of Stock'}
-                      </button>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </div>

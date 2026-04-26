@@ -60,9 +60,10 @@ interface StoreContextType {
   cartCount: number;
   orders: Order[];
   updateOrderStatus: (orderId: string, status: Order['status'], staff?: string) => void;
-  branchStock: Record<string, number[]>; // Branch Name -> Array of Out of Stock Product IDs
-  toggleStock: (branch: string, productId: number) => void;
+  branchStock: Record<string, Record<number, number>>; // Branch Name -> { Product ID -> Quantity }
+  updateStockAmount: (branch: string, productId: number, amount: number) => void;
   isProductInStock: (branch: string, productId: number) => boolean;
+  getProductQuantity: (branch: string, productId: number) => number;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -75,7 +76,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [pickupBranch, setPickupBranch] = useState<string>('');
   const [pickupTime, setPickupTime] = useState<string>('');
   const [orders, setOrders] = useState<Order[]>([]);
-  const [branchStock, setBranchStock] = useState<Record<string, number[]>>({});
+  const [branchStock, setBranchStock] = useState<Record<string, Record<number, number>>>({});
 
   useEffect(() => {
     const savedUser = localStorage.getItem('simba_user_session');
@@ -106,19 +107,27 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     localStorage.setItem('simba_branch_stock', JSON.stringify(branchStock));
   }, [branchStock]);
 
-  const toggleStock = (branch: string, productId: number) => {
+  const updateStockAmount = (branch: string, productId: number, amount: number) => {
     setBranchStock(prev => {
-      const branchOOS = prev[branch] || [];
-      const newOOS = branchOOS.includes(productId)
-        ? branchOOS.filter(id => id !== productId)
-        : [...branchOOS, productId];
-      return { ...prev, [branch]: newOOS };
+      const currentBranchStock = prev[branch] || {};
+      return {
+        ...prev,
+        [branch]: {
+          ...currentBranchStock,
+          [productId]: Math.max(0, amount)
+        }
+      };
     });
   };
 
+  const getProductQuantity = (branch: string, productId: number) => {
+    const currentBranchStock = branchStock[branch] || {};
+    // Default stock to 10 for demo if not set
+    return currentBranchStock[productId] !== undefined ? currentBranchStock[productId] : 10;
+  };
+
   const isProductInStock = (branch: string, productId: number) => {
-    const branchOOS = branchStock[branch] || [];
-    return !branchOOS.includes(productId);
+    return getProductQuantity(branch, productId) > 0;
   };
 
   const login = async (email: string, password?: string, role: User['role'] = 'customer', branch?: string): Promise<boolean> => {
@@ -255,7 +264,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       addToCart, removeFromCart, updateQuantity, toggleWishlist, isInWishlist, checkout, 
       deliveryMethod, setDeliveryMethod, pickupBranch, setPickupBranch, 
       pickupTime, setPickupTime, cartCount, orders, updateOrderStatus,
-      branchStock, toggleStock, isProductInStock
+      branchStock, updateStockAmount, isProductInStock, getProductQuantity
     }}>
       {children}
     </StoreContext.Provider>

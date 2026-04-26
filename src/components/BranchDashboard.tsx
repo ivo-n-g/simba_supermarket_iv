@@ -36,7 +36,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
     }
   };
 
-  const selectedBranch = pickupBranch || user?.branch || 'Simba Supermarket Remera';
+  const selectedBranch = user?.branch || pickupBranch || 'Simba Supermarket Remera';
   const role = user?.repRole || 'staff';
 
   const filteredOrders = orders.filter(order => order.branch === selectedBranch);

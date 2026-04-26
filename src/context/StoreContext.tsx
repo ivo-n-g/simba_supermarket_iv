@@ -219,7 +219,10 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     if (foundUser) {
       const sessionUser = { ...foundUser };
       delete sessionUser.password;
-      if (role === 'representative' && repRole) sessionUser.repRole = repRole;
+      if (role === 'representative') {
+        if (repRole) sessionUser.repRole = repRole;
+        if (branch) sessionUser.branch = branch;
+      }
       setUser(sessionUser);
       localStorage.setItem('simba_user_session', JSON.stringify(sessionUser));
       return true;

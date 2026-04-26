@@ -11,15 +11,17 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit }) => {
-  const { addToCart, toggleWishlist, isInWishlist } = useStore();
+  const { addToCart, toggleWishlist, isInWishlist, pickupBranch, isProductInStock } = useStore();
   const { t } = useLanguage();
   const [localQuantity, setLocalQuantity] = useState(1);
 
   const isWishlisted = isInWishlist(id);
+  const inStock = isProductInStock(pickupBranch || 'Simba Supermarket Remera', id);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!inStock) return;
     addToCart({ id, name, price, image }, localQuantity);
     setLocalQuantity(1);
   };
@@ -50,8 +52,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit 
         <img
           src={image}
           alt={name}
-          className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300 p-2"
+          className={`w-full h-full object-contain group-hover:scale-105 transition-transform duration-300 p-2 ${!inStock ? 'opacity-40 grayscale' : ''}`}
         />
+        {!inStock && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
+            <span className="bg-red-500 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">
+              Out of Stock
+            </span>
+          </div>
+        )}
         {/* Top Right Heart Icon (Quick toggle) */}
         <button 
           onClick={handleToggleWishlist}
@@ -102,7 +111,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit 
             
             <button 
               onClick={handleAddToCart}
-              className="flex-1 bg-primary text-white h-8 md:h-10 rounded-lg shadow-sm hover:bg-opacity-90 transition-all active:scale-95 flex items-center justify-center gap-1 px-2"
+              disabled={!inStock}
+              className={`flex-1 h-8 md:h-10 rounded-lg shadow-sm transition-all active:scale-95 flex items-center justify-center gap-1 px-2 ${
+                inStock 
+                  ? 'bg-primary text-white hover:bg-opacity-90' 
+                  : 'bg-gray-200 text-gray-400 cursor-not-allowed grayscale'
+              }`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />

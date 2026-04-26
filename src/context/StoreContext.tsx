@@ -60,6 +60,9 @@ interface StoreContextType {
   cartCount: number;
   orders: Order[];
   updateOrderStatus: (orderId: string, status: Order['status'], staff?: string) => void;
+  branchStock: Record<string, number[]>; // Branch Name -> Array of Out of Stock Product IDs
+  toggleStock: (branch: string, productId: number) => void;
+  isProductInStock: (branch: string, productId: number) => boolean;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -72,6 +75,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [pickupBranch, setPickupBranch] = useState<string>('');
   const [pickupTime, setPickupTime] = useState<string>('');
   const [orders, setOrders] = useState<Order[]>([]);
+  const [branchStock, setBranchStock] = useState<Record<string, number[]>>({});
 
   useEffect(() => {
     const savedUser = localStorage.getItem('simba_user_session');
@@ -82,6 +86,8 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
     const savedOrders = localStorage.getItem('simba_orders');
     if (savedOrders) setOrders(JSON.parse(savedOrders));
+    const savedStock = localStorage.getItem('simba_branch_stock');
+    if (savedStock) setBranchStock(JSON.parse(savedStock));
   }, []);
 
   useEffect(() => {
@@ -95,6 +101,25 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   useEffect(() => {
     localStorage.setItem('simba_orders', JSON.stringify(orders));
   }, [orders]);
+
+  useEffect(() => {
+    localStorage.setItem('simba_branch_stock', JSON.stringify(branchStock));
+  }, [branchStock]);
+
+  const toggleStock = (branch: string, productId: number) => {
+    setBranchStock(prev => {
+      const branchOOS = prev[branch] || [];
+      const newOOS = branchOOS.includes(productId)
+        ? branchOOS.filter(id => id !== productId)
+        : [...branchOOS, productId];
+      return { ...prev, [branch]: newOOS };
+    });
+  };
+
+  const isProductInStock = (branch: string, productId: number) => {
+    const branchOOS = branchStock[branch] || [];
+    return !branchOOS.includes(productId);
+  };
 
   const login = async (email: string, password?: string, role: User['role'] = 'customer', branch?: string): Promise<boolean> => {
     const users: User[] = JSON.parse(localStorage.getItem('simba_users_db') || '[]');
@@ -229,7 +254,8 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       user, cart, wishlist, login, signup, forgotPassword, handleGoogleSuccess, logout, 
       addToCart, removeFromCart, updateQuantity, toggleWishlist, isInWishlist, checkout, 
       deliveryMethod, setDeliveryMethod, pickupBranch, setPickupBranch, 
-      pickupTime, setPickupTime, cartCount, orders, updateOrderStatus
+      pickupTime, setPickupTime, cartCount, orders, updateOrderStatus,
+      branchStock, toggleStock, isProductInStock
     }}>
       {children}
     </StoreContext.Provider>

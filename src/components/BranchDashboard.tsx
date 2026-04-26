@@ -11,13 +11,14 @@ interface BranchDashboardProps {
 type DashboardTab = 'orders' | 'inventory';
 
 const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose }) => {
-  const { orders, updateOrderStatus, pickupBranch } = useStore();
+  const { orders, updateOrderStatus, pickupBranch, branchStock, toggleStock } = useStore();
   const { t, language } = useLanguage();
   const [role, setRole] = useState<'manager' | 'staff'>('manager');
   const [activeTab, setActiveTab] = useState<DashboardTab>('orders');
   const [inventorySearch, setInventorySearch] = useState('');
   const selectedBranch = pickupBranch || 'Simba Supermarket Remera';
-  const [outOfStockItems, setOutOfStockItems] = useState<number[]>([]);
+
+  const outOfStockItems = branchStock[selectedBranch] || [];
 
   const filteredOrders = orders.filter(order => order.branch === selectedBranch);
 
@@ -198,7 +199,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose }) =>
                         </div>
                       </div>
                       <button 
-                        onClick={() => toggleStock(product.id)}
+                        onClick={() => toggleStock(selectedBranch, product.id)}
                         className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${outOfStockItems.includes(product.id) ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200'}`}
                       >
                         {outOfStockItems.includes(product.id) ? 'Mark In Stock' : 'Mark Out of Stock'}

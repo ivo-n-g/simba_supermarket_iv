@@ -75,12 +75,17 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
       {/* Centered Header */}
       <div className="px-6 py-10 bg-primary text-white flex flex-col gap-8 shadow-2xl shrink-0">
         <div className="max-w-6xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-          <div className="flex flex-col items-center md:items-start gap-2">
-            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter flex items-center gap-3">
-              <span className="bg-secondary text-primary px-4 py-1.5 rounded-2xl text-base">{selectedBranch.split(' ').pop()}</span>
-              {t('branchDashboard')}
-            </h2>
-            <p className="text-white/50 text-xs font-bold uppercase tracking-[0.3em] ml-1">{t('operationalControlCenter')}</p>
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            <div className="bg-white/10 backdrop-blur-sm p-2 rounded-2xl border border-white/10 shadow-inner shrink-0">
+              <img src="/logo.png" alt="Simba" className="h-8 md:h-10 w-auto object-contain filter drop-shadow-lg" />
+            </div>
+            <div className="flex flex-col items-center md:items-start gap-1">
+              <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tighter flex items-center gap-3">
+                <span className="bg-secondary text-primary px-3 py-1 rounded-xl text-sm">{selectedBranch.split(' ').pop()}</span>
+                {t('branchDashboard')}
+              </h2>
+              <p className="text-white/50 text-[10px] font-bold uppercase tracking-[0.3em] ml-1">{t('operationalControlCenter')}</p>
+            </div>
           </div>
 
           <div className="flex items-center gap-4">

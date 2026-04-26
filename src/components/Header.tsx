@@ -130,13 +130,15 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
           {/* Logo */}
           <div 
             onClick={onLogoClick}
-            className="cursor-pointer hover:opacity-90 transition-opacity flex-shrink-0 flex items-center gap-2"
+            className="cursor-pointer hover:opacity-90 transition-all flex-shrink-0 flex items-center group"
           >
-            <img 
-              src="/logo.png" 
-              alt="Simba Supermarket" 
-              className="h-10 md:h-14 w-auto object-contain"
-            />
+            <div className="bg-white/10 backdrop-blur-sm p-1.5 md:p-2 rounded-2xl border border-white/10 shadow-inner group-hover:bg-white/20 transition-all">
+              <img 
+                src="/logo.png" 
+                alt="Simba Supermarket" 
+                className="h-8 md:h-12 w-auto object-contain filter drop-shadow-lg"
+              />
+            </div>
           </div>
           
           {/* Desktop Search Bar */}

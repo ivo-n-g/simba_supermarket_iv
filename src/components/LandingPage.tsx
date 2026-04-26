@@ -233,7 +233,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
                   loading="lazy" 
                   allowFullScreen 
                   referrerPolicy="no-referrer-when-downgrade"
-                  src={`https://maps.google.com/maps?q=${selectedLoc.lat},${selectedLoc.lng}&z=15&output=embed`}
+                  src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyChU55xEAwN3hGKTA2nGa_apqfZ_ExVB9w&q=${selectedLoc.lat},${selectedLoc.lng}&zoom=15`}
                   className="grayscale hover:grayscale-0 transition-all duration-700"
                 ></iframe>
                 <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-primary/40 to-transparent"></div>

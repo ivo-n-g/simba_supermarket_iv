@@ -133,19 +133,18 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     // Geolocation for closest branch
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
+      const handlePosition = (position: GeolocationPosition) => {
+        const { latitude, longitude, accuracy } = position.coords;
         setUserLocation({ lat: latitude, lng: longitude });
-        console.log('User Location:', latitude, longitude);
+        console.log(`User Location refined (accuracy: ${accuracy}m):`, latitude, longitude);
         
         let closest = locations[0];
         let minDistance = Infinity;
 
-        // Haversine formula for accurate distance on Earth
         const toRad = (value: number) => (value * Math.PI) / 180;
         
         locations.forEach(loc => {
-          const R = 6371; // Earth's radius in km
+          const R = 6371;
           const dLat = toRad(loc.lat - latitude);
           const dLon = toRad(loc.lng - longitude);
           const a =
@@ -163,16 +162,27 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           }
         });
         
-        console.log('Closest branch identified:', closest.name, 'at', minDistance, 'km');
         setClosestBranchName(closest.name);
-        setPickupBranch(prev => prev || closest.name);
-      }, (error) => {
-        console.error('Geolocation error:', error);
-      }, {
+        // Only auto-update pickup branch if user hasn't interacted or if it's the first hit
+        setPickupBranch(prev => {
+          if (!prev) return closest.name;
+          return prev;
+        });
+      };
+
+      const geoOptions = {
         enableHighAccuracy: true,
-        timeout: 5000,
+        timeout: 10000,
         maximumAge: 0
-      });
+      };
+
+      // Get initial position
+      navigator.geolocation.getCurrentPosition(handlePosition, (err) => console.error(err), geoOptions);
+      
+      // Watch for better accuracy refinement
+      const watchId = navigator.geolocation.watchPosition(handlePosition, (err) => console.error(err), geoOptions);
+      
+      return () => navigator.geolocation.clearWatch(watchId);
     }
   }, []);
 

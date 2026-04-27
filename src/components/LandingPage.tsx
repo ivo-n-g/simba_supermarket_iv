@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useStore, Location } from '../context/StoreContext';
 import productsData from '../../simba_products.json';
@@ -55,8 +55,17 @@ const LandingPage: React.FC<LandingPageProps> = ({
     return R * c;
   };
 
+  const sortedLocations = useMemo(() => {
+    if (!userLocation) return locations;
+    return [...locations].sort((a, b) => {
+      const distA = calculateDistance(userLocation.lat, userLocation.lng, a.lat, a.lng);
+      const distB = calculateDistance(userLocation.lat, userLocation.lng, b.lat, b.lng);
+      return distA - distB;
+    });
+  }, [locations, userLocation]);
+
   const [selectedLoc, setSelectedLoc] = useState<Location>(
-    locations.find(l => l.name === pickupBranch) || locations[1]
+    locations.find(l => l.name === pickupBranch) || locations[0]
   );
 
   useEffect(() => {
@@ -190,7 +199,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16 items-center">
             {/* Branch List */}
             <div className="lg:col-span-5 space-y-3 md:space-y-4 max-h-[400px] md:max-h-[600px] overflow-y-auto pr-4 scrollbar-hide">
-              {locations.map((loc) => {
+              {sortedLocations.map((loc: Location) => {
                 const distance = userLocation ? calculateDistance(userLocation.lat, userLocation.lng, loc.lat, loc.lng) : null;
                 return (
                   <div 

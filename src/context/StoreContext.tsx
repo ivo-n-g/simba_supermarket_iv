@@ -232,6 +232,16 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   };
 
   const login = async (email: string, password?: string, role: User['role'] = 'customer', branch?: string, repRole?: User['repRole']): Promise<boolean> => {
+    // Initial demo users if DB is empty
+    const existingUsers = localStorage.getItem('simba_users_db');
+    if (!existingUsers) {
+      const demoUsers: User[] = [
+        { name: 'Admin', email: 'admin@simba.rw', password: 'password', role: 'representative', repRole: 'manager', branch: 'Simba Supermarket Town' },
+        { name: 'Staff', email: 'staff@simba.rw', password: 'password', role: 'representative', repRole: 'staff', branch: 'Simba Supermarket Remera' }
+      ];
+      localStorage.setItem('simba_users_db', JSON.stringify(demoUsers));
+    }
+
     const users: User[] = JSON.parse(localStorage.getItem('simba_users_db') || '[]');
     const foundUser = users.find(u => u.email === email && (!password || u.password === password) && u.role === role);
     
@@ -262,7 +272,10 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     const newUser: User = { name, email, password, role, branch, repRole };
     users.push(newUser);
     localStorage.setItem('simba_users_db', JSON.stringify(users));
-    const sessionUser = { name, email, role, branch, repRole };
+    
+    // Create session user without password
+    const sessionUser = { ...newUser };
+    delete sessionUser.password;
     setUser(sessionUser);
     localStorage.setItem('simba_user_session', JSON.stringify(sessionUser));
     return true;

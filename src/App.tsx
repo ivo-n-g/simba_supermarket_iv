@@ -187,8 +187,17 @@ function AppContent() {
             />
             
             <div className="flex-1 bg-white dark:bg-gray-800/50 shadow-sm md:rounded-[32px] md:my-8 overflow-hidden">
-              {aiResponse && (
-                <div className="p-6 md:p-8 bg-secondary/10 border-b border-secondary/20 animate-in fade-in slide-in-from-top-4 duration-500">
+              {searchQuery && (
+                <div className="px-8 pt-8 pb-4 border-b border-gray-50 dark:border-gray-800">
+                  <p className="text-sm font-black text-primary uppercase tracking-widest">
+                    {t('searchResults')}: <span className="text-gray-900 dark:text-white">"{searchQuery}"</span>
+                  </p>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase mt-1">
+                    Found {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'}
+                  </p>
+                </div>
+              )}
+              {aiResponse && (                <div className="p-6 md:p-8 bg-secondary/10 border-b border-secondary/20 animate-in fade-in slide-in-from-top-4 duration-500">
                   <div className="flex items-start gap-4">
                     <div className="w-10 h-10 bg-secondary text-primary rounded-2xl flex items-center justify-center text-xl shadow-lg shrink-0">✨</div>
                     <div className="flex-1">

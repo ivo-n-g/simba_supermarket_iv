@@ -99,7 +99,21 @@ interface StoreContextType {
   locations: Location[];
   closestBranchName: string;
   userLocation: { lat: number; lng: number } | null;
+  calculateDistance: (lat1: number, lon1: number, lat2: number, lon2: number) => number;
 }
+
+export const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+  const toRad = (value: number) => (value * Math.PI) / 180;
+  const R = 6371; // km
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+};
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
@@ -134,28 +148,14 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     // Geolocation for closest branch
     if (navigator.geolocation) {
       const handlePosition = (position: GeolocationPosition) => {
-        const { latitude, longitude, accuracy } = position.coords;
+        const { latitude, longitude } = position.coords;
         setUserLocation({ lat: latitude, lng: longitude });
-        console.log(`User Location refined (accuracy: ${accuracy}m):`, latitude, longitude);
         
         let closest = locations[0];
         let minDistance = Infinity;
 
-        const toRad = (value: number) => (value * Math.PI) / 180;
-        
         locations.forEach(loc => {
-          const R = 6371;
-          const dLat = toRad(loc.lat - latitude);
-          const dLon = toRad(loc.lng - longitude);
-          const a =
-            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(toRad(latitude)) *
-              Math.cos(toRad(loc.lat)) *
-              Math.sin(dLon / 2) *
-              Math.sin(dLon / 2);
-          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-          const distance = R * c;
-
+          const distance = calculateDistance(latitude, longitude, loc.lat, loc.lng);
           if (distance < minDistance) {
             minDistance = distance;
             closest = loc;
@@ -163,9 +163,8 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         });
         
         setClosestBranchName(closest.name);
-        // Only auto-update pickup branch if user hasn't interacted or if it's the first hit
         setPickupBranch(prev => {
-          if (!prev) return closest.name;
+          if (!prev || prev === '') return closest.name;
           return prev;
         });
       };
@@ -399,7 +398,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       pickupTime, setPickupTime, cartCount, orders, updateOrderStatus,
       branchStock, updateStockAmount, isProductInStock, getProductQuantity,
       customProducts, addNewProduct, isBranchDashboardOpen, setIsBranchDashboardOpen, locations,
-      closestBranchName, userLocation
+      closestBranchName, userLocation, calculateDistance
     }}>
       {children}
     </StoreContext.Provider>

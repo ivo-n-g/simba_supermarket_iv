@@ -11,27 +11,11 @@ interface CartDrawerProps {
 
 type CheckoutStep = 'cart' | 'pickup-selection' | 'pickup-time' | 'identity' | 'payment' | 'success';
 
-const branches = [
-  { name: 'Simba Supermarket Gishushu', address: 'KG 8 Ave, Gishushu, Kigali' },
-  { name: 'Simba Supermarket Town', address: 'KN 2 St, Kigali City Center' },
-  { name: 'Simba Supermarket Kimironko', address: 'KG 11 Ave, Kimironko, Kigali' },
-  { name: 'Simba Supermarket Kicukiro', address: 'KK 15 Rd, Kicukiro, Kigali' },
-  { name: 'Simba Supermarket Nyarutarama', address: 'KG 9 Ave, Nyarutarama, Kigali' },
-  { name: 'Simba Supermarket Nyamirambo', address: 'KN 162 St, Nyamirambo, Kigali' },
-  { name: 'Simba Supermarket Remera', address: 'KG 11 Ave, Remera, Kigali' },
-  { name: 'Simba Supermarket Kacyiru', address: 'KG 7 Ave, Kacyiru, Kigali' },
-  { name: 'Simba Supermarket Gikondo', address: 'KK 12 Rd, Gikondo, Kigali' },
-  { name: 'Simba Supermarket Kanombe', address: 'KK 1 Ave, Kanombe, Kigali' },
-  { name: 'Simba Supermarket Kinyinya', address: 'KG 19 Ave, Kinyinya, Kigali' },
-  { name: 'Simba Supermarket Kibagabaga', address: 'KG 14 Ave, Kibagabaga, Kigali' },
-  { name: 'Simba Supermarket Nyanza', address: 'KK 15 Rd, Nyanza, Kigali' },
-];
-
 const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDashboard }) => {
   const { 
     cart, removeFromCart, updateQuantity, checkout, 
     deliveryMethod, setDeliveryMethod, pickupBranch, setPickupBranch, 
-    pickupTime, setPickupTime, user 
+    pickupTime, setPickupTime, user, locations, closestBranchName, userLocation 
   } = useStore();
   
   const { t } = useLanguage();
@@ -99,6 +83,28 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
     }
     else if (step === 'payment') setStep('identity');
   };
+
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const toRad = (value: number) => (value * Math.PI) / 180;
+    const R = 6371;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
+  const sortedBranches = React.useMemo(() => {
+    if (!userLocation) return locations;
+    return [...locations].sort((a, b) => {
+      const distA = calculateDistance(userLocation.lat, userLocation.lng, a.lat, a.lng);
+      const distB = calculateDistance(userLocation.lat, userLocation.lng, b.lat, b.lng);
+      return distA - distB;
+    });
+  }, [locations, userLocation]);
 
   if (!isOpen) return null;
 
@@ -179,22 +185,35 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                   <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                     <h3 className="text-sm font-black text-gray-800 dark:text-white uppercase tracking-[0.2em] ml-2">{t('selectBranch')}</h3>
                     <div className="grid grid-cols-1 gap-2.5 pb-20">
-                      {branches.map((branch) => (
-                        <button
-                          key={branch.name}
-                          onClick={() => { setPickupBranch(branch.name); setBranchError(false); }}
-                          className={`w-full p-5 rounded-[24px] border-2 text-left transition-all flex flex-col gap-1 ${
-                            pickupBranch === branch.name
-                              ? 'border-primary dark:border-secondary bg-primary/5 dark:bg-secondary/5 ring-2 ring-primary/10'
-                              : 'border-gray-100 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50'
-                          }`}
-                        >
-                          <span className={`text-xs font-black uppercase tracking-tight ${pickupBranch === branch.name ? 'text-primary dark:text-secondary' : 'text-gray-800 dark:text-white'}`}>
-                            {branch.name}
-                          </span>
-                          <span className="text-[11px] text-gray-500 dark:text-gray-400 font-semibold">{branch.address}</span>
-                        </button>
-                      ))}
+                      {sortedBranches.map((branch) => {
+                        const distance = userLocation ? calculateDistance(userLocation.lat, userLocation.lng, branch.lat, branch.lng) : null;
+                        return (
+                          <button
+                            key={branch.name}
+                            onClick={() => { setPickupBranch(branch.name); setBranchError(false); }}
+                            className={`w-full p-5 rounded-[24px] border-2 text-left transition-all flex flex-col gap-1 relative ${
+                              pickupBranch === branch.name
+                                ? 'border-primary dark:border-secondary bg-primary/5 dark:bg-secondary/5 ring-2 ring-primary/10'
+                                : 'border-gray-100 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50'
+                            }`}
+                          >
+                            <div className="flex justify-between items-center w-full">
+                              <span className={`text-xs font-black uppercase tracking-tight ${pickupBranch === branch.name ? 'text-primary dark:text-secondary' : 'text-gray-800 dark:text-white'}`}>
+                                {branch.name}
+                              </span>
+                              {distance !== null && (
+                                <span className={`text-[9px] font-black px-2 py-0.5 rounded-full ${pickupBranch === branch.name ? 'bg-primary text-white' : 'bg-gray-100 text-gray-400'}`}>
+                                  {distance < 1 ? `${(distance * 1000).toFixed(0)}m` : `${distance.toFixed(1)}km`}
+                                </span>
+                              )}
+                            </div>
+                            <span className="text-[11px] text-gray-500 dark:text-gray-400 font-semibold">{branch.address}</span>
+                            {branch.name === closestBranchName && (
+                              <span className="absolute -top-2 right-4 bg-secondary text-primary text-[7px] font-black px-2 py-0.5 rounded-full shadow-sm">NEAREST</span>
+                            )}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 ) : step === 'pickup-time' ? (

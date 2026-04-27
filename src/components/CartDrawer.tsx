@@ -220,7 +220,11 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                   <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                     <h3 className="text-sm font-black text-gray-800 dark:text-white uppercase tracking-[0.2em] ml-2">{t('pickupTime')}</h3>
                     <div className="grid grid-cols-2 gap-3">
-                      {['In 45 minutes', 'Today, 2:00 PM', 'Today, 4:00 PM', 'Today, 6:00 PM', 'Tomorrow, 10:00 AM', 'Tomorrow, 12:00 PM'].map((time) => (
+                      {[
+                        'In 30 minutes', 'In 1 hour', 'Today, 1:00 PM', 'Today, 2:00 PM', 
+                        'Today, 4:00 PM', 'Today, 6:00 PM', 'Today, 8:00 PM', 'Tomorrow, 9:00 AM', 
+                        'Tomorrow, 11:00 AM', 'Tomorrow, 2:00 PM'
+                      ].map((time) => (
                         <button
                           key={time}
                           onClick={() => { setPickupTime(time); setTimeError(false); }}
@@ -233,6 +237,24 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                           <span className="text-[10px] font-black uppercase tracking-widest leading-tight">{time}</span>
                         </button>
                       ))}
+                    </div>
+                    
+                    <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
+                      <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">Or specify a custom time</label>
+                      <div className="relative group">
+                        <input 
+                          type="text" 
+                          placeholder="e.g. Wednesday at 3 PM"
+                          value={pickupTime && !['In 30 minutes', 'In 1 hour', 'Today, 1:00 PM', 'Today, 2:00 PM', 'Today, 4:00 PM', 'Today, 6:00 PM', 'Today, 8:00 PM', 'Tomorrow, 9:00 AM', 'Tomorrow, 11:00 AM', 'Tomorrow, 2:00 PM'].includes(pickupTime) ? pickupTime : ''}
+                          onChange={(e) => { setPickupTime(e.target.value); setTimeError(false); }}
+                          className="w-full p-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-primary/10 dark:text-white transition-all"
+                        />
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300">
+                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ) : step === 'identity' ? (

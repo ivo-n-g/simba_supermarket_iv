@@ -150,6 +150,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onBack }) => {
                 </span>
               </div>
               <button
+                data-testid="add-to-cart-detail"
                 onClick={handleAddToCart}
                 disabled={!inStock || isAdded}
                 className={`w-full py-6 rounded-[32px] font-black text-xl uppercase tracking-tighter transition-all shadow-xl active:scale-95 ${

@@ -256,6 +256,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                       <div className="flex gap-3">
                         {role === 'manager' && order.status === 'pending' && (
                           <button 
+                            data-testid="assign-order-button"
                             onClick={() => updateOrderStatus(order.id, 'assigned', user?.name || 'Staff Member')}
                             className="flex-1 py-5 bg-primary text-white rounded-[24px] text-xs font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-xl active:scale-95 border-b-4 border-black/20"
                           >
@@ -264,6 +265,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                         )}
                         {(role === 'staff' || role === 'manager') && order.status === 'assigned' && order.assignedStaff === user?.name && (
                           <button 
+                            data-testid="mark-ready-button"
                             onClick={() => updateOrderStatus(order.id, 'ready')}
                             className="flex-1 py-5 bg-secondary text-primary rounded-[24px] text-xs font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-xl active:scale-95 border-b-4 border-black/10"
                           >
@@ -272,6 +274,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                         )}
                         {order.status === 'ready' && (role === 'manager' || order.assignedStaff === user?.name) && (
                           <button 
+                            data-testid="complete-order-button"
                             onClick={() => updateOrderStatus(order.id, 'completed')}
                             className="flex-1 py-5 bg-green-600 text-white rounded-[24px] text-xs font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-xl active:scale-95 border-b-4 border-green-800/30"
                           >

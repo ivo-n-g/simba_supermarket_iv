@@ -108,15 +108,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit,
           <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
             <div className="flex items-center border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden h-8 md:h-10">
               <button 
+                data-testid="quantity-decrement"
                 onClick={decrement}
                 className="px-1.5 md:px-3 h-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors font-bold"
               >
                 -
               </button>
-              <span className="px-1.5 md:px-3 text-[10px] md:text-sm font-bold min-w-[1rem] md:min-w-[1.5rem] text-center dark:text-gray-200">
+              <span 
+                data-testid="quantity-display"
+                className="px-1.5 md:px-3 text-[10px] md:text-sm font-bold min-w-[1rem] md:min-w-[1.5rem] text-center dark:text-gray-200"
+              >
                 {localQuantity}
               </span>
               <button 
+                data-testid="quantity-increment"
                 onClick={increment}
                 className="px-1.5 md:px-3 h-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors font-bold"
               >

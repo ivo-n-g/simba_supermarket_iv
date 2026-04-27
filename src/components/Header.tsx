@@ -215,7 +215,15 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
               <div className="w-px h-3 bg-white/10 mx-0.5"></div>
               <div className="flex items-center">
                 {(['en', 'rw', 'fr'] as const).map((lang) => (
-                  <button key={lang} onClick={() => setLanguage(lang)} className={`px-1.5 md:px-2.5 py-1 rounded-md text-[8px] md:text-[10px] font-black uppercase transition-all ${language === lang ? 'bg-white text-primary' : 'hover:bg-white/10'}`}>{lang}</button>
+                  <button 
+                    key={lang} 
+                    data-testid={`lang-switch-${lang}`}
+                    aria-label={`Switch to ${lang}`}
+                    onClick={() => setLanguage(lang)} 
+                    className={`px-1.5 md:px-2.5 py-1 rounded-md text-[8px] md:text-[10px] font-black uppercase transition-all ${language === lang ? 'bg-white text-primary' : 'hover:bg-white/10'}`}
+                  >
+                    {lang}
+                  </button>
                 ))}
               </div>
             </div>

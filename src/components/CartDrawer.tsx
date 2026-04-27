@@ -408,6 +408,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                     </button>
                   )}
                   <button 
+                    data-testid="checkout-next-button"
                     onClick={step === 'payment' ? handleCheckout : handleNextStep}
                     disabled={isProcessing}
                     className="flex-1 flex justify-center items-center px-6 py-5 rounded-3xl shadow-[0_20px_40px_-8px_rgba(0,0,0,0.2)] text-xl font-black text-primary bg-secondary hover:bg-yellow-400 transition-all active:scale-[0.98] disabled:opacity-50 uppercase tracking-tighter"

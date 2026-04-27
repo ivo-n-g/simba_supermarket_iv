@@ -125,6 +125,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit,
             </div>
             
             <button 
+              data-testid="add-to-cart-button"
               onClick={handleAddToCart}
               disabled={!inStock || isAdded}
               className={`flex-1 h-8 md:h-10 rounded-lg shadow-sm transition-all active:scale-95 flex items-center justify-center gap-1 px-2 ${

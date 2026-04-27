@@ -150,8 +150,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
           {/* Desktop Search Bar */}
           <div className="hidden md:block relative flex-1 max-w-xl mx-4" ref={desktopSearchRef}>
             <form onSubmit={handleSubmit} className="relative group">
-              <input
-                type="text"
+              <input 
+                id="search" 
+                name="search"
+                data-testid="search-input"
+                type="search"
                 placeholder={isAiMode ? "Ask AI: 'I need fresh milk' or 'Breakfast ideas'..." : t('searchPlaceholder')}
                 value={inputValue}
                 onChange={handleSearch}
@@ -227,7 +230,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
               )}
             </button>
 
-            <button onClick={() => setIsCartDrawerOpen(true)} className="flex items-center gap-1.5 bg-secondary text-primary px-2.5 md:px-4 h-9 md:h-12 rounded-xl font-black hover:bg-yellow-400 transition-all active:scale-95 border-2 border-secondary/30 shadow-md">
+            <button 
+              data-testid="cart-button"
+              onClick={() => setIsCartDrawerOpen(true)} 
+              className="flex items-center gap-1.5 bg-secondary text-primary px-2.5 md:px-4 h-9 md:h-12 rounded-xl font-black hover:bg-yellow-400 transition-all active:scale-95 border-2 border-secondary/30 shadow-md"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
               <span className="text-xs md:text-sm">{cartCount}</span>
             </button>
@@ -238,8 +245,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
         <div className="md:hidden bg-primary/95 dark:bg-gray-900 px-2 pb-3 border-b border-white/5 relative" ref={mobileSearchRef}>
           <form onSubmit={handleSubmit} className="relative flex items-center gap-2">
             <div className="relative flex-1">
-              <input
-                type="text"
+              <input 
+                id="search-mobile" 
+                name="search"
+                data-testid="search-input-mobile"
+                type="search"
                 placeholder={isAiMode ? "Ask AI..." : t('searchPlaceholder')}
                 value={inputValue}
                 onChange={handleSearch}

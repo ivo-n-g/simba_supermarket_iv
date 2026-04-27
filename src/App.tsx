@@ -290,13 +290,8 @@ function AppContent() {
               </ul>
             </div>
           </div>
-          <div className="pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
             <p className="text-gray-400 text-sm font-medium">© 2025 Simba {t('supermarket')}. {t('allRightsReserved')}</p>
-            <div className="flex gap-6">
-              <span className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-all cursor-pointer">IG</span>
-              <span className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-all cursor-pointer">FB</span>
-              <span className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-all cursor-pointer">TW</span>
-            </div>
             <p className="text-gray-400 text-sm font-medium">{productsData.store.location}</p>
           </div>
         </div>

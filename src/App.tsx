@@ -15,14 +15,23 @@ import { useLanguage } from './context/LanguageContext';
 
 function AppContent() {
   const { user, customProducts, isBranchDashboardOpen, setIsBranchDashboardOpen, pickupBranch, isProductInStock } = useStore();
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  
+  // Initialize state from localStorage for persistence
+  const [selectedCategory, setSelectedCategory] = useState(() => {
+    return localStorage.getItem('simba_selected_category') || 'All';
+  });
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(() => {
+    const saved = localStorage.getItem('simba_selected_product_id');
+    return saved ? parseInt(saved) : null;
+  });
   const [minPrice, setMinPrice] = useState(100);
   const [maxPrice, setMaxPrice] = useState(500000);
   const [onlyInStock, setOnlyInStock] = useState(false);
   const [aiResponse, setAiResponse] = useState<GroqResponse | null>(null);
-  const [view, setView] = useState<'landing' | 'shop' | 'details'>('landing');
+  const [view, setView] = useState<'landing' | 'shop' | 'details'>(() => {
+    return (localStorage.getItem('simba_current_view') as any) || 'landing';
+  });
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [infoModal, setInfoModal] = useState<{ isOpen: boolean; title: string; content: string }>({
     isOpen: false,
@@ -30,6 +39,17 @@ function AppContent() {
     content: ''
   });
   const { language, t } = useLanguage();
+
+  // Persist states to localStorage
+  useEffect(() => {
+    localStorage.setItem('simba_current_view', view);
+    localStorage.setItem('simba_selected_category', selectedCategory);
+    if (selectedProductId) {
+      localStorage.setItem('simba_selected_product_id', selectedProductId.toString());
+    } else {
+      localStorage.removeItem('simba_selected_product_id');
+    }
+  }, [view, selectedCategory, selectedProductId]);
 
   useEffect(() => {
     if (window.location.pathname === '/dashboard') {

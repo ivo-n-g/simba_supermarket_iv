@@ -131,20 +131,21 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
 
   return (
     <>
-      <header className="sticky top-0 z-[100] bg-primary text-white shadow-lg transition-all duration-300">
+      <header className="sticky top-0 z-[100] bg-primary/95 backdrop-blur-xl text-white shadow-[0_8px_32px_rgba(0,0,0,0.1)] border-b border-white/10 transition-all duration-300">
         <div className="container mx-auto px-2 md:px-6 h-16 md:h-20 flex items-center justify-between gap-1 md:gap-4">
           {/* Logo */}
           <div 
             onClick={onLogoClick}
-            className="cursor-pointer hover:opacity-90 transition-all flex-shrink-0 flex items-center group"
+            className="cursor-pointer hover:opacity-90 transition-all flex-shrink-0 flex items-center group relative"
           >
-            <div className="bg-white/10 backdrop-blur-sm p-1.5 md:p-2 rounded-2xl border border-white/10 shadow-inner group-hover:bg-white/20 transition-all">
+            <div className="bg-white/10 backdrop-blur-md p-1.5 md:p-2 rounded-2xl border border-white/10 shadow-inner group-hover:bg-white/20 transition-all">
               <img 
                 src="/logo.png" 
                 alt="Simba Supermarket" 
                 className="h-8 md:h-12 w-auto object-contain filter drop-shadow-lg"
               />
             </div>
+            <div className="absolute -top-1 -right-1 bg-secondary text-primary text-[8px] font-black px-1.5 py-0.5 rounded-full shadow-lg border border-white/20 animate-pulse">LIVE</div>
           </div>
           
           {/* Desktop Search Bar */}
@@ -215,18 +216,18 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
               <div className="w-px h-3 bg-white/10 mx-0.5"></div>
               <div className="flex items-center">
                 {(['en', 'rw', 'fr'] as const).map((lang) => (
-                  <button 
-                    key={lang} 
-                    data-testid={`lang-switch-${lang}`}
+                  <button
+                    key={lang}
+                    data-testid={`lang-${lang}`}
+                    id={`lang-switch-${lang}`}
                     aria-label={`Switch to ${lang}`}
-                    onClick={() => setLanguage(lang)} 
+                    onClick={() => setLanguage(lang)}
                     className={`px-1.5 md:px-2.5 py-1 rounded-md text-[8px] md:text-[10px] font-black uppercase transition-all ${language === lang ? 'bg-white text-primary' : 'hover:bg-white/10'}`}
                   >
                     {lang}
                   </button>
                 ))}
-              </div>
-            </div>
+              </div>            </div>
 
             <button onClick={handleAuthClick} className="flex items-center p-1 md:px-4 md:py-2 hover:bg-white/10 rounded-xl transition-all font-black text-xs md:text-sm">
               {user?.photoURL ? (

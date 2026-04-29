@@ -9,14 +9,24 @@ interface BranchDashboardProps {
   hideClose?: boolean;
 }
 
-type DashboardTab = 'orders' | 'inventory';
+type DashboardTab = 'orders' | 'inventory' | 'tasks' | 'reports' | 'calendar' | 'messages';
 
 const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hideClose }) => {
   const { user, logout, orders, updateOrderStatus, pickupBranch, updateStockAmount, getProductQuantity, addNewProduct } = useStore();
   const { t, language } = useLanguage();
-  const [activeTab, setActiveTab] = useState<DashboardTab>('orders');
-  const [inventorySearch, setInventorySearch] = useState('');
+  const [activeTab, setActiveTab] = useState<DashboardTab>(() => {
+    return (localStorage.getItem('simba_dash_tab') as DashboardTab) || 'orders';
+  });
+  const [inventorySearch, setInventorySearch] = useState(() => {
+    return localStorage.getItem('simba_dash_search') || '';
+  });
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
+
+  // Persist dashboard state
+  React.useEffect(() => {
+    localStorage.setItem('simba_dash_tab', activeTab);
+    localStorage.setItem('simba_dash_search', inventorySearch);
+  }, [activeTab, inventorySearch]);
   
   // New Product Form State
   const [newProductName, setNewProductName] = useState('');
@@ -39,35 +49,9 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
   const selectedBranch = user?.branch || pickupBranch || 'Simba Supermarket Remera';
   const role = user?.repRole || 'staff';
 
-  // Ensure there are always some orders for the grader to see
   const allOrders = useMemo(() => {
-    if (orders.length > 0) return orders;
-    
-    // Fallback mock orders for demo day
-    return [
-      {
-        id: '9b2x1a',
-        customerName: 'Kezia Umutoni',
-        items: [{ id: 13001, name: 'Lentz Radiant Heater', price: 83600, quantity: 1, image: 'https://res.cloudinary.com/eskalate/image/upload/v1776507692/simba_contest/product_13001.jpg' }],
-        total: 83600,
-        branch: selectedBranch,
-        pickupTime: 'Today, 5:00 PM',
-        status: 'pending',
-        timestamp: Date.now() - 3600000
-      },
-      {
-        id: '4m8v3z',
-        customerName: 'Jean-Luc Habimana',
-        items: [{ id: 13002, name: 'Icecream Scoop', price: 3000, quantity: 2, image: 'https://res.cloudinary.com/eskalate/image/upload/v1776507692/simba_contest/product_13002.jpg' }],
-        total: 6000,
-        branch: selectedBranch,
-        pickupTime: 'Tomorrow, 10:00 AM',
-        status: 'assigned',
-        assignedStaff: user?.name || 'Staff Member 1',
-        timestamp: Date.now() - 7200000
-      }
-    ] as any[];
-  }, [orders, selectedBranch, user?.name]);
+    return orders;
+  }, [orders]);
 
   const filteredOrders = allOrders.filter(order => order.branch === selectedBranch);
 
@@ -75,7 +59,8 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
     return {
       pending: filteredOrders.filter(o => o.status === 'pending').length,
       ready: filteredOrders.filter(o => o.status === 'ready').length,
-      total: filteredOrders.length
+      total: filteredOrders.length,
+      sales: filteredOrders.reduce((sum, o) => sum + (o.status === 'completed' ? o.total : 0), 0).toLocaleString()
     };
   }, [filteredOrders]);
 
@@ -84,389 +69,406 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
     return productsData.products.filter(p => {
       const name = ((p as any)[`name_${language}`] || p.name).toLowerCase();
       return name.includes(query) || p.id.toString().includes(query);
-    }).slice(0, 50); // Show first 50 results for performance
+    }).slice(0, 15);
   }, [inventorySearch, language]);
 
   const handleAddProduct = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newProductName || !newProductPrice) return;
-    
-    addNewProduct({
-      name: newProductName,
-      price: parseInt(newProductPrice),
-      image: newProductImage,
-      category: newProductCategory,
-      unit: newProductUnit
-    });
-    
-    // Reset form
-    setNewProductName('');
-    setNewProductPrice('');
-    setNewProductUnit('Pcs');
-    setIsAddProductModalOpen(false);
+    addNewProduct({ name: newProductName, price: parseInt(newProductPrice), image: newProductImage, category: newProductCategory, unit: newProductUnit });
+    setNewProductName(''); setNewProductPrice(''); setIsAddProductModalOpen(false);
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[110] overflow-hidden flex flex-col bg-gray-50 dark:bg-gray-900">
-      {/* Centered Header */}
-      <div className="px-6 py-10 bg-primary text-white flex flex-col gap-8 shadow-2xl shrink-0">
-        <div className="max-w-6xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-          <div className="flex flex-col md:flex-row items-center gap-6">
-            <div className="bg-white/10 backdrop-blur-sm p-2 rounded-2xl border border-white/10 shadow-inner shrink-0">
-              <img src="/logo.png" alt="Simba" className="h-8 md:h-10 w-auto object-contain filter drop-shadow-lg" />
+    <div className="fixed inset-0 z-[110] flex bg-[#f8f9fe] dark:bg-gray-950 overflow-hidden font-sans" data-testid="branch-dashboard-view">
+      {/* Sidebar Navigation */}
+      <aside className="w-72 bg-primary shrink-0 flex flex-col relative z-20">
+        <div className="p-10">
+          <div className="flex flex-col items-center mb-12">
+            <div className="w-16 h-16 bg-white/10 rounded-3xl flex items-center justify-center mb-4 border border-white/10 shadow-xl">
+              <img src="/logo.png" alt="Simba" className="h-8 w-auto object-contain filter drop-shadow-lg" />
             </div>
-            <div className="flex flex-col items-center md:items-start gap-1">
-              <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tighter flex items-center gap-3">
-                <span className="bg-secondary text-primary px-3 py-1 rounded-xl text-sm">{selectedBranch.split(' ').pop()}</span>
-                {t('branchDashboard')}
-              </h2>
-              <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 ml-1">
-                <p className="text-white/50 text-[10px] font-bold uppercase tracking-[0.3em]">{t('operationalControlCenter')}</p>
-                <div className="hidden md:block w-1 h-1 bg-white/20 rounded-full"></div>
-                <p className="text-secondary text-[11px] font-black uppercase tracking-tight">{selectedBranch}</p>
-              </div>
-            </div>
+            <h2 className="text-white font-black text-xl tracking-tighter uppercase">Simba Ops</h2>
+          </div>
+          
+          <nav className="space-y-2">
+            {[
+              { id: 'orders', label: t('orders'), icon: '📊', testid: 'orders-tab-button' },
+              { id: 'inventory', label: t('inventory'), icon: '📦', testid: 'inventory-tab-button' },
+              { id: 'tasks', label: 'Task', icon: '📋', testid: 'tasks-tab-button' },
+              { id: 'reports', label: 'Report', icon: '🏳️', testid: 'reports-tab-button' },
+              { id: 'calendar', label: 'Calendar', icon: '📅', testid: 'calendar-tab-button' },
+              { id: 'messages', label: 'Messages', icon: '💬', testid: 'messages-tab-button' }
+            ].map(item => (
+              <button
+                key={item.id}
+                data-testid={item.testid}
+                onClick={() => setActiveTab(item.id as any)}
+                className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-bold text-sm transition-all ${activeTab === item.id ? 'bg-white text-primary shadow-2xl scale-[1.02]' : 'text-white/60 hover:bg-white/5 hover:text-white'}`}
+              >
+                <span className="text-xl">{item.icon}</span>
+                {item.label}
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        <div className="mt-auto p-10 space-y-6">
+          <div className="bg-white/10 rounded-[32px] p-6 text-center border border-white/10">
+            <p className="text-white text-[10px] font-black uppercase tracking-widest mb-4">Shift Timer</p>
+            <div className="text-2xl font-black text-secondary">08:24:12</div>
+          </div>
+          
+          <button 
+            data-testid="logout-button"
+            onClick={() => { if(window.confirm(t('logoutConfirm'))) logout(); }}
+            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest bg-red-500/20 text-red-100 hover:bg-red-500 hover:text-white transition-all group"
+          >
+            <span>🚪 Logout</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <main className="flex-1 flex flex-col overflow-hidden bg-[#f8f9fe] dark:bg-gray-950">
+        <header className="h-28 bg-white dark:bg-gray-900 flex items-center justify-between px-12 shrink-0 border-b border-gray-100 dark:border-gray-800">
+          <div>
+            <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tighter">Hello, {user?.name.split(' ')[0]}!</h1>
+            <p className="text-sm text-gray-400 font-bold mt-1 tracking-wide">Operational Control Center • {selectedBranch}</p>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="flex flex-col items-center md:items-end">
-              <span className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg mb-1 ${role === 'manager' ? 'bg-secondary text-primary' : 'bg-white/10 text-white border border-white/10'}`}>
-                {role === 'manager' ? t('branchManager') : t('branchStaff')}
-              </span>
-              <p className="text-[10px] text-white/40 font-black uppercase">{user?.name}</p>
+          <div className="flex items-center gap-8">
+            <div className="relative">
+              <input 
+                type="text" 
+                data-testid="dashboard-search-input"
+                placeholder="Search operational data..." 
+                className="pl-14 pr-8 py-4 bg-[#f8f9fe] dark:bg-gray-800 rounded-[20px] text-sm font-bold w-96 outline-none focus:ring-4 focus:ring-primary/5 transition-all" 
+              />
+              <span className="absolute left-6 top-1/2 -translate-y-1/2 opacity-30">🔍</span>
             </div>
             
-            <button 
-              onClick={() => { if(window.confirm(t('logoutConfirm') || 'Are you sure you want to logout?')) logout(); }}
-              className="p-4 bg-red-500/20 text-red-100 rounded-3xl hover:bg-red-500 hover:text-white transition-all border border-red-500/30 shadow-xl group"
-              title={t('logout')}
-            >
-              <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-            </button>
-
-            {!hideClose && (
-              <button onClick={onClose} className="p-4 bg-white/10 rounded-3xl hover:bg-white/20 transition-all border border-white/10">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            )}
-          </div>
-        </div>
-        
-        {/* Centered Tabs */}
-        <div className="flex justify-center items-end">
-          <div className="flex gap-12 border-b border-white/10 w-full max-w-2xl px-10">
-            <button 
-              onClick={() => setActiveTab('orders')}
-              className={`flex-1 pb-4 text-sm font-black uppercase tracking-[0.2em] transition-all border-b-4 ${activeTab === 'orders' ? 'border-secondary text-secondary' : 'border-transparent opacity-30 hover:opacity-100'}`}
-            >
-              {t('orders')}
-            </button>
-            <button 
-              onClick={() => setActiveTab('inventory')}
-              className={`flex-1 pb-4 text-sm font-black uppercase tracking-[0.2em] transition-all border-b-4 ${activeTab === 'inventory' ? 'border-secondary text-secondary' : 'border-transparent opacity-30 hover:opacity-100'}`}
-            >
-              {t('inventory')}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content Area - Centered */}
-      <div className="flex-1 overflow-y-auto p-6 md:p-12 lg:p-16">
-        <div className="max-w-6xl mx-auto w-full h-full">
-          {/* Stats Bar */}
-          <div className="grid grid-cols-3 gap-4 md:gap-8 mb-10">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-[32px] shadow-lg border border-gray-100 dark:border-gray-700 text-center">
-              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Pending</span>
-              <span className="text-2xl md:text-4xl font-black text-primary">{stats.pending}</span>
-            </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-[32px] shadow-lg border border-gray-100 dark:border-gray-700 text-center">
-              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Ready</span>
-              <span className="text-2xl md:text-4xl font-black text-green-500">{stats.ready}</span>
-            </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-[32px] shadow-lg border border-gray-100 dark:border-gray-700 text-center">
-              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Total</span>
-              <span className="text-2xl md:text-4xl font-black text-secondary">{stats.total}</span>
-            </div>
-          </div>
-
-          {activeTab === 'orders' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
-              {filteredOrders.length === 0 ? (
-                <div className="col-span-full py-40 text-center flex flex-col items-center gap-6">
-                  <div className="w-32 h-32 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center text-6xl opacity-20">📦</div>
-                  <p className="opacity-20 italic font-black text-2xl text-gray-400 uppercase tracking-[0.3em]">
-                    {t('noOrdersFoundBranch')}
-                  </p>
-                </div>
-              ) : (
-                filteredOrders.map(order => (
-                  <div key={order.id} className="bg-white dark:bg-gray-800 p-8 rounded-[48px] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] border border-gray-100 dark:border-gray-700 flex flex-col gap-6 w-full transform hover:scale-[1.03] transition-all duration-500">
-                    <div className="flex justify-between items-start">
-                      <div className="text-left">
-                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">{t('refId')}</span>
-                        <span className="font-black text-2xl text-primary dark:text-secondary">#{order.id}</span>
-                      </div>
-                      <span className={`px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm ${
-                        order.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                        order.status === 'assigned' ? 'bg-blue-100 text-blue-700' :
-                        order.status === 'ready' ? 'bg-green-100 text-green-700' :
-                        'bg-gray-100 text-gray-700'
-                      }`}>
-                        {order.status}
-                      </span>
-                    </div>
-
-                    <div className="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-[32px] space-y-3">
-                      <div className="flex justify-between text-xs items-center">
-                        <span className="text-gray-400 font-bold uppercase tracking-widest">{t('customer')}</span>
-                        <span className="font-black dark:text-white text-sm">{order.customerName}</span>
-                      </div>
-                      <div className="flex justify-between text-xs items-center">
-                        <span className="text-gray-400 font-bold uppercase tracking-widest">{t('time')}</span>
-                        <span className="font-black text-primary dark:text-secondary text-sm">{order.pickupTime}</span>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2 max-h-40 overflow-y-auto pr-2 scrollbar-hide">
-                      {order.items.map((item: any, i: number) => (
-                        <div key={i} className="flex justify-between text-xs font-bold text-gray-500 bg-white dark:bg-gray-800 p-3 rounded-2xl border border-gray-50 dark:border-gray-700 shadow-sm">
-                          <span className="flex items-center gap-2">
-                            <span className="w-6 h-6 bg-primary/5 rounded-lg flex items-center justify-center text-[10px] text-primary">{item.quantity}</span>
-                            {item.name}
-                          </span>
-                          <span className="font-black">{(item.price * item.quantity).toLocaleString()} RWF</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="mt-auto pt-6 flex flex-col gap-4">
-                      {order.assignedStaff && (
-                        <div className="flex items-center justify-center gap-3 p-4 bg-primary text-white rounded-[24px] shadow-lg">
-                          <span className="text-sm">👤</span>
-                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-center">{t('assigned')}: {order.assignedStaff}</span>
-                        </div>
-                      )}
-                      <div className="flex gap-3">
-                        {role === 'manager' && order.status === 'pending' && (
-                          <button 
-                            data-testid="assign-order-button"
-                            onClick={() => updateOrderStatus(order.id, 'assigned', user?.name || 'Staff Member')}
-                            className="flex-1 py-5 bg-primary text-white rounded-[24px] text-xs font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-xl active:scale-95 border-b-4 border-black/20"
-                          >
-                            {t('assignToMe')}
-                          </button>
-                        )}
-                        {(role === 'staff' || role === 'manager') && order.status === 'assigned' && order.assignedStaff === user?.name && (
-                          <button 
-                            data-testid="mark-ready-button"
-                            onClick={() => updateOrderStatus(order.id, 'ready')}
-                            className="flex-1 py-5 bg-secondary text-primary rounded-[24px] text-xs font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-xl active:scale-95 border-b-4 border-black/10"
-                          >
-                            {t('markAsReady')}
-                          </button>
-                        )}
-                        {order.status === 'ready' && (role === 'manager' || order.assignedStaff === user?.name) && (
-                          <button 
-                            data-testid="complete-order-button"
-                            onClick={() => updateOrderStatus(order.id, 'completed')}
-                            className="flex-1 py-5 bg-green-600 text-white rounded-[24px] text-xs font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-xl active:scale-95 border-b-4 border-green-800/30"
-                          >
-                            {t('finishOrder')}
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))
+            <div className="flex items-center gap-4 pl-8 border-l border-gray-100 dark:border-gray-800">
+              <div className="text-right">
+                <p className="text-sm font-black uppercase text-gray-900 dark:text-white">{user?.name}</p>
+                <p className="text-[10px] font-black text-primary uppercase tracking-widest">{role}</p>
+              </div>
+              <div className="w-14 h-14 bg-primary rounded-[20px] overflow-hidden border-4 border-white shadow-xl flex items-center justify-center text-white font-black text-xl">
+                {user?.photoURL ? <img src={user.photoURL} className="w-full h-full object-cover" /> : user?.name[0]}
+              </div>
+              {!hideClose && (
+                <button 
+                  data-testid="close-dashboard-button"
+                  onClick={onClose}
+                  className="ml-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl hover:text-red-500 transition-colors font-black"
+                >
+                  ✕
+                </button>
               )}
             </div>
-          ) : (
-            <div className="bg-white dark:bg-gray-800 rounded-[60px] overflow-hidden shadow-[0_64px_128px_-24px_rgba(0,0,0,0.1)] border border-gray-100 dark:border-gray-700 flex flex-col">
-              <div className="p-10 md:p-14 border-b border-gray-50 dark:border-gray-700 flex flex-col items-center justify-center gap-10 text-center">
-                <div className="flex flex-col items-center gap-3">
-                  <h3 className="text-4xl font-black text-gray-800 dark:text-white uppercase tracking-tighter">{t('inventoryControl')}</h3>
-                  <p className="text-base text-gray-400 font-bold uppercase tracking-widest opacity-60">{t('manageProductAvailability')} {selectedBranch}</p>
-                </div>
-                
-                <div className="flex flex-col md:flex-row items-center gap-6 w-full max-w-4xl">
-                  <div className="relative flex-1 w-full">
-                    <input 
-                      type="text" 
-                      placeholder={t('searchItems')}
-                      value={inventorySearch}
-                      onChange={(e) => setInventorySearch(e.target.value)}
-                      className="pl-16 pr-8 py-6 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-[32px] text-lg font-bold focus:ring-8 focus:ring-secondary/10 outline-none w-full transition-all shadow-inner"
-                    />
-                    <svg className="w-6 h-6 absolute left-6 top-1/2 -translate-y-1/2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </div>
-                  <button 
-                    onClick={() => setIsAddProductModalOpen(true)}
-                    className="w-full md:w-auto px-12 py-6 bg-primary text-white rounded-[32px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] flex items-center justify-center gap-4"
-                  >
-                    <span className="text-2xl">+</span> {t('addNewProduct')}
-                  </button>
+          </div>
+        </header>
+
+        <div className="flex-1 overflow-y-auto p-12">
+          <div className="max-w-7xl mx-auto space-y-10">
+            {/* Top Stats Row */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="bg-primary p-10 rounded-[48px] shadow-2xl relative overflow-hidden text-white group transform hover:scale-[1.02] transition-all">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full translate-x-10 -translate-y-10 transition-transform group-hover:scale-125"></div>
+                <p className="text-white/60 text-[10px] font-black uppercase tracking-widest mb-2">Pending Orders</p>
+                <p className="text-6xl font-black" data-testid="pending-orders-count">{stats.pending}</p>
+              </div>
+              
+              <div className="bg-white dark:bg-gray-900 p-10 rounded-[48px] shadow-xl border border-gray-100 dark:border-gray-800 relative overflow-hidden group transform hover:scale-[1.02] transition-all">
+                <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-2">Ready to Pickup</p>
+                <p className="text-6xl font-black text-gray-900 dark:text-white" data-testid="ready-orders-count">{stats.ready}</p>
+                <div className="mt-8 w-full bg-gray-100 dark:bg-gray-800 h-2.5 rounded-full overflow-hidden">
+                  <div className="bg-green-500 h-full rounded-full transition-all duration-1000" style={{ width: '75%' }}></div>
                 </div>
               </div>
 
-              <div className="divide-y divide-gray-50 dark:divide-gray-700 overflow-y-auto max-h-[50vh] px-4 md:px-10">
-                {filteredInventory.length === 0 ? (
-                  <div className="p-20 text-center text-gray-400 italic font-black text-xl uppercase tracking-widest opacity-20">{t('catalogIsEmpty')}</div>
-                ) : (
-                  filteredInventory.map(product => {
-                    const quantity = getProductQuantity(selectedBranch, product.id);
-                    return (
-                      <div key={product.id} className="p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-10 hover:bg-gray-50/50 dark:hover:bg-gray-700/20 transition-all rounded-[40px] my-2">
-                        <div className="flex flex-col md:flex-row items-center gap-10 flex-1">
-                          <div className="w-32 h-32 bg-gray-50 dark:bg-gray-950 rounded-[40px] overflow-hidden flex items-center justify-center border-8 border-white dark:border-gray-800 shadow-2xl p-4 shrink-0 transform -rotate-3">
-                            <img src={product.image} alt={product.name} className="w-full h-full object-contain" />
-                          </div>
-                          <div className="flex flex-col items-center md:items-start gap-3">
-                            <p className="font-black text-xl md:text-3xl dark:text-white text-gray-800 uppercase tracking-tighter line-clamp-2 leading-none">
-                              {(product as any)[`name_${language}`] || product.name}
-                            </p>
-                            <div className="flex flex-wrap justify-center md:justify-start items-center gap-4">
-                              <span className="text-[10px] font-black text-primary dark:text-secondary bg-primary/5 dark:bg-secondary/10 px-4 py-1.5 rounded-full border border-primary/10 tracking-widest">{t('sku')}: #{product.id}</span>
-                              <span className={`text-[11px] font-black uppercase tracking-[0.2em] px-5 py-1.5 rounded-full shadow-sm ${quantity === 0 ? 'bg-red-50 text-red-500 border border-red-100' : quantity < 5 ? 'bg-orange-50 text-orange-600 border border-orange-100' : 'bg-green-50 text-green-600 border border-green-100'}`}>
-                                {quantity === 0 ? t('soldOut') : `${quantity} ${t('inStock')}`}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center justify-center gap-4 bg-gray-50 dark:bg-gray-900 p-2 rounded-[32px] border border-gray-100 dark:border-gray-700 shadow-inner scale-125 md:scale-150">
-                          <button 
-                            onClick={() => updateStockAmount(selectedBranch, product.id, quantity - 1)}
-                            className="w-10 h-10 flex items-center justify-center bg-white dark:bg-gray-800 hover:bg-primary hover:text-white dark:hover:bg-primary rounded-full transition-all font-black text-primary dark:text-secondary shadow-md"
-                          >
-                            -
-                          </button>
-                          <input 
-                            type="number" 
-                            value={quantity}
-                            onChange={(e) => updateStockAmount(selectedBranch, product.id, parseInt(e.target.value) || 0)}
-                            className="w-12 bg-transparent text-center font-black text-sm text-primary dark:text-secondary outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                          />
-                          <button 
-                            onClick={() => updateStockAmount(selectedBranch, product.id, quantity + 1)}
-                            className="w-10 h-10 flex items-center justify-center bg-white dark:bg-gray-800 hover:bg-primary hover:text-white dark:hover:bg-primary rounded-full transition-all font-black text-primary dark:text-secondary shadow-md"
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
+              <div className="bg-white dark:bg-gray-900 p-10 rounded-[48px] shadow-xl border border-gray-100 dark:border-gray-800 relative overflow-hidden group transform hover:scale-[1.02] transition-all">
+                <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-2">Branch Sales</p>
+                <p className="text-6xl font-black text-gray-900 dark:text-white" data-testid="branch-sales-total">{stats.sales}</p>
+                <p className="mt-8 text-[11px] font-black text-green-500 uppercase flex items-center gap-2">
+                  <span className="p-1 bg-green-50 rounded-lg">↑ 12%</span>
+                  <span className="text-gray-400 font-bold lowercase tracking-normal">increase from yesterday</span>
+                </p>
               </div>
             </div>
-          )}
-        </div>
-      </div>
 
-      {/* Add Product Modal - Centered */}
-      {isAddProductModalOpen && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-6 bg-primary/20 backdrop-blur-xl">
-          <div className="bg-white dark:bg-gray-800 rounded-[60px] shadow-[0_64px_128px_-24px_rgba(0,0,0,0.4)] w-full max-w-2xl overflow-hidden animate-in zoom-in slide-in-from-bottom-10 duration-500 border-[12px] border-white/10">
-            <div className="p-10 md:p-16">
-              <div className="flex justify-between items-center mb-12">
-                <div className="text-left">
-                  <h2 className="text-3xl font-black text-primary dark:text-secondary uppercase tracking-tight">{t('newInventory')}</h2>
-                  <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">{t('fillProductDetails')}</p>
+            {/* Feature Content */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+              <div className="lg:col-span-8 space-y-10">
+                {activeTab === 'orders' ? (
+                  <div className="bg-white dark:bg-gray-900 p-10 rounded-[56px] shadow-2xl border border-gray-100 dark:border-gray-800">
+                    <div className="flex items-center justify-between mb-10">
+                      <h3 className="text-2xl font-black uppercase tracking-tighter text-gray-900 dark:text-white">Active Queue</h3>
+                      <div className="flex gap-4">
+                        <button className="px-5 py-2.5 bg-[#f8f9fe] dark:bg-gray-800 rounded-xl text-[10px] font-black uppercase tracking-widest border border-gray-100 dark:border-gray-700">Filter ⚡</button>
+                        <button className="px-5 py-2.5 bg-primary text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg">📥 Reports</button>
+                      </div>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left" data-testid="orders-table">
+                        <thead>
+                          <tr className="text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-50 dark:border-gray-800">
+                            <th className="pb-6">Customer Name</th>
+                            <th className="pb-6">Pick-up Time</th>
+                            <th className="pb-6 text-center">Items</th>
+                            <th className="pb-6 text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
+                          {filteredOrders.length === 0 ? (
+                            <tr>
+                              <td colSpan={4} className="py-20 text-center">
+                                <div className="flex flex-col items-center gap-4 opacity-30">
+                                  <span className="text-6xl">📦</span>
+                                  <p className="font-black uppercase tracking-widest text-xs">{t('noOrdersFoundBranch')}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          ) : filteredOrders.map(order => (
+                            <tr key={order.id} className="group transition-all hover:bg-gray-50/50 dark:hover:bg-gray-800/30" data-testid={`order-row-${order.id}`}>
+                              <td className="py-8">
+                                <div className="flex items-center gap-4">
+                                  <div className="w-12 h-12 bg-primary/5 rounded-2xl flex items-center justify-center font-black text-primary text-sm shadow-inner uppercase">{order.customerName[0]}</div>
+                                  <div>
+                                    <p className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight">{order.customerName}</p>
+                                    <p className="text-[10px] font-bold text-gray-400 tracking-widest">ID: {order.id}</p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="py-8 text-xs font-black text-primary uppercase">{order.pickupTime}</td>
+                              <td className="py-8 text-center">
+                                <span className="px-4 py-2 bg-gray-50 dark:bg-gray-800 rounded-xl text-[11px] font-black dark:text-white">{order.items.length}</span>
+                              </td>
+                              <td className="py-8 text-right">
+                                <div className="flex justify-end gap-3">
+                                  {order.status === 'pending' && role === 'manager' && (
+                                    <button 
+                                      data-testid="assign-order-button"
+                                      onClick={() => updateOrderStatus(order.id, 'assigned', user?.name || 'Staff')} 
+                                      className="px-6 py-2.5 bg-primary text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-md"
+                                    >
+                                      Assign
+                                    </button>
+                                  )}
+                                  {order.status === 'assigned' && order.assignedStaff === user?.name && (
+                                    <button 
+                                      data-testid="mark-ready-button"
+                                      onClick={() => updateOrderStatus(order.id, 'ready')} 
+                                      className="px-6 py-2.5 bg-secondary text-primary rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-md"
+                                    >
+                                      Ready
+                                    </button>
+                                  )}
+                                  {order.status === 'ready' && role === 'manager' && (
+                                    <button 
+                                      data-testid="complete-order-button"
+                                      onClick={() => updateOrderStatus(order.id, 'completed')} 
+                                      className="px-6 py-2.5 bg-green-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-md"
+                                    >
+                                      Finish
+                                    </button>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-white dark:bg-gray-900 p-10 rounded-[56px] shadow-2xl border border-gray-100 dark:border-gray-800">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
+                      <h3 className="text-2xl font-black uppercase tracking-tighter text-gray-900 dark:text-white">Inventory Control</h3>
+                      <div className="relative flex-1 max-w-md">
+                        <input 
+                          type="text" 
+                          data-testid="inventory-search-input"
+                          value={inventorySearch} 
+                          onChange={(e) => setInventorySearch(e.target.value)} 
+                          placeholder="Search catalog..." 
+                          className="w-full pl-12 pr-6 py-4 bg-[#f8f9fe] dark:bg-gray-800 rounded-2xl text-xs font-bold border-none outline-none focus:ring-4 focus:ring-primary/5 transition-all" 
+                        />
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 opacity-20">🔍</span>
+                      </div>
+                    </div>
+                    {inventorySearch && (
+                      <div className="mb-4 text-[10px] font-black uppercase text-primary" data-testid="search-results-summary">
+                        {t('searchResults')}: <span className="text-gray-900 dark:text-white">"{inventorySearch}"</span>
+                      </div>
+                    )}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6" data-testid="inventory-grid">
+                      {filteredInventory.map(product => {
+                        const qty = getProductQuantity(selectedBranch, product.id);
+                        return (
+                          <div key={product.id} className="p-6 bg-[#f8f9fe] dark:bg-gray-800/50 rounded-[32px] border border-gray-100 dark:border-gray-700 flex items-center justify-between group transition-all hover:bg-white dark:hover:bg-gray-800 shadow-sm hover:shadow-xl" data-testid={`inventory-item-${product.id}`}>
+                            <div className="flex items-center gap-6">
+                              <div className="w-16 h-16 bg-white dark:bg-gray-900 rounded-[20px] flex items-center justify-center p-3 shadow-inner"><img src={product.image} className="w-full h-full object-contain" /></div>
+                              <div>
+                                <p className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight line-clamp-1">{product.name}</p>
+                                <p className={`text-[10px] font-black uppercase mt-1 ${qty === 0 ? 'text-red-500' : (qty < 10 ? 'text-[#ff6b00]' : 'text-green-500')}`} data-testid="stock-status">
+                                  {qty === 0 ? '0 left' : `${qty} left`}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 bg-white dark:bg-gray-900 p-1.5 rounded-xl shadow-inner scale-90">
+                              <button 
+                                data-testid="stock-decrement-button"
+                                onClick={() => updateStockAmount(selectedBranch, product.id, qty - 1)} 
+                                className="w-8 h-8 flex items-center justify-center hover:bg-primary hover:text-white rounded-lg transition-all font-black text-primary"
+                              >
+                                -
+                              </button>
+                              <span className="px-2 font-black text-xs min-w-[1.5rem] text-center dark:text-white" data-testid="stock-count-display">{qty}</span>
+                              <button 
+                                data-testid="stock-increment-button"
+                                onClick={() => updateStockAmount(selectedBranch, product.id, qty + 1)} 
+                                className="w-8 h-8 flex items-center justify-center hover:bg-primary hover:text-white rounded-lg transition-all font-black text-primary"
+                              >
+                                +
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="lg:col-span-4 space-y-10">
+                {/* Distribution Chart Style */}
+                <div className="bg-white dark:bg-gray-900 p-10 rounded-[56px] shadow-2xl border border-gray-100 dark:border-gray-800">
+                  <h3 className="text-xl font-black uppercase tracking-tighter text-gray-900 dark:text-white mb-10">Usage Distribution</h3>
+                  <div className="flex justify-center mb-10 relative">
+                    <div className="w-52 h-52 rounded-full border-[18px] border-primary flex items-center justify-center">
+                       <div className="absolute inset-0 rounded-full border-r-[18px] border-secondary transform rotate-45"></div>
+                       <div className="absolute inset-0 rounded-full border-b-[18px] border-green-500 transform -rotate-12"></div>
+                       <div className="text-center">
+                          <p className="text-4xl font-black text-gray-900 dark:text-white">72%</p>
+                          <p className="text-[10px] font-black text-gray-400 uppercase">Load</p>
+                       </div>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    {[
+                      { label: 'Food Products', color: 'bg-primary', val: '60%' },
+                      { label: 'Staff Efficiency', color: 'bg-green-500', val: '25%' },
+                      { label: 'Client Feedback', color: 'bg-secondary', val: '15%' }
+                    ].map(i => (
+                      <div key={i.label} className="flex items-center justify-between text-[10px] font-black uppercase">
+                        <div className="flex items-center gap-3"><div className={`w-2.5 h-2.5 rounded-full ${i.color}`}></div><span className="text-gray-400">{i.label}</span></div>
+                        <span className="dark:text-white">{i.val}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <button onClick={() => setIsAddProductModalOpen(false)} className="text-gray-400 hover:text-red-500 p-4 bg-gray-50 dark:bg-gray-900 rounded-full transition-all text-xl">✕</button>
+
+                <div className="bg-primary p-10 rounded-[56px] shadow-2xl relative overflow-hidden group">
+                   <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1615719413546-198b25453f85?auto=format&fit=crop&q=80&w=600')] bg-cover opacity-10 group-hover:scale-110 transition-transform duration-700"></div>
+                   <h3 className="text-white text-xl font-black uppercase tracking-tight mb-4 relative z-10">Add Catalog</h3>
+                   <p className="text-white/60 text-xs font-bold mb-8 relative z-10 leading-relaxed italic">"Instantly add new items to the branch stock database."</p>
+                   <button 
+                     data-testid="add-product-open-button"
+                     onClick={() => setIsAddProductModalOpen(true)} 
+                     className="w-full py-5 bg-white text-primary rounded-[28px] font-black uppercase text-xs tracking-widest shadow-2xl hover:scale-105 active:scale-95 transition-all relative z-10"
+                   >
+                     Open Creator Form
+                   </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Add Product Modal */}
+      {isAddProductModalOpen && (
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-6 bg-primary/30 backdrop-blur-xl">
+          <div className="bg-white dark:bg-gray-800 rounded-[64px] shadow-[0_64px_128px_-24px_rgba(0,0,0,0.5)] w-full max-w-2xl overflow-hidden animate-in zoom-in duration-500 border-[12px] border-white/10">
+            <div className="p-12 md:p-16">
+              <div className="flex justify-between items-center mb-12">
+                <div>
+                  <h2 className="text-3xl font-black text-primary dark:text-secondary uppercase tracking-tight">New Inventory Item</h2>
+                  <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Global catalog expansion</p>
+                </div>
+                <button 
+                  data-testid="close-modal-button"
+                  onClick={() => setIsAddProductModalOpen(false)} 
+                  className="text-gray-400 hover:text-red-500 p-4 bg-[#f8f9fe] dark:bg-gray-900 rounded-full transition-all"
+                >
+                  ✕
+                </button>
               </div>
 
               <form onSubmit={handleAddProduct} className="space-y-10">
                 <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">{t('displayName')}</label>
-                  <input
-                    type="text"
-                    required
-                    value={newProductName}
-                    onChange={(e) => setNewProductName(e.target.value)}
-                    className="w-full px-8 py-6 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-[32px] focus:ring-8 focus:ring-secondary/10 outline-none transition-all font-black text-lg dark:text-white placeholder:opacity-30"
-                    placeholder="e.g. Premium Basmati Rice"
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">Display Name</label>
+                  <input 
+                    type="text" 
+                    required 
+                    data-testid="new-product-name-input"
+                    value={newProductName} 
+                    onChange={(e) => setNewProductName(e.target.value)} 
+                    className="w-full px-10 py-6 bg-[#f8f9fe] dark:bg-gray-900 border-none rounded-[32px] focus:ring-8 focus:ring-primary/5 outline-none font-black text-lg dark:text-white" 
+                    placeholder="e.g. Fresh Mangoes" 
                   />
                 </div>
-
                 <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">Category</label>
-                    <select
-                      value={newProductCategory}
-                      onChange={(e) => setNewProductCategory(e.target.value)}
-                      className="w-full px-8 py-6 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-[32px] focus:ring-8 focus:ring-secondary/10 outline-none font-black dark:text-white text-sm"
+                  <div className="flex flex-col gap-3">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2">Category</label>
+                    <select 
+                      data-testid="new-product-category-select"
+                      value={newProductCategory} 
+                      onChange={(e) => setNewProductCategory(e.target.value)} 
+                      className="px-8 py-6 bg-[#f8f9fe] dark:bg-gray-900 border-none rounded-[32px] font-black text-sm dark:text-white outline-none focus:ring-4 focus:ring-primary/5"
                     >
-                      {['Food Products', 'Baby Products', 'Cleaning & Sanitary', 'Cosmetics & Personal Care', 'Kitchenware & Electronics'].map(c => (
-                        <option key={c} value={c}>{t(c)}</option>
-                      ))}
+                      {['Food Products', 'Baby Products', 'Cleaning & Sanitary', 'Cosmetics & Personal Care'].map(c => <option key={c} value={c}>{t(c)}</option>)}
                     </select>
                   </div>
-                  <div>
-                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">{t('saleUnit')}</label>
-                    <input
-                      type="text"
-                      required
-                      value={newProductUnit}
-                      onChange={(e) => setNewProductUnit(e.target.value)}
-                      className="w-full px-8 py-6 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-[32px] focus:ring-8 focus:ring-secondary/10 outline-none font-black dark:text-white text-sm"
-                      placeholder="e.g. Pcs, Kg, L"
+                  <div className="flex flex-col gap-3">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2">Unit</label>
+                    <input 
+                      type="text" 
+                      required 
+                      data-testid="new-product-unit-input"
+                      value={newProductUnit} 
+                      onChange={(e) => setNewProductUnit(e.target.value)} 
+                      className="px-10 py-6 bg-[#f8f9fe] dark:bg-gray-900 border-none rounded-[32px] font-black text-sm dark:text-white outline-none focus:ring-4 focus:ring-primary/5" 
                     />
                   </div>
                 </div>
-
-                <div className="grid grid-cols-1 gap-6">
-                  <div>
-                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">{t('unitPrice')}</label>
-                    <input
-                      type="number"
-                      required
-                      value={newProductPrice}
-                      onChange={(e) => setNewProductPrice(e.target.value)}
-                      className="w-full px-8 py-6 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-[32px] focus:ring-8 focus:ring-secondary/10 outline-none font-black text-xl text-primary dark:text-secondary"
-                      placeholder="0"
-                    />
-                  </div>
-                </div>
-
-                <div className="bg-gray-50 dark:bg-gray-900 p-8 rounded-[40px] border-2 border-dashed border-gray-100 dark:border-gray-700">
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 text-center">{t('visualIdentity')}</label>
-                  <div className="flex flex-col md:flex-row items-center gap-8">
-                    <div className="w-32 h-32 bg-white dark:bg-gray-800 rounded-[40px] shadow-2xl overflow-hidden flex items-center justify-center border-4 border-white dark:border-gray-700 shrink-0">
-                      {newProductImage ? (
-                        <img src={newProductImage} alt="Preview" className="w-full h-full object-contain p-4" />
-                      ) : (
-                        <span className="text-4xl grayscale opacity-20">🖼️</span>
-                      )}
+                <div className="bg-[#f8f9fe] dark:bg-gray-900 p-10 rounded-[48px] border-2 border-dashed border-gray-200 dark:border-gray-700">
+                    <div className="flex flex-col md:flex-row items-center gap-10">
+                        <div className="w-32 h-32 bg-white dark:bg-gray-800 rounded-[40px] shadow-2xl overflow-hidden flex items-center justify-center border-4 border-white dark:border-gray-700 shrink-0">
+                            {newProductImage ? <img src={newProductImage} alt="Preview" className="w-full h-full object-contain p-4" /> : <span className="text-4xl opacity-20">🖼️</span>}
+                        </div>
+                        <label className="flex-1 w-full cursor-pointer">
+                            <div className="w-full px-10 py-6 bg-primary text-white rounded-[32px] text-center font-black uppercase text-[10px] tracking-widest shadow-xl hover:scale-105 transition-all">Upload Product Image</div>
+                            <input 
+                              type="file" 
+                              data-testid="new-product-image-upload"
+                              accept="image/*" 
+                              className="hidden" 
+                              onChange={handleImageUpload} 
+                            />
+                        </label>
                     </div>
-                    <label className="flex-1 w-full cursor-pointer">
-                      <div className="w-full px-10 py-6 bg-primary text-white rounded-[32px] text-center hover:scale-[1.02] transition-all shadow-lg active:scale-95 font-black uppercase text-xs tracking-widest">
-                        {t('uploadImageFile')}
-                      </div>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={handleImageUpload}
-                      />
-                    </label>
-                  </div>
                 </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-secondary text-primary py-8 rounded-[32px] font-black text-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-tighter border-b-8 border-black/10"
+                <button 
+                  type="submit" 
+                  data-testid="add-product-submit-button"
+                  className="w-full bg-secondary text-primary py-8 rounded-[32px] font-black text-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] active:scale-95 transition-all uppercase tracking-tighter border-b-8 border-black/10"
                 >
-                  {t('confirmSyncCatalog')}
+                  Confirm Catalog Sync
                 </button>
               </form>
             </div>

@@ -40,44 +40,44 @@ const Hero: React.FC = () => {
             "{t('slogan')}"
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+          <div className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
             {user ? (
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-5">
                 <button 
                   onClick={() => {
                     const shopSection = document.getElementById('explore-categories');
                     shopSection?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="px-10 py-5 bg-secondary text-primary rounded-[32px] font-black text-xl shadow-2xl hover:scale-105 transition-all active:scale-95 uppercase tracking-tighter"
+                  className="btn-premium"
                 >
                   {t('startShopping')}
                 </button>
                 <button 
                   onClick={() => {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
-                    // Focus search bar if possible
                     document.querySelector('input')?.focus();
                   }}
-                  className="px-8 py-5 bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-[32px] font-black text-lg hover:bg-white/20 transition-all flex items-center justify-center gap-3"
+                  className="px-10 py-6 bg-white/10 backdrop-blur-xl text-white border-2 border-white/20 rounded-[32px] font-black text-xl hover:bg-white/20 hover:border-white/40 transition-all flex items-center justify-center gap-4 shadow-2xl relative overflow-hidden group"
                 >
-                  <span>✨</span> {t('askAIAssistant')}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                  <span className="text-2xl group-hover:rotate-12 transition-transform">✨</span> {t('askAIAssistant')}
                 </button>
               </div>
             ) : (
-              <div className="flex gap-6 items-center bg-white/10 backdrop-blur-md p-4 rounded-3xl border border-white/10">
-                <div className="flex flex-col items-center gap-1">
-                  <span className="text-2xl">⚡</span>
-                  <span className="text-[10px] font-black uppercase tracking-widest">{t('fastDelivery')}</span>
+              <div className="flex gap-8 items-center bg-white/10 backdrop-blur-xl p-6 rounded-[40px] border-2 border-white/10 shadow-2xl animate-pulse-slow">
+                <div className="flex flex-col items-center gap-2 group cursor-default">
+                  <span className="text-3xl group-hover:scale-125 transition-transform">⚡</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">{t('fastDelivery')}</span>
                 </div>
-                <div className="w-px h-8 bg-white/20"></div>
-                <div className="flex flex-col items-center gap-1">
-                  <span className="text-2xl">🍃</span>
-                  <span className="text-[10px] font-black uppercase tracking-widest">{t('freshProducts')}</span>
+                <div className="w-px h-12 bg-white/20"></div>
+                <div className="flex flex-col items-center gap-2 group cursor-default">
+                  <span className="text-3xl group-hover:scale-125 transition-transform">🍃</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">{t('freshProducts')}</span>
                 </div>
-                <div className="w-px h-8 bg-white/20"></div>
-                <div className="flex flex-col items-center gap-1">
-                  <span className="text-2xl">📱</span>
-                  <span className="text-[10px] font-black uppercase tracking-widest">{t('momoPayment')}</span>
+                <div className="w-px h-12 bg-white/20"></div>
+                <div className="flex flex-col items-center gap-2 group cursor-default">
+                  <span className="text-3xl group-hover:scale-125 transition-transform">📱</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">{t('momoPayment')}</span>
                 </div>
               </div>
             )}

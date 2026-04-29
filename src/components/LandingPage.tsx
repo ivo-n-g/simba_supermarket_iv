@@ -304,21 +304,44 @@ const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* Trust Signals Section */}
-      <section className="py-20 md:py-32 container mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-center justify-around gap-12 text-center md:text-left">
+      <section className="py-24 md:py-40 container mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-12">
           {[
             { title: t('freshEveryday'), desc: t('sourcedDirectly'), icon: "🍃" },
             { title: t('kigaliDelivery'), desc: t('doorstepDelivery'), icon: "⚡" },
             { title: t('trustedBrand'), desc: t('servingRwandan'), icon: "💎" }
           ].map((f, i) => (
-            <div key={i} className="flex flex-col items-center md:items-start gap-4">
-              <span className="text-5xl md:text-6xl filter drop-shadow-xl">{f.icon}</span>
-              <h4 className="text-xl md:text-2xl font-black text-primary dark:text-secondary uppercase tracking-tighter">{f.title}</h4>
-              <p className="text-gray-500 dark:text-gray-400 font-bold text-xs md:text-base max-w-xs leading-relaxed italic opacity-80">
+            <div key={i} className="flex flex-col items-center md:items-start gap-5 group">
+              <div className="w-20 h-20 bg-primary/5 dark:bg-white/5 rounded-3xl flex items-center justify-center text-5xl group-hover:scale-110 group-hover:bg-primary/10 transition-all duration-500 shadow-xl border border-white dark:border-gray-800">
+                {f.icon}
+              </div>
+              <h4 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-none">{f.title}</h4>
+              <p className="text-gray-500 dark:text-gray-400 font-bold text-sm md:text-lg max-w-xs leading-relaxed italic opacity-80">
                 "{f.desc}"
               </p>
             </div>
           ))}
+        </div>
+
+        {/* Premium Promise Card */}
+        <div className="mt-24 md:mt-40 bg-gradient-to-br from-primary to-orange-600 p-1 md:p-2 rounded-[60px] shadow-2xl overflow-hidden group">
+          <div className="bg-white dark:bg-gray-900 rounded-[56px] p-10 md:p-20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-10">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full translate-x-20 -translate-y-20 blur-[100px]"></div>
+            <div className="max-w-2xl relative z-10 text-center md:text-left">
+              <div className="inline-block px-4 py-2 bg-secondary text-primary rounded-full font-black text-[10px] uppercase tracking-[0.4em] mb-8">Premium Promise</div>
+              <h2 className="text-4xl md:text-7xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-[0.9] mb-8">
+                Quality You <br/>
+                <span className="text-primary">Can Trust.</span>
+              </h2>
+              <p className="text-gray-500 dark:text-gray-400 text-lg md:text-2xl font-bold italic leading-relaxed">
+                "We guarantee the freshness of every item. If you're not satisfied, we'll replace it instantly at any of our branches across Kigali."
+              </p>
+            </div>
+            <div className="w-48 h-48 md:w-80 md:h-80 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center text-8xl md:text-9xl shadow-inner relative group-hover:scale-110 transition-transform duration-700">
+               🥇
+               <div className="absolute -bottom-4 bg-primary text-white px-6 py-2 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl">Verified</div>
+            </div>
+          </div>
         </div>
       </section>
     </div>

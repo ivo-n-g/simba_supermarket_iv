@@ -161,6 +161,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           {categories.map((category) => (
             <div 
               key={category}
+              data-testid={`category-card-${category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
               onClick={() => onSelectCategory(category)}
               className="group cursor-pointer bg-white dark:bg-gray-800 p-6 md:p-10 rounded-[32px] md:rounded-[48px] shadow-sm hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 border border-gray-100 dark:border-gray-700 flex flex-col items-center text-center relative overflow-hidden"
             >
@@ -328,18 +329,17 @@ const LandingPage: React.FC<LandingPageProps> = ({
           <div className="bg-white dark:bg-gray-900 rounded-[56px] p-10 md:p-20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-10">
             <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full translate-x-20 -translate-y-20 blur-[100px]"></div>
             <div className="max-w-2xl relative z-10 text-center md:text-left">
-              <div className="inline-block px-4 py-2 bg-secondary text-primary rounded-full font-black text-[10px] uppercase tracking-[0.4em] mb-8">Premium Promise</div>
+              <div className="inline-block px-4 py-2 bg-secondary text-primary rounded-full font-black text-[10px] uppercase tracking-[0.4em] mb-8">{t('premiumPromise')}</div>
               <h2 className="text-4xl md:text-7xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-[0.9] mb-8">
-                Quality You <br/>
-                <span className="text-primary">Can Trust.</span>
+                {t('qualityTrust')}
               </h2>
               <p className="text-gray-500 dark:text-gray-400 text-lg md:text-2xl font-bold italic leading-relaxed">
-                "We guarantee the freshness of every item. If you're not satisfied, we'll replace it instantly at any of our branches across Kigali."
+                "{t('guaranteeNote')}"
               </p>
             </div>
             <div className="w-48 h-48 md:w-80 md:h-80 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center text-8xl md:text-9xl shadow-inner relative group-hover:scale-110 transition-transform duration-700">
                🥇
-               <div className="absolute -bottom-4 bg-primary text-white px-6 py-2 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl">Verified</div>
+               <div className="absolute -bottom-4 bg-primary text-white px-6 py-2 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl">{t('verified')}</div>
             </div>
           </div>
         </div>

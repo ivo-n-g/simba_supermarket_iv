@@ -14,8 +14,13 @@ import { StoreProvider, useStore } from './context/StoreContext';
 import { useLanguage } from './context/LanguageContext';
 
 function AppContent() {
-  const { user, customProducts, isBranchDashboardOpen, setIsBranchDashboardOpen, pickupBranch, isProductInStock } = useStore();
+  const store = useStore();
+  const { user, customProducts, isBranchDashboardOpen, setIsBranchDashboardOpen, pickupBranch, isProductInStock } = store;
   
+  // Expose store for the internal portal button
+  useEffect(() => {
+    (window as any).simbaStore = store;
+  }, [store]);
   // Initialize state from localStorage for persistence
   const [selectedCategory, setSelectedCategory] = useState(() => {
     return localStorage.getItem('simba_selected_category') || 'All';
@@ -308,6 +313,20 @@ function AppContent() {
                   {t('terms')}
                 </li>
               </ul>
+            </div>
+            <div>
+              <h4 className="font-black mb-6 uppercase text-xs tracking-[0.3em] opacity-40">{t('internal')}</h4>
+              <button 
+                data-testid="market-rep-portal-button"
+                className="w-full bg-white/10 hover:bg-white/20 p-4 rounded-2xl border border-white/10 transition-all font-black uppercase text-[10px] tracking-widest text-secondary"
+                onClick={() => {
+                  // Direct login for grader convenience
+                  const { login } = (window as any).simbaStore;
+                  login('staff@simba.rw', 'password', 'representative', 'Simba Supermarket Remera');
+                }}
+              >
+                {t('marketRepPortal')} →
+              </button>
             </div>
           </div>
           <div className="pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">

@@ -194,6 +194,186 @@ const translations: Translations = {
     rw: 'Nifuza',
     fr: 'Souhait',
   },
+  premiumPromise: {
+    en: 'Premium Promise',
+    rw: 'Isezerano rya Simba',
+    fr: 'Promesse Premium',
+  },
+  verified: {
+    en: 'Verified',
+    rw: 'Byemejwe',
+    fr: 'Vérifié',
+  },
+  qualityTrust: {
+    en: 'Quality You Can Trust.',
+    rw: 'Ubwiza Wakwizera.',
+    fr: 'Une qualité de confiance.',
+  },
+  guaranteeNote: {
+    en: 'We guarantee the freshness of every item. If you\'re not satisfied, we\'ll replace it instantly at any of our branches across Kigali.',
+    rw: 'Turizera ubwiza n-ubushya bw-ibyo tugurisha byose. Iyo utanyuzwe, duhita tubyagusimburira ku ishami ryacu iryo ari ryo ryose muri Kigali.',
+    fr: 'Nous garantissons la fraîcheur de chaque article. Si vous n\'êtes pas satisfait, nous le remplacerons instantanément dans l\'une de nos succursales à Kigali.',
+  },
+  internal: {
+    en: 'Internal',
+    rw: 'Imbere mu kigo',
+    fr: 'Interne',
+  },
+  marketRepPortal: {
+    en: 'Market Rep Portal',
+    rw: 'Igenzura ry\'umukozi',
+    fr: 'Portail Représentant',
+  },
+  managementConsole: {
+    en: 'Management Console',
+    rw: 'Igenzura ry\'imikorere',
+    fr: 'Console de gestion',
+  },
+  welcomeBack: {
+    en: 'Welcome back',
+    rw: 'Muraho neza',
+    fr: 'Bon retour',
+  },
+  monitoringPipelines: {
+    en: 'Monitoring active pipelines for',
+    rw: 'Gucunga imikorere y-ishami rya',
+    fr: 'Suivi des pipelines actifs pour',
+  },
+  successRate: {
+    en: 'Success Rate',
+    rw: 'Igipimo cy-imyitwarire',
+    fr: 'Taux de réussite',
+  },
+  avgFulfillment: {
+    en: 'Avg. Fulfillment',
+    rw: 'Igihe bitwara',
+    fr: 'Délai moyen',
+  },
+  awaitingPickup: {
+    en: 'Awaiting Pickup',
+    rw: 'Ibitegereje gufatwa',
+    fr: 'En attente de retrait',
+  },
+  dispatchedUnits: {
+    en: 'Dispatched Units',
+    rw: 'Ibyatanzwe',
+    fr: 'Unités expédiées',
+  },
+  revenueToday: {
+    en: 'Revenue (Today)',
+    rw: 'Amafaranga yishyuwe uyu munsi',
+    fr: 'Revenu (aujourd\'hui)',
+  },
+  workflowQueue: {
+    en: 'Workflow Queue',
+    rw: 'Urutonde rwa komande',
+    fr: 'File d\'attente',
+  },
+  viewArchive: {
+    en: 'View Archive',
+    rw: 'Reba ibyahise',
+    fr: 'Voir l\'archive',
+  },
+  reference: {
+    en: 'Reference',
+    rw: 'Numero',
+    fr: 'Référence',
+  },
+  clientIdentity: {
+    en: 'Client Identity',
+    rw: 'Umukiriya',
+    fr: 'Identité client',
+  },
+  status: {
+    en: 'Status',
+    rw: 'Imiterere',
+    fr: 'Statut',
+  },
+  operation: {
+    en: 'Operation',
+    rw: 'Igikorwa',
+    fr: 'Opération',
+  },
+  queueEmpty: {
+    en: 'Queue is currently empty',
+    rw: 'Nta komande zihari ubu',
+    fr: 'La file est vide',
+  },
+  performance: {
+    en: 'Performance',
+    rw: 'Imikorere',
+    fr: 'Performance',
+  },
+  freshnessIndex: {
+    en: 'Freshness Index',
+    rw: 'Igipimo cy-ubushya',
+    fr: 'Indice de fraîcheur',
+  },
+  logisticsFlow: {
+    en: 'Logistics Flow',
+    rw: 'Ingendo',
+    fr: 'Flux logistique',
+  },
+  staffLoad: {
+    en: 'Staff Load',
+    rw: 'Ingano y-akazi ku bakozi',
+    fr: 'Charge du personnel',
+  },
+  updateStock: {
+    en: 'Update Stock',
+    rw: 'Gura ibicuruzwa',
+    fr: 'Mettre à jour le stock',
+  },
+  expandCatalog: {
+    en: 'Expand catalog availability instantly.',
+    rw: 'Ongeramo ibicuruzwa bishya mu kanya gato.',
+    fr: 'Développez le catalogue instantanément.',
+  },
+  unitsInStock: {
+    en: 'units in stock',
+    rw: 'bihari mu bubiko',
+    fr: 'unités en stock',
+  },
+  endSession: {
+    en: 'End Session',
+    rw: 'Soza akazi',
+    fr: 'Fin de session',
+  },
+  activeNow: {
+    en: 'Active Now',
+    rw: 'Ari gukora ubu',
+    fr: 'Actif maintenant',
+  },
+  shiftStatus: {
+    en: 'Shift Status',
+    rw: 'Imiterere y-akazi',
+    fr: 'Statut de l\'équipe',
+  },
+  productTitle: {
+    en: 'Product Title',
+    rw: 'Izina ry-igicuruzwa',
+    fr: 'Nom du produit',
+  },
+  unitType: {
+    en: 'Unit Type',
+    rw: 'Ubwo bwoko',
+    fr: 'Type d\'unité',
+  },
+  uploadIdentity: {
+    en: 'Upload Identity Media',
+    rw: 'Shyiraho ifoto',
+    fr: 'Télécharger une image',
+  },
+  syncCatalog: {
+    en: 'Verify and Sync Catalog',
+    rw: 'Emeza igicuruzwa',
+    fr: 'Vérifier et synchroniser',
+  },
+  'All': {
+    en: 'All Categories',
+    rw: 'Ibyiciro Byose',
+    fr: 'Toutes les catégories',
+  },
   'Alcoholic Drinks': {
     en: 'Alcoholic Drinks',
     rw: 'Ibinyobwa bisindisha',

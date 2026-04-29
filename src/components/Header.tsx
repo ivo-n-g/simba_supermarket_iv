@@ -181,6 +181,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
               <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                 <button
                   type="button"
+                  data-testid="ai-mode-toggle"
                   onClick={() => setIsAiMode(!isAiMode)}
                   className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${isAiMode ? 'bg-secondary text-primary shadow-lg' : 'bg-white/10 text-white hover:bg-white/20'}`}
                 >
@@ -214,10 +215,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
                 const { login } = (window as any).simbaStore;
                 login('staff@simba.rw', 'password', 'representative', 'Simba Supermarket Remera');
               }}
-              className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all"
+              className="flex items-center gap-2 px-2 md:px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-lg text-[8px] md:text-[9px] font-black uppercase tracking-widest transition-all"
             >
-              <span className="w-2 h-2 bg-primary rounded-full animate-ping"></span>
-              Staff Portal
+              <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-primary rounded-full animate-ping"></span>
+              <span className="hidden xs:inline">Staff Portal</span>
+              <span className="xs:hidden">OPs</span>
             </button>
 
             <div className="flex items-center bg-white/5 rounded-lg md:rounded-xl p-0.5 border border-white/5">              <button onClick={toggleTheme} className="p-1.5 md:p-2.5 rounded-lg hover:bg-white/10 transition-all">

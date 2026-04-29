@@ -125,10 +125,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [pickupBranch, setPickupBranch] = useState<string>('');
   const [pickupTime, setPickupTime] = useState<string>('');
   const [orders, setOrders] = useState<Order[]>(() => {
-    const savedOrders = localStorage.getItem('simba_orders');
-    if (savedOrders) return JSON.parse(savedOrders);
-    
-    return [
+    const defaultOrders: Order[] = [
       {
         id: '9b2x1a',
         customerName: 'Kezia Umutoni',
@@ -144,7 +141,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         customerName: 'Jean-Luc Habimana',
         items: [{ id: 13002, name: 'Icecream Scoop', price: 3000, quantity: 2, image: 'https://res.cloudinary.com/eskalate/image/upload/v1776507692/simba_contest/product_13002.jpg' }],
         total: 6000,
-        branch: 'Simba Supermarket Town', // Add a town one too
+        branch: 'Simba Supermarket Town',
         pickupTime: 'Tomorrow, 10:00 AM',
         status: 'pending',
         timestamp: Date.now() - 7200000
@@ -161,6 +158,19 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         timestamp: Date.now() - 86400000
       }
     ];
+
+    const savedOrders = localStorage.getItem('simba_orders');
+    if (savedOrders) {
+      const parsed = JSON.parse(savedOrders);
+      // Merge: keep default orders and append saved ones that aren't duplicates
+      const merged = [...defaultOrders];
+      parsed.forEach((po: Order) => {
+        if (!merged.find(do_ => do_.id === po.id)) merged.push(po);
+      });
+      return merged;
+    }
+    
+    return defaultOrders;
   });
   const [branchStock, setBranchStock] = useState<Record<string, Record<number, number>>>({});
   const [customProducts, setCustomProducts] = useState<Product[]>([]);

@@ -41,45 +41,27 @@ const Hero: React.FC = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
-            {user ? (
-              <div className="flex flex-col sm:flex-row gap-5">
-                <button 
-                  onClick={() => {
-                    const shopSection = document.getElementById('explore-categories');
-                    shopSection?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="btn-premium"
-                >
-                  {t('startShopping')}
-                </button>
-                <button 
-                  onClick={() => {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    document.querySelector('input')?.focus();
-                  }}
-                  className="px-10 py-6 bg-white/10 backdrop-blur-xl text-white border-2 border-white/20 rounded-[32px] font-black text-xl hover:bg-white/20 hover:border-white/40 transition-all flex items-center justify-center gap-4 shadow-2xl relative overflow-hidden group"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                  <span className="text-2xl group-hover:rotate-12 transition-transform">✨</span> {t('askAIAssistant')}
-                </button>
-              </div>
-            ) : (
-              <div className="flex gap-8 items-center bg-white/10 backdrop-blur-xl p-6 rounded-[40px] border-2 border-white/10 shadow-2xl animate-pulse-slow">
-                <div className="flex flex-col items-center gap-2 group cursor-default">
-                  <span className="text-3xl group-hover:scale-125 transition-transform">⚡</span>
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">{t('fastDelivery')}</span>
-                </div>
-                <div className="w-px h-12 bg-white/20"></div>
-                <div className="flex flex-col items-center gap-2 group cursor-default">
-                  <span className="text-3xl group-hover:scale-125 transition-transform">🍃</span>
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">{t('freshProducts')}</span>
-                </div>
-                <div className="w-px h-12 bg-white/20"></div>
-                <div className="flex flex-col items-center gap-2 group cursor-default">
-                  <span className="text-3xl group-hover:scale-125 transition-transform">📱</span>
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">{t('momoPayment')}</span>
-                </div>
-              </div>
+            <button 
+              data-testid="hero-shop-button"
+              onClick={() => {
+                const shopSection = document.getElementById('explore-categories');
+                shopSection?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="btn-premium"
+            >
+              {t('startShopping')}
+            </button>
+            {user && (
+              <button 
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  document.querySelector('input')?.focus();
+                }}
+                className="px-10 py-6 bg-white/10 backdrop-blur-xl text-white border-2 border-white/20 rounded-[32px] font-black text-xl hover:bg-white/20 hover:border-white/40 transition-all flex items-center justify-center gap-4 shadow-2xl relative overflow-hidden group"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                <span className="text-2xl group-hover:rotate-12 transition-transform">✨</span> {t('askAIAssistant')}
+              </button>
             )}
           </div>
         </div>

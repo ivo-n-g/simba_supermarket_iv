@@ -124,7 +124,44 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [deliveryMethod, setDeliveryMethod] = useState<'pickup' | 'delivery'>('pickup');
   const [pickupBranch, setPickupBranch] = useState<string>('');
   const [pickupTime, setPickupTime] = useState<string>('');
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<Order[]>(() => {
+    const savedOrders = localStorage.getItem('simba_orders');
+    if (savedOrders) return JSON.parse(savedOrders);
+    
+    return [
+      {
+        id: '9b2x1a',
+        customerName: 'Kezia Umutoni',
+        items: [{ id: 13001, name: 'Lentz Radiant Heater', price: 83600, quantity: 1, image: 'https://res.cloudinary.com/eskalate/image/upload/v1776507692/simba_contest/product_13001.jpg' }],
+        total: 83600,
+        branch: 'Simba Supermarket Remera',
+        pickupTime: 'Today, 5:00 PM',
+        status: 'pending',
+        timestamp: Date.now() - 3600000
+      },
+      {
+        id: '4m8v3z',
+        customerName: 'Jean-Luc Habimana',
+        items: [{ id: 13002, name: 'Icecream Scoop', price: 3000, quantity: 2, image: 'https://res.cloudinary.com/eskalate/image/upload/v1776507692/simba_contest/product_13002.jpg' }],
+        total: 6000,
+        branch: 'Simba Supermarket Town', // Add a town one too
+        pickupTime: 'Tomorrow, 10:00 AM',
+        status: 'pending',
+        timestamp: Date.now() - 7200000
+      },
+      {
+        id: '7v9y2k',
+        customerName: 'Aline Mugisha',
+        items: [{ id: 16001, name: 'Aviation Remote Plane', price: 15500, quantity: 1, image: 'https://res.cloudinary.com/eskalate/image/upload/v1776507693/simba_contest/product_16001.jpg' }],
+        total: 15500,
+        branch: 'Simba Supermarket Remera',
+        pickupTime: 'Tomorrow, 2:00 PM',
+        status: 'assigned',
+        assignedStaff: 'Staff',
+        timestamp: Date.now() - 86400000
+      }
+    ];
+  });
   const [branchStock, setBranchStock] = useState<Record<string, Record<number, number>>>({});
   const [customProducts, setCustomProducts] = useState<Product[]>([]);
   const [isBranchDashboardOpen, setIsBranchDashboardOpen] = useState(false);
@@ -138,8 +175,6 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     if (savedCart) setCart(JSON.parse(savedCart));
     const savedWishlist = localStorage.getItem('simba_wishlist');
     if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
-    const savedOrders = localStorage.getItem('simba_orders');
-    if (savedOrders) setOrders(JSON.parse(savedOrders));
     const savedStock = localStorage.getItem('simba_branch_stock');
     if (savedStock) setBranchStock(JSON.parse(savedStock));
     const savedCustom = localStorage.getItem('simba_custom_products');

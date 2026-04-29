@@ -177,6 +177,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                         return (
                           <button
                             key={branch.name}
+                            data-testid="branch-option"
                             onClick={() => { setPickupBranch(branch.name); setBranchError(false); }}
                             className={`w-full p-5 rounded-[24px] border-2 text-left transition-all flex flex-col gap-1 relative ${
                               pickupBranch === branch.name
@@ -288,6 +289,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                       ].map((m) => (
                         <button
                           key={m.id}
+                          data-testid={`payment-${m.id}`}
                           disabled={m.disabled}
                           onClick={() => !m.disabled && setPaymentMethod(m.id as any)}
                           className={`w-full flex items-center justify-between p-5 rounded-[28px] border-2 transition-all relative ${
@@ -421,6 +423,14 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
       <LoginModal 
         isOpen={isLoginModalOpen} 
         onClose={() => setIsLoginModalOpen(false)} 
+        onOpenBranchDashboard={onOpenBranchDashboard}
+      />
+    </>
+  );
+};
+
+export default CartDrawer;
+pen(false)} 
         onOpenBranchDashboard={onOpenBranchDashboard}
       />
     </>

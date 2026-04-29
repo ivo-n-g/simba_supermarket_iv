@@ -311,6 +311,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                                   <div className="flex justify-end gap-2">
                                     {order.status === 'pending' && role === 'manager' && (
                                       <button 
+                                        data-testid="assign-order-button"
                                         onClick={() => updateOrderStatus(order.id, 'assigned', user?.name || 'Staff')} 
                                         className="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-lg shadow-primary/20"
                                       >
@@ -319,6 +320,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                                     )}
                                     {order.status === 'assigned' && order.assignedStaff === user?.name && (
                                       <button 
+                                        data-testid="mark-ready-button"
                                         onClick={() => updateOrderStatus(order.id, 'ready')} 
                                         className="px-6 py-2 bg-green-500 text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-green-600 transition-colors shadow-lg shadow-green-500/20"
                                       >
@@ -327,6 +329,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                                     )}
                                     {order.status === 'ready' && role === 'manager' && (
                                       <button 
+                                        data-testid="complete-order-button"
                                         onClick={() => updateOrderStatus(order.id, 'completed')} 
                                         className="px-6 py-2 bg-gray-900 text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-black transition-colors"
                                       >

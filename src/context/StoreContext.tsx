@@ -303,6 +303,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       const repUser: User = { name: email.split('@')[0], email, role: 'representative', branch, repRole: repRole || 'staff' };
       setUser(repUser);
       localStorage.setItem('simba_user_session', JSON.stringify(repUser));
+      setIsBranchDashboardOpen(true);
       return true;
     }
 
@@ -312,6 +313,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (role === 'representative') {
         if (repRole) sessionUser.repRole = repRole;
         if (branch) sessionUser.branch = branch;
+        setIsBranchDashboardOpen(true);
       }
       setUser(sessionUser);
       localStorage.setItem('simba_user_session', JSON.stringify(sessionUser));

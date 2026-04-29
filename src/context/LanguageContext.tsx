@@ -214,6 +214,16 @@ const translations: Translations = {
     rw: 'Turizera ubwiza n-ubushya bw-ibyo tugurisha byose. Iyo utanyuzwe, duhita tubyagusimburira ku ishami ryacu iryo ari ryo ryose muri Kigali.',
     fr: 'Nous garantissons la fraîcheur de chaque article. Si vous n\'êtes pas satisfait, nous le remplacerons instantanément dans l\'une de nos succursales à Kigali.',
   },
+  shopping: {
+    en: 'Shopping',
+    rw: 'Guhaha',
+    fr: 'Achats',
+  },
+  productsFound: {
+    en: 'Products Found',
+    rw: 'Ibicuruzwa byabonetse',
+    fr: 'Produits trouvés',
+  },
   internal: {
     en: 'Internal',
     rw: 'Imbere mu kigo',

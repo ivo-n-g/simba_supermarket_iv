@@ -62,7 +62,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputValue(value);
-    // onSearch(value); // Removed live search to ensure static page until Enter is hit
+    if (!isAiMode) {
+      onSearch(value);
+    }
     setShowSuggestions(true);
   };
 

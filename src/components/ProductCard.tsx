@@ -159,20 +159,40 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit,
             </button>
           </div>
 
-          {/* Secondary Wishlist Button */}
-          <button 
-            onClick={handleToggleWishlist}
-            className={`w-full h-10 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 border-2 transition-all active:scale-95 ${
-              isWishlisted 
-                ? 'bg-red-50 border-red-100 text-red-500 dark:bg-red-900/10 dark:border-red-900/30' 
-                : 'border-gray-100 text-gray-400 hover:border-red-100 hover:text-red-500 dark:border-gray-700 dark:hover:border-red-900/30'
-            }`}
-          >
-            <svg className="w-4 h-4" fill={isWishlisted ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-            {t('addToWishlist')}
-          </button>
+          {/* Secondary Buy Now and Wishlist Row */}
+          <div className="flex gap-3" onClick={e => e.stopPropagation()}>
+            <button 
+              data-testid="buy-now-button"
+              onClick={(e) => {
+                handleAddToCart(e);
+                // We'll use the window event or state to open cart instantly
+                setTimeout(() => {
+                  const cartBtn = document.querySelector('[data-testid="cart-button"]') as HTMLButtonElement;
+                  cartBtn?.click();
+                }, 100);
+              }}
+              disabled={!inStock}
+              className={`flex-[2] h-10 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95 ${
+                inStock 
+                  ? 'bg-secondary text-primary hover:bg-yellow-400' 
+                  : 'bg-gray-100 text-gray-300 cursor-not-allowed'
+              }`}
+            >
+              🚀 {t('buyNow')}
+            </button>
+            <button 
+              onClick={handleToggleWishlist}
+              className={`flex-1 h-10 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center border-2 transition-all active:scale-95 ${
+                isWishlisted 
+                  ? 'bg-red-50 border-red-100 text-red-500 dark:bg-red-900/10 dark:border-red-900/30' 
+                  : 'border-gray-100 text-gray-400 hover:border-red-100 hover:text-red-500 dark:border-gray-700 dark:hover:border-red-900/30'
+              }`}
+            >
+              <svg className="w-4 h-4" fill={isWishlisted ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -194,6 +194,11 @@ const translations: Translations = {
     rw: 'Nifuza',
     fr: 'Souhait',
   },
+  buyNow: {
+    en: 'Buy Now',
+    rw: 'Gura ubu',
+    fr: 'Acheter',
+  },
   premiumPromise: {
     en: 'Premium Promise',
     rw: 'Isezerano rya Simba',

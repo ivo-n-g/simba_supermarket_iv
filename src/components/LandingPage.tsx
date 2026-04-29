@@ -157,6 +157,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
               <div className="flex items-center gap-3">
                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('onlyInStock')}</span>
                 <button 
+                  data-testid="in-stock-toggle"
                   onClick={() => setOnlyInStock(!onlyInStock)}
                   className={`w-10 h-5 rounded-full relative transition-all duration-300 ${onlyInStock ? 'bg-primary' : 'bg-gray-200 dark:bg-gray-700'}`}
                 >

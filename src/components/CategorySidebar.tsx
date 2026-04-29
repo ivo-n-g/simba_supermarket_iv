@@ -131,6 +131,7 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
           </div>
 
           <button
+            data-testid="category-filter-all"
             onClick={() => handleCategorySelect('All')}
             className={`group flex items-center justify-between px-5 py-4 rounded-2xl text-sm font-black transition-all w-full border-2 ${
               selectedCategory === 'All'
@@ -154,6 +155,7 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
           {categories.sort().map((category) => (
             <button
               key={category}
+              data-testid={`category-filter-${category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
               onClick={() => handleCategorySelect(category)}
               className={`group flex items-center justify-between px-5 py-4 rounded-2xl text-sm font-black transition-all w-full border-2 ${
                 selectedCategory === category
@@ -182,6 +184,7 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('onlyInStock')}</span>
                 <button 
+                  data-testid="in-stock-toggle"
                   onClick={() => setOnlyInStock(!onlyInStock)}
                   className={`w-10 h-5 rounded-full relative transition-all duration-300 ${onlyInStock ? 'bg-primary' : 'bg-gray-200 dark:bg-gray-700'}`}
                 >

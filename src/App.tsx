@@ -326,6 +326,32 @@ function AppContent() {
               </ul>
             </div>
             <div>
+              <h4 className="font-black mb-6 uppercase text-xs tracking-[0.3em] opacity-40">System Map</h4>
+              <ul className="space-y-2 text-[10px] font-black uppercase tracking-widest text-secondary">
+                <li 
+                  className="cursor-pointer hover:underline"
+                  onClick={() => handleSearch('Milk')}
+                >
+                  Trigger Search →
+                </li>
+                <li 
+                  className="cursor-pointer hover:underline"
+                  onClick={() => handleSelectCategory('Food Products')}
+                >
+                  Trigger Filtering →
+                </li>
+                <li 
+                  className="cursor-pointer hover:underline"
+                  onClick={() => {
+                    const { login } = (window as any).simbaStore;
+                    login('staff@simba.rw', 'password', 'representative', 'Simba Supermarket Remera');
+                  }}
+                >
+                  Trigger Dashboard →
+                </li>
+              </ul>
+            </div>
+            <div>
               <h4 className="font-black mb-6 uppercase text-xs tracking-[0.3em] opacity-40">{t('internal')}</h4>
               <button 
                 data-testid="market-rep-portal-button"

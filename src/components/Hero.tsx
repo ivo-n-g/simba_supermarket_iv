@@ -8,7 +8,7 @@ const Hero: React.FC = () => {
   const { user, handleGoogleSuccess } = useStore();
   
   return (
-    <div className="relative h-[500px] md:h-[700px] flex items-center justify-center overflow-hidden bg-primary">
+    <div data-testid="hero-section" id="hero" className="relative h-[500px] md:h-[700px] flex items-center justify-center overflow-hidden bg-primary">
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
         <video

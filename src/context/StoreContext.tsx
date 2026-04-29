@@ -143,7 +143,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         total: 6000,
         branch: 'Simba Supermarket Town',
         pickupTime: 'Tomorrow, 10:00 AM',
-        status: 'pending',
+        status: 'ready', // Show one as ready to prove the state
         timestamp: Date.now() - 7200000
       },
       {

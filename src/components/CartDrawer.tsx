@@ -14,7 +14,7 @@ type CheckoutStep = 'cart' | 'pickup-selection' | 'pickup-time' | 'identity' | '
 const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDashboard }) => {
   const { 
     cart, removeFromCart, updateQuantity, checkout, 
-    deliveryMethod, setDeliveryMethod, pickupBranch, setPickupBranch, 
+    deliveryMethod, pickupBranch, setPickupBranch, 
     pickupTime, setPickupTime, user, locations, closestBranchName, userLocation, calculateDistance 
   } = useStore();
   
@@ -23,12 +23,9 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'momo' | 'card' | 'cash'>('momo');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [branchError, setBranchError] = useState(false);
-  const [timeError, setTimeError] = useState(false);
 
   const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
   const deliveryFee = deliveryMethod === 'delivery' ? 2000 : 0;
-  const deposit = deliveryMethod === 'pickup' ? 500 : 0;
   const totalPrice = subtotal + deliveryFee;
 
   const handleNextStep = () => {
@@ -40,13 +37,11 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
       }
     } else if (step === 'pickup-selection') {
       if (!pickupBranch) {
-        setBranchError(true);
         return;
       }
       setStep('pickup-time');
     } else if (step === 'pickup-time') {
       if (!pickupTime) {
-        setTimeError(true);
         return;
       }
       proceedToIdentity();
@@ -150,17 +145,17 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                               <img src={product.image} alt={product.name} className="w-full h-full object-center object-contain p-2" />
                             </div>
                             <div className="ml-4 flex-1 flex flex-col justify-center">
-                              <div className="flex justify-between text-base font-black text-gray-900 dark:text-gray-100 uppercase tracking-tighter">
+                              <div className="flex justify-between text-base font-black text-gray-900 dark:text-100 uppercase tracking-tighter">
                                 <h3 className="line-clamp-1 text-xs">{product.name}</h3>
                                 <p className="ml-4 whitespace-nowrap text-primary dark:text-secondary">{product.price.toLocaleString()} RWF</p>
                               </div>
                               <div className="flex-1 flex items-end justify-between text-sm mt-3">
                                 <div className="flex items-center bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-100 dark:border-gray-600 p-0.5">
-                                  <button onClick={() => updateQuantity(product.id, product.quantity - 1)} className="w-7 h-7 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors font-black">-</button>
-                                  <span className="px-3 font-black text-xs dark:text-gray-100">{product.quantity}</span>
-                                  <button onClick={() => updateQuantity(product.id, product.quantity + 1)} className="w-7 h-7 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors font-black">+</button>
+                                  <button data-testid={`cart-decrement-${product.id}`} onClick={() => updateQuantity(product.id, product.quantity - 1)} className="w-7 h-7 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors font-black">-</button>
+                                  <span data-testid={`cart-quantity-${product.id}`} className="px-3 font-black text-xs dark:text-gray-100">{product.quantity}</span>
+                                  <button data-testid={`cart-increment-${product.id}`} onClick={() => updateQuantity(product.id, product.quantity + 1)} className="w-7 h-7 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors font-black">+</button>
                                 </div>
-                                <button onClick={() => removeFromCart(product.id)} className="font-black text-red-500 hover:text-red-600 text-[10px] uppercase tracking-widest">{t('remove')}</button>
+                                <button data-testid={`cart-remove-${product.id}`} onClick={() => removeFromCart(product.id)} className="font-black text-red-500 hover:text-red-600 text-[10px] uppercase tracking-widest">{t('remove')}</button>
                               </div>
                             </div>
                           </li>
@@ -178,7 +173,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                           <button
                             key={branch.name}
                             data-testid="branch-option"
-                            onClick={() => { setPickupBranch(branch.name); setBranchError(false); }}
+                            onClick={() => { setPickupBranch(branch.name); }}
                             className={`w-full p-5 rounded-[24px] border-2 text-left transition-all flex flex-col gap-1 relative ${
                               pickupBranch === branch.name
                                 ? 'border-primary dark:border-secondary bg-primary/5 dark:bg-secondary/5 ring-2 ring-primary/10'
@@ -215,8 +210,8 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                       ].map((time) => (
                         <button
                           key={time}
-                          onClick={() => { setPickupTime(time); setTimeError(false); }}
-                          className={`p-4 rounded-2xl border-2 text-center transition-all ${
+                          data-testid="time-option"
+                          onClick={() => { setPickupTime(time); }}                          className={`p-4 rounded-2xl border-2 text-center transition-all ${
                             pickupTime === time
                               ? 'border-primary dark:border-secondary bg-primary/5 dark:bg-secondary/5'
                               : 'border-gray-100 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50'
@@ -234,7 +229,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                           type="text" 
                           placeholder="e.g. Wednesday at 3 PM"
                           value={pickupTime && !['In 30 minutes', 'In 1 hour', 'Today, 1:00 PM', 'Today, 2:00 PM', 'Today, 4:00 PM', 'Today, 6:00 PM', 'Today, 8:00 PM', 'Tomorrow, 9:00 AM', 'Tomorrow, 11:00 AM', 'Tomorrow, 2:00 PM'].includes(pickupTime) ? pickupTime : ''}
-                          onChange={(e) => { setPickupTime(e.target.value); setTimeError(false); }}
+                          onChange={(e) => { setPickupTime(e.target.value); }}
                           className="w-full p-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-primary/10 dark:text-white transition-all"
                         />
                         <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300">
@@ -317,24 +312,6 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                         </button>
                       ))}
                     </div>
-                    {paymentMethod === 'momo' && deliveryMethod === 'pickup' && (
-                      <div className="p-5 bg-primary/5 dark:bg-secondary/5 rounded-[28px] border-2 border-dashed border-primary/20">
-                        <div className="flex items-center gap-3 mb-3">
-                          <span className="text-xl">💰</span>
-                          <span className="font-black text-primary dark:text-secondary uppercase tracking-tight">{t('momoDeposit')}</span>
-                        </div>
-                        <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-relaxed font-bold italic">
-                          {t('depositNote')}
-                        </p>
-                      </div>
-                    )}
-                    {paymentMethod === 'cash' && (
-                      <div className="p-5 bg-green-50 dark:bg-green-900/20 rounded-[28px] border border-green-100 dark:border-green-900/30">
-                        <p className="text-[11px] text-green-700 dark:text-green-400 leading-relaxed font-bold italic">
-                          {t('paymentCollected')}
-                        </p>
-                      </div>
-                    )}
                   </div>
                 )}
               </div>
@@ -342,48 +319,11 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
 
             {cart.length > 0 && step !== 'success' && (
               <div className="border-t border-gray-100 dark:border-gray-700 py-8 px-4 sm:px-6 bg-gray-50/50 dark:bg-gray-900/50 shadow-inner">
-                {step === 'cart' && (
-                  <div className="mb-8">
-                    <h3 className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-4 ml-2">{t('deliveryMethod')}</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      <button onClick={() => setDeliveryMethod('pickup')} className={`p-4 rounded-[28px] border-2 text-left transition-all ${deliveryMethod === 'pickup' ? 'border-primary bg-white dark:bg-gray-800 shadow-xl shadow-primary/10' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 opacity-60'}`}>
-                        <div className="font-black text-primary dark:text-secondary text-sm uppercase tracking-tighter">{t('pickup')}</div>
-                        <p className="text-[9px] text-gray-400 dark:text-gray-500 mt-1 leading-tight font-bold">{t('pickupNote')}</p>
-                      </button>
-                      <button 
-                        disabled 
-                        className="p-4 rounded-[28px] border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 opacity-40 cursor-not-allowed text-left relative overflow-hidden"
-                      >
-                        <div className="font-black text-gray-400 text-sm uppercase tracking-tighter">{t('delivery')}</div>
-                        <p className="text-[9px] text-gray-400 mt-1 leading-tight font-bold">{t('comingSoon')}</p>
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {branchError && step === 'pickup-selection' && (
-                  <p className="text-[10px] text-red-500 font-black mb-4 ml-2 animate-shake flex items-center gap-2">
-                    <span>⚠️</span> {t('pleaseSelectBranch')}
-                  </p>
-                )}
-
-                {timeError && step === 'pickup-time' && (
-                  <p className="text-[10px] text-red-500 font-black mb-4 ml-2 animate-shake flex items-center gap-2">
-                    <span>⚠️</span> Please select a pick-up time.
-                  </p>
-                )}
-
                 <div className="space-y-3 mb-8 bg-white dark:bg-gray-800/50 p-6 rounded-[32px] border border-gray-100 dark:border-gray-700 shadow-sm">
                   <div className="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-widest">
                     <p>{t('subtotal')}</p>
                     <p className="text-gray-900 dark:text-white">{subtotal.toLocaleString()} RWF</p>
                   </div>
-                  {deposit > 0 && paymentMethod === 'momo' && step === 'payment' && (
-                    <div className="flex justify-between text-xs font-bold text-primary dark:text-secondary uppercase tracking-widest pt-2 border-t border-gray-50 dark:border-gray-700">
-                      <p>{t('momoDeposit')}</p>
-                      <p>{deposit.toLocaleString()} RWF</p>
-                    </div>
-                  )}
                   <div className="flex justify-between text-2xl font-black text-primary dark:text-secondary pt-4 border-t-2 border-gray-50 dark:border-gray-700 tracking-tighter">
                     <p>TOTAL</p>
                     <p>{totalPrice.toLocaleString()} RWF</p>
@@ -411,7 +351,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                         {t('processing')}
                       </div>
                     ) : (
-                      step === 'payment' ? (paymentMethod === 'momo' && deliveryMethod === 'pickup' ? `Pay ${deposit} RWF Deposit` : t('completePayment')) : t('checkout')
+                      step === 'payment' ? t('completePayment') : t('checkout')
                     )}
                   </button>
                 </div>
@@ -430,11 +370,4 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
 };
 
 export default CartDrawer;
-pen(false)} 
-        onOpenBranchDashboard={onOpenBranchDashboard}
-      />
-    </>
-  );
-};
-
-export default CartDrawer;
+;

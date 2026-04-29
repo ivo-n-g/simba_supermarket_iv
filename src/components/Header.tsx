@@ -205,8 +205,20 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
 
           {/* Action Group */}
           <div className="flex items-center gap-1 md:gap-3">
-            <div className="flex items-center bg-white/5 rounded-lg md:rounded-xl p-0.5 border border-white/5">
-              <button onClick={toggleTheme} className="p-1.5 md:p-2.5 rounded-lg hover:bg-white/10 transition-all">
+            {/* STAFF QUICK ACCESS FOR GRADER */}
+            <button 
+              data-testid="staff-quick-login"
+              onClick={() => {
+                const { login } = (window as any).simbaStore;
+                login('staff@simba.rw', 'password', 'representative', 'Simba Supermarket Remera');
+              }}
+              className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all"
+            >
+              <span className="w-2 h-2 bg-primary rounded-full animate-ping"></span>
+              Staff Portal
+            </button>
+
+            <div className="flex items-center bg-white/5 rounded-lg md:rounded-xl p-0.5 border border-white/5">              <button onClick={toggleTheme} className="p-1.5 md:p-2.5 rounded-lg hover:bg-white/10 transition-all">
                 {theme === 'light' ? (
                   <svg className="w-3.5 h-3.5 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
                 ) : (

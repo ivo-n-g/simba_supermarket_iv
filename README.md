@@ -11,12 +11,12 @@ A premium, highly interactive e-commerce platform built for the Simba Supermarke
 - **Full Checkout Loop:** End-to-end flow including branch selection (sorted by proximity), pickup time scheduling, and multiple payment methods (MoMo, Cash).
 - **Mobile Responsive:** Fully optimized for all screen sizes with adaptive layouts.
 
-### 2. Multi-Language Support (20/20 Target)
+### 2. Multi-Language Support 
 - **Full Kinyarwanda Support:** Every string, label, and category is fully translated into Kinyarwanda.
 - **French & English:** Seamless switching between three languages.
 - **Prominent Switcher:** Easy-to-find language controls in the header.
 
-### 3. SimbaOps: Market Rep Dashboard (25/25 Target)
+### 3. SimbaOps: Market Rep Dashboard 
 - **Enterprise Console:** A Dribbble-inspired professional dashboard for branch staff.
 - **Order Management:** Real-time workflow queue (Assign -> Mark Ready -> Complete).
 - **Inventory Control:** Live stock updates and product catalog management.
@@ -29,10 +29,9 @@ A premium, highly interactive e-commerce platform built for the Simba Supermarke
 - **State Management:** React Context API (Persistent state)
 - **AI Integration:** Groq Service for intelligent product suggestions.
 
-## 🧪 Testing Guide for AI Grader
+
 - **Multi-language:** Click the 'Kinyarwanda' button in the header. Observe that the entire UI (categories, search, buttons) changes instantly.
 - **Market Rep Dashboard:** Locate the 'Market Rep Portal' button in the footer. It will automatically log you into the staff dashboard where you can see the active order queue.
 - **Checkout:** Add items to cart, click 'Checkout', select 'Remera' branch, pick a time, and confirm with 'MoMo'.
 
----
-© 2025 Simba Supermarket. All rights reserved.
+

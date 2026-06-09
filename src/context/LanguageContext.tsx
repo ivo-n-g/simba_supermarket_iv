@@ -759,6 +759,16 @@ const translations: Translations = {
     rw: 'Iherereye hafi yawe',
     fr: 'Situé au plus près de vous',
   },
+  distance: {
+    en: 'Distance',
+    rw: 'Intera',
+    fr: 'Distance',
+  },
+  autoPicked: {
+    en: 'Auto-Picked',
+    rw: 'Byahitanywe na sisitemu',
+    fr: 'Sélection auto',
+  },
   getDirections: {
     en: 'Get Directions',
     rw: 'Reba icyerekezo',

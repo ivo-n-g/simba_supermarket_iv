@@ -265,12 +265,13 @@ const LandingPage: React.FC<LandingPageProps> = ({
                       <p className="text-base md:text-2xl font-black text-gray-800 dark:text-white uppercase tracking-tighter">{selectedLoc.name}</p>
                       <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 font-bold mt-1 mb-4 leading-relaxed">{selectedLoc.address}</p>
                       
-                      {selectedLoc.name === closestBranchName && (
-                        <div className="inline-flex items-center gap-2 mb-4 bg-green-50 dark:bg-green-900/30 px-3 py-1.5 rounded-full border border-green-100 dark:border-green-800">
-                          <span className="text-sm">📍</span>
-                          <span className="text-[9px] font-black text-green-600 dark:text-green-400 uppercase tracking-widest">
-                            {t('locatedClosest')} 
-                            {userLocation && ` (${calculateDistance(userLocation.lat, userLocation.lng, selectedLoc.lat, selectedLoc.lng).toFixed(1)}km)`}
+                      {userLocation && (
+                        <div className={`inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full border ${selectedLoc.name === closestBranchName ? 'bg-green-50 dark:bg-green-900/30 border-green-100 dark:border-green-800' : 'bg-gray-50 dark:bg-gray-700 border-gray-100 dark:border-gray-600'}`}>
+                          <span className="text-sm">{selectedLoc.name === closestBranchName ? '📍' : '📏'}</span>
+                          <span className={`text-[9px] font-black uppercase tracking-widest ${selectedLoc.name === closestBranchName ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                            {selectedLoc.name === closestBranchName ? t('locatedClosest') : t('distance')} 
+                            {` (${calculateDistance(userLocation.lat, userLocation.lng, selectedLoc.lat, selectedLoc.lng).toFixed(1)}km)`}
+                            {selectedLoc.name === closestBranchName && pickupBranch === closestBranchName && ` - ${t('autoPicked')}`}
                           </span>
                         </div>
                       )}

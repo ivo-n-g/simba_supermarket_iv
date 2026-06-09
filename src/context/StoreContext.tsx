@@ -124,7 +124,13 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<Product[]>([]);
   const [deliveryMethod, setDeliveryMethod] = useState<'pickup' | 'delivery'>('pickup');
-  const [pickupBranch, setPickupBranch] = useState<string>('');
+  const [pickupBranch, setPickupBranch] = useState<string>(() => {
+    return localStorage.getItem('simba_pickup_branch') || locations[0].name;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('simba_pickup_branch', pickupBranch);
+  }, [pickupBranch]);
   const [pickupTime, setPickupTime] = useState<string>('');
   const [orders, setOrders] = useState<Order[]>(() => {
     const defaultOrders: Order[] = [

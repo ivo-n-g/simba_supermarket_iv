@@ -24,12 +24,14 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [history, setHistory] = useState<string[]>([]);
-  const { user, cartCount } = useStore();
+  const { user, cartCount, pickupBranch, setPickupBranch, locations, userLocation, calculateDistance, closestBranchName } = useStore();
   const { language, setLanguage, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   
   const [isLangOpen, setIsLangOpen] = useState(false);
+  const [isLocOpen, setIsLocOpen] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
+  const locRef = useRef<HTMLDivElement>(null);
   
   const desktopSearchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
@@ -53,6 +55,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
       
       if (langRef.current && !langRef.current.contains(event.target as Node)) {
         setIsLangOpen(false);
+      }
+      if (locRef.current && !locRef.current.contains(event.target as Node)) {
+        setIsLocOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -155,6 +160,81 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
               />
             </div>
             <div className="absolute -top-1 -right-1 bg-secondary text-primary text-[8px] font-black px-1.5 py-0.5 rounded-full shadow-lg border border-white/20 animate-pulse">LIVE</div>
+          </div>
+
+          {/* Location Picker */}
+          <div className="relative ml-2 md:ml-4" ref={locRef}>
+            <button
+              onClick={() => setIsLocOpen(!isLocOpen)}
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl text-[10px] font-black uppercase transition-all border border-white/10 ${isLocOpen ? 'bg-white text-primary shadow-xl' : 'hover:bg-white/10 text-white'}`}
+            >
+              <span className="text-base">📍</span>
+              <div className="flex flex-col items-start leading-none">
+                <span className="hidden sm:inline opacity-60 text-[8px] mb-0.5">{t('pickupBranch')}</span>
+                <span className="hidden sm:inline max-w-[100px] truncate">
+                  {pickupBranch ? pickupBranch.replace('Simba Supermarket ', '') : 'Select Branch'}
+                </span>
+                {userLocation && pickupBranch && (
+                  <span className="text-[7px] text-secondary font-bold">
+                    {(() => {
+                      const loc = locations.find(l => l.name === pickupBranch);
+                      if (loc) {
+                        const dist = calculateDistance(userLocation.lat, userLocation.lng, loc.lat, loc.lng);
+                        return `${dist < 1 ? (dist * 1000).toFixed(0) + 'm' : dist.toFixed(1) + 'km'}${pickupBranch === closestBranchName ? ' (Closest)' : ''}`;
+                      }
+                      return '';
+                    })()}
+                  </span>
+                )}
+              </div>
+              <svg className={`w-3 h-3 transition-transform duration-300 ${isLocOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {isLocOpen && (
+              <div className="absolute top-full left-0 mt-2 w-72 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 py-3 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-[110] text-gray-800 dark:text-gray-200">
+                <div className="px-5 pb-2 mb-2 border-b border-gray-50 dark:border-gray-700">
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('selectBranch')}</p>
+                </div>
+                <div className="max-h-80 overflow-y-auto scrollbar-hide">
+                  {locations.map((loc) => {
+                    const distance = userLocation ? calculateDistance(userLocation.lat, userLocation.lng, loc.lat, loc.lng) : null;
+                    return (
+                      <button
+                        key={loc.name}
+                        onClick={() => {
+                          setPickupBranch(loc.name);
+                          setIsLocOpen(false);
+                        }}
+                        className={`w-full text-left px-5 py-3 flex flex-col gap-0.5 transition-colors ${
+                          pickupBranch === loc.name 
+                            ? 'bg-primary/5 dark:bg-primary/20' 
+                            : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                        }`}
+                      >
+                        <div className="flex justify-between items-center">
+                          <span className={`text-[11px] font-black uppercase ${pickupBranch === loc.name ? 'text-primary dark:text-secondary' : ''}`}>
+                            {loc.name.replace('Simba Supermarket ', '')}
+                          </span>
+                          {loc.name === closestBranchName && (
+                            <span className="bg-secondary text-primary text-[7px] font-black px-1.5 py-0.5 rounded-full">NEAREST</span>
+                          )}
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-[9px] text-gray-500 dark:text-gray-400 font-bold line-clamp-1">{loc.address}</span>
+                          {distance !== null && (
+                            <span className="text-[9px] font-black text-primary dark:text-secondary shrink-0 ml-2">
+                              {distance < 1 ? `${(distance * 1000).toFixed(0)}m` : `${distance.toFixed(1)}km`}
+                            </span>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
           
           {/* Desktop Search Bar */}

@@ -192,7 +192,9 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                             </div>
                             <span className="text-[11px] text-gray-500 dark:text-gray-400 font-semibold">{branch.address}</span>
                             {branch.name === closestBranchName && (
-                              <span className="absolute -top-2 right-4 bg-secondary text-primary text-[7px] font-black px-2 py-0.5 rounded-full shadow-sm">NEAREST</span>
+                              <span className="absolute -top-2 right-4 bg-secondary text-primary text-[7px] font-black px-2 py-0.5 rounded-full shadow-sm">
+                                {t('nearest')} {pickupBranch === closestBranchName && `(${t('autoPicked')})`}
+                              </span>
                             )}
                           </button>
                         );

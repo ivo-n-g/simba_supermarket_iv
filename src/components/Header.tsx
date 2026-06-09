@@ -28,6 +28,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
   const { language, setLanguage, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   
+  const [isLangOpen, setIsLangOpen] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
+  
   const desktopSearchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
 
@@ -47,6 +50,10 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
       const isOutsideDesktop = desktopSearchRef.current && !desktopSearchRef.current.contains(event.target as Node);
       const isOutsideMobile = mobileSearchRef.current && !mobileSearchRef.current.contains(event.target as Node);
       if (isOutsideDesktop && isOutsideMobile) setShowSuggestions(false);
+      
+      if (langRef.current && !langRef.current.contains(event.target as Node)) {
+        setIsLangOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -230,20 +237,45 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
                 )}
               </button>
               <div className="w-px h-3 bg-white/10 mx-0.5"></div>
-              <div className="flex items-center gap-1 bg-white/10 rounded-xl p-1">
-                {(['en', 'rw', 'fr'] as const).map((lang) => (
-                  <button
-                    key={lang}
-                    data-testid={`lang-switch-${lang}`}
-                    aria-label={`Switch language to ${lang === 'rw' ? 'Kinyarwanda' : lang === 'fr' ? 'French' : 'English'}`}
-                    onClick={() => setLanguage(lang)}
-                    className={`px-3 py-2 rounded-lg text-[10px] font-black uppercase transition-all flex items-center gap-2 ${language === lang ? 'bg-white text-primary shadow-xl scale-105' : 'hover:bg-white/10 text-white/70'}`}
-                  >
-                    <span>{lang === 'en' ? '🇺🇸' : lang === 'rw' ? '🇷🇼' : '🇫🇷'}</span>
-                    <span className="hidden sm:inline">{lang === 'en' ? 'English' : lang === 'rw' ? 'Kinyarwanda' : 'Français'}</span>
-                    <span className="sm:hidden">{lang.toUpperCase()}</span>
-                  </button>
-                ))}
+              <div className="relative" ref={langRef}>
+                <button
+                  onClick={() => setIsLangOpen(!isLangOpen)}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${isLangOpen ? 'bg-white text-primary shadow-xl' : 'hover:bg-white/10 text-white'}`}
+                >
+                  <span>{language === 'en' ? '🇺🇸' : language === 'rw' ? '🇷🇼' : '🇫🇷'}</span>
+                  <span className="hidden sm:inline">{language === 'en' ? 'English' : language === 'rw' ? 'Kinyarwanda' : 'Français'}</span>
+                  <svg className={`w-3 h-3 transition-transform duration-300 ${isLangOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {isLangOpen && (
+                  <div className="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 py-2 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-[110]">
+                    {(['en', 'rw', 'fr'] as const).map((lang) => (
+                      <button
+                        key={lang}
+                        data-testid={`lang-switch-${lang}`}
+                        onClick={() => {
+                          setLanguage(lang);
+                          setIsLangOpen(false);
+                        }}
+                        className={`w-full text-left px-5 py-3 text-[10px] font-black uppercase flex items-center gap-3 transition-colors ${
+                          language === lang 
+                            ? 'bg-primary/5 dark:bg-primary/20 text-primary dark:text-secondary' 
+                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                        }`}
+                      >
+                        <span className="text-base">{lang === 'en' ? '🇺🇸' : lang === 'rw' ? '🇷🇼' : '🇫🇷'}</span>
+                        <span>{lang === 'en' ? 'English' : lang === 'rw' ? 'Kinyarwanda' : 'Français'}</span>
+                        {language === lang && (
+                          <svg className="w-4 h-4 ml-auto text-primary dark:text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>            </div>
 
             <button onClick={handleAuthClick} className="flex items-center p-1 md:px-4 md:py-2 hover:bg-white/10 rounded-xl transition-all font-black text-xs md:text-sm">

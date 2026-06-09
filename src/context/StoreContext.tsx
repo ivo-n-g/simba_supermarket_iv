@@ -183,7 +183,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [branchStock, setBranchStock] = useState<Record<string, Record<number, number>>>({});
   const [customProducts, setCustomProducts] = useState<Product[]>([]);
   const [isBranchDashboardOpen, setIsBranchDashboardOpen] = useState(false);
-  const [closestBranchName, setClosestBranchName] = useState('');
+  const [closestBranchName, setClosestBranchName] = useState(locations[5].name); // Default to Remera
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
 
   useEffect(() => {

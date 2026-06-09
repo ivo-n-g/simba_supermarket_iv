@@ -217,20 +217,27 @@ const LandingPage: React.FC<LandingPageProps> = ({
                       <div className="flex items-center gap-2">
                         <h3 className="text-sm md:text-lg font-black uppercase tracking-tight">{loc.name.replace('Simba Supermarket ', '')}</h3>
                         {loc.name === closestBranchName && (
-                          <span className="bg-secondary text-primary text-[8px] font-black px-2 py-0.5 rounded-full animate-pulse">{t('nearest')}</span>
+                          <div className="flex flex-col items-start gap-1">
+                            <span className="bg-secondary text-primary text-[8px] font-black px-2 py-0.5 rounded-full animate-pulse">{t('nearest')}</span>
+                            {pickupBranch === loc.name && (
+                              <span className="text-[7px] text-primary font-black uppercase tracking-tighter opacity-80">{t('autoPicked')}</span>
+                            )}
+                          </div>
                         )}
                       </div>
                       <div className="flex items-center gap-2 mt-1.5">
                         <p className={`text-xs md:text-sm font-semibold ${selectedLoc.name === loc.name ? 'text-primary' : 'text-gray-500'}`}>
                           {loc.address}
                         </p>
-                        {distance !== null && (
+                        {distance !== null ? (
                           <>
                             <div className={`w-1 h-1 rounded-full ${selectedLoc.name === loc.name ? 'bg-primary/20' : 'bg-white/20'}`}></div>
                             <p className={`text-[10px] md:text-xs font-black tracking-tight ${selectedLoc.name === loc.name ? 'text-primary' : 'text-secondary'}`}>
                               {distance < 1 ? `${(distance * 1000).toFixed(0)}m` : `${distance.toFixed(1)}km`}
                             </p>
                           </>
+                        ) : (
+                          <p className="text-[8px] text-gray-400 font-bold italic opacity-50 ml-2">Distance unknown</p>
                         )}
                       </div>
                     </div>

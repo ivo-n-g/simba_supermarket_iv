@@ -9,6 +9,7 @@ import LandingPage from './components/LandingPage';
 import ContactModal from './components/ContactModal';
 import InfoModal from './components/InfoModal';
 import BranchDashboard from './components/BranchDashboard';
+import ChatAssistant from './components/ChatAssistant';
 import { GroqResponse } from './services/GroqService';
 import { StoreProvider, useStore } from './context/StoreContext';
 import { useLanguage } from './context/LanguageContext';
@@ -381,6 +382,7 @@ function AppContent() {
         content={infoModal.content}
       />
       <BranchDashboard isOpen={isBranchDashboardOpen} onClose={() => setIsBranchDashboardOpen(false)} />
+      <ChatAssistant />
     </div>
   );
 }

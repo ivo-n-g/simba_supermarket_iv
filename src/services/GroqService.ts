@@ -6,6 +6,87 @@ export interface GroqResponse {
   productIds: number[];
 }
 
+export interface ChatMessage {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+}
+
+export const chatWithAI = async (
+  messages: ChatMessage[],
+  products: any[],
+  language: string
+): Promise<GroqResponse> => {
+  if (!GROQ_API_KEY) {
+    return { 
+      answer: language === 'rw' ? 'AI ntiriho ubu.' : language === 'fr' ? 'L\'IA est indisponible.' : 'AI is currently unavailable.', 
+      productIds: [] 
+    };
+  }
+
+  const contextProducts = products.map(p => ({
+    id: p.id,
+    name: p[`name_${language}`] || p.name,
+    category: p[`category_${language}`] || p.category,
+    price: p.price,
+    unit: p.unit
+  })).slice(0, 100);
+
+  const systemPrompt: ChatMessage = {
+    role: 'system',
+    content: `You are the Simba Supermarket AI Assistant, a helpful and friendly shopping guide in Rwanda.
+    Current Language: ${language}
+    
+    Catalog Context: ${JSON.stringify(contextProducts)}
+
+    Instructions:
+    1. Help users find products, answer questions about prices, and suggest items.
+    2. Respond in ${language === 'rw' ? 'Kinyarwanda' : language === 'fr' ? 'French' : 'English'}.
+    3. Keep responses concise and professional.
+    4. If referencing products from the catalog, include their IDs in the "productIds" array.
+    5. Return a valid JSON object ONLY.
+    
+    Response Format:
+    {
+      "answer": "Your message here",
+      "productIds": [1, 2, 3]
+    }`
+  };
+
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${GROQ_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [systemPrompt, ...messages],
+        temperature: 0.7,
+        response_format: { type: "json_object" }
+      })
+    });
+
+    const data = await response.json();
+    const content = data.choices[0].message.content;
+    const parsed = JSON.parse(content);
+    
+    if (parsed.productIds) {
+      parsed.productIds = parsed.productIds.map((id: any) => Number(id)).filter((id: number) => !isNaN(id));
+    }
+    
+    return parsed;
+  } catch (error) {
+    console.error('Chat AI Error:', error);
+    return { 
+      answer: language === 'rw' ? 'Habaye ikibazo, mwongere mukugerageze.' : 
+              language === 'fr' ? 'Une erreur est survenue, veuillez réessayer.' : 
+              'An error occurred, please try again.', 
+      productIds: [] 
+    };
+  }
+};
+
 export const conversationalSearch = async (query: string, products: any[], language: string): Promise<GroqResponse> => {
   if (!GROQ_API_KEY) {
     console.error('Groq API Key missing. Please check .env.local');

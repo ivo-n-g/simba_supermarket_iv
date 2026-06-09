@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
+import productsData from '../../simba_products.json';
 
 export interface Location {
   name: string;
@@ -93,6 +94,7 @@ interface StoreContextType {
   isProductInStock: (branch: string, productId: number) => boolean;
   getProductQuantity: (branch: string, productId: number) => number;
   customProducts: Product[];
+  products: Product[];
   addNewProduct: (product: Omit<Product, 'id'>) => void;
   isBranchDashboardOpen: boolean;
   setIsBranchDashboardOpen: (isOpen: boolean) => void;
@@ -435,6 +437,10 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     ));
   };
 
+  const products = useMemo(() => {
+    return [...customProducts, ...productsData.products];
+  }, [customProducts]);
+
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   return (
@@ -444,7 +450,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       deliveryMethod, setDeliveryMethod, pickupBranch, setPickupBranch, 
       pickupTime, setPickupTime, cartCount, orders, updateOrderStatus,
       branchStock, updateStockAmount, isProductInStock, getProductQuantity,
-      customProducts, addNewProduct, isBranchDashboardOpen, setIsBranchDashboardOpen, locations,
+      customProducts, products, addNewProduct, isBranchDashboardOpen, setIsBranchDashboardOpen, locations,
       closestBranchName, userLocation, calculateDistance
     }}>
       {children}

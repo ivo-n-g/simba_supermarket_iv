@@ -994,6 +994,21 @@ const translations: Translations = {
     rw: 'Tanga Igitekerezo',
     fr: 'Laisser un avis',
   },
+  fulfillmentRate: {
+    en: 'Fulfillment Rate',
+    rw: 'Igipimo cy-itangwa',
+    fr: 'Taux de traitement',
+  },
+  inventoryHealth: {
+    en: 'Inventory Health',
+    rw: 'Imiterere y-ububiko',
+    fr: 'Santé des stocks',
+  },
+  workforceLoad: {
+    en: 'Workforce Load',
+    rw: 'Ingano y-akazi',
+    fr: 'Charge de travail',
+  },
   orderHistory: {
     en: 'Order History',
     rw: 'Amateka ya Komande',

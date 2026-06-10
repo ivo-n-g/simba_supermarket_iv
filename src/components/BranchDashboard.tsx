@@ -57,13 +57,32 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
   const filteredOrders = allOrders.filter(order => order.branch === selectedBranch);
 
   const stats = useMemo(() => {
+    const completed = filteredOrders.filter(o => o.status === 'completed').length;
+    const ready = filteredOrders.filter(o => o.status === 'ready').length;
+    const total = filteredOrders.length;
+    
+    // Fulfillment Rate: (Completed + Ready) / Total
+    const fulfillmentRate = total > 0 ? Math.round(((completed + ready) / total) * 100) : 100;
+    
+    // Inventory Health: % of products with stock > 5
+    const products = productsData.products;
+    const healthyStock = products.filter(p => getProductQuantity(selectedBranch, p.id) > 5).length;
+    const inventoryHealth = Math.round((healthyStock / products.length) * 100);
+    
+    // Workforce Utilization: Based on assigned staff count
+    const activeStaffCount = new Set(filteredOrders.filter(o => o.assignedStaff).map(o => o.assignedStaff)).size;
+    const workforceLoad = Math.min(100, Math.round((activeStaffCount / 8) * 100)); // Normalized against a capacity of 8
+    
     return {
       pending: filteredOrders.filter(o => o.status === 'pending').length,
-      ready: filteredOrders.filter(o => o.status === 'ready').length,
-      total: filteredOrders.length,
-      sales: filteredOrders.reduce((sum, o) => sum + (o.status === 'completed' ? o.total : 0), 0).toLocaleString()
+      ready,
+      total,
+      sales: filteredOrders.reduce((sum, o) => sum + (o.status === 'completed' ? o.total : 0), 0).toLocaleString(),
+      fulfillmentRate,
+      inventoryHealth,
+      workforceLoad
     };
-  }, [filteredOrders]);
+  }, [filteredOrders, selectedBranch, getProductQuantity]);
 
   const filteredInventory = useMemo(() => {
     const query = inventorySearch.toLowerCase();
@@ -430,29 +449,31 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
               </div>
 
               <div className="lg:col-span-4 space-y-8 lg:space-y-12">
-                {/* Visual Identity Section */}
+                {/* Real-time KPI Section */}
                 <div className="bg-gray-50 dark:bg-gray-900 p-8 lg:p-10 rounded-[40px] lg:rounded-[48px] border border-gray-100 dark:border-gray-800 relative overflow-hidden group">
                   <div className="relative z-10">
                     <h3 className="text-lg lg:text-xl font-black uppercase tracking-tighter text-gray-900 dark:text-white mb-8">{t('performance')}</h3>
                     <div className="flex items-baseline gap-2 mb-2">
-                       <span className="text-3xl lg:text-4xl font-black text-primary">84%</span>
-                       <span className="text-[10px] font-black text-green-500 uppercase">↑ High</span>
+                       <span className="text-3xl lg:text-4xl font-black text-primary" data-testid="performance-score">{stats.fulfillmentRate}%</span>
+                       <span className={`text-[10px] font-black uppercase ${stats.fulfillmentRate > 80 ? 'text-green-500' : 'text-primary'}`}>
+                         {stats.fulfillmentRate > 80 ? '↑ High' : '→ Stable'}
+                       </span>
                     </div>
-                    <p className="text-[9px] lg:text-[10px] font-black text-gray-400 uppercase tracking-widest mb-10 leading-relaxed italic">"Optimal processing efficiency achieved in the last 24h cycle."</p>
+                    <p className="text-[9px] lg:text-[10px] font-black text-gray-400 uppercase tracking-widest mb-10 leading-relaxed italic">"Dynamic performance metrics calculated from active branch operations."</p>
                     
                     <div className="space-y-6">
                        {[
-                         { label: t('freshnessIndex'), val: 92, color: 'bg-primary' },
-                         { label: t('logisticsFlow'), val: 78, color: 'bg-gray-900 dark:bg-white' },
-                         { label: t('staffLoad'), val: 45, color: 'bg-green-500' }
+                         { label: t('fulfillmentRate'), val: stats.fulfillmentRate, color: 'bg-primary' },
+                         { label: t('inventoryHealth'), val: stats.inventoryHealth, color: 'bg-gray-900 dark:bg-white' },
+                         { label: t('workforceLoad'), val: stats.workforceLoad, color: 'bg-green-500' }
                        ].map(metric => (
                          <div key={metric.label}>
                             <div className="flex justify-between text-[9px] font-black uppercase mb-2">
                                <span className="text-gray-400">{metric.label}</span>
-                               <span className="dark:text-white">{metric.val}%</span>
+                               <span className="dark:text-white" data-testid={`kpi-value-${metric.val}`}>{metric.val}%</span>
                             </div>
                             <div className="h-1.5 w-full bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
-                               <div className={`${metric.color} h-full rounded-full`} style={{ width: `${metric.val}%` }}></div>
+                               <div className={`${metric.color} h-full rounded-full transition-all duration-1000`} style={{ width: `${metric.val}%` }}></div>
                             </div>
                          </div>
                        ))}

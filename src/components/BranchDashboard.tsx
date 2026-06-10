@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
-import productsData from '../../simba_products.json';
 
 interface BranchDashboardProps {
   isOpen: boolean;
@@ -12,7 +11,7 @@ interface BranchDashboardProps {
 type DashboardTab = 'orders' | 'inventory' | 'tasks' | 'reports' | 'calendar' | 'messages';
 
 const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hideClose }) => {
-  const { user, logout, orders, updateOrderStatus, pickupBranch, updateStockAmount, getProductQuantity, addNewProduct } = useStore();
+  const { user, logout, orders, updateOrderStatus, pickupBranch, updateStockAmount, getProductQuantity, addNewProduct, products } = useStore();
   const { t, language } = useLanguage();
   const [activeTab, setActiveTab] = useState<DashboardTab>(() => {
     return (localStorage.getItem('simba_dash_tab') as DashboardTab) || 'orders';
@@ -31,6 +30,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
   
   // ... rest of state and handlers ...
   const [newProductName, setNewProductName] = useState('');
+  const [newProductID, setNewProductID] = useState('');
   const [newProductCategory, setNewProductCategory] = useState('Food Products');
   const [newProductUnit, setNewProductUnit] = useState('Pcs');
   const [newProductPrice, setNewProductPrice] = useState('');
@@ -65,9 +65,8 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
     const fulfillmentRate = total > 0 ? Math.round(((completed + ready) / total) * 100) : 100;
     
     // Inventory Health: % of products with stock > 5
-    const products = productsData.products;
     const healthyStock = products.filter(p => getProductQuantity(selectedBranch, p.id) > 5).length;
-    const inventoryHealth = Math.round((healthyStock / products.length) * 100);
+    const inventoryHealth = products.length > 0 ? Math.round((healthyStock / products.length) * 100) : 0;
     
     // Workforce Utilization: Based on assigned staff count
     const activeStaffCount = new Set(filteredOrders.filter(o => o.assignedStaff).map(o => o.assignedStaff)).size;
@@ -82,21 +81,31 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
       inventoryHealth,
       workforceLoad
     };
-  }, [filteredOrders, selectedBranch, getProductQuantity]);
+  }, [filteredOrders, selectedBranch, getProductQuantity, products]);
 
   const filteredInventory = useMemo(() => {
     const query = inventorySearch.toLowerCase();
-    return productsData.products.filter(p => {
+    return products.filter(p => {
       const name = ((p as any)[`name_${language}`] || p.name).toLowerCase();
       return name.includes(query) || p.id.toString().includes(query);
     }).slice(0, 15);
-  }, [inventorySearch, language]);
+  }, [inventorySearch, language, products]);
 
   const handleAddProduct = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newProductName || !newProductPrice) return;
-    addNewProduct({ name: newProductName, price: parseInt(newProductPrice), image: newProductImage, category: newProductCategory, unit: newProductUnit });
-    setNewProductName(''); setNewProductPrice(''); setIsAddProductModalOpen(false);
+    addNewProduct({ 
+      id: newProductID ? parseInt(newProductID) : undefined,
+      name: newProductName, 
+      price: parseInt(newProductPrice), 
+      image: newProductImage, 
+      category: newProductCategory, 
+      unit: newProductUnit 
+    });
+    setNewProductName(''); 
+    setNewProductID('');
+    setNewProductPrice(''); 
+    setIsAddProductModalOpen(false);
   };
 
   if (!isOpen) return null;
@@ -550,6 +559,32 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                       onChange={(e) => setNewProductUnit(e.target.value)} 
                       className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-2xl font-black text-[10px] lg:text-xs dark:text-white border-none outline-none focus:ring-4 focus:ring-primary/5" 
                       placeholder="Pcs / Kg"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+                  <div>
+                    <label className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 block ml-1">{t('sku')}</label>
+                    <input 
+                      type="number" 
+                      required 
+                      data-testid="new-product-id-input"
+                      value={newProductID} 
+                      onChange={(e) => setNewProductID(e.target.value)} 
+                      className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-2xl font-black text-[10px] lg:text-xs dark:text-white border-none outline-none focus:ring-4 focus:ring-primary/5" 
+                      placeholder="e.g. 12345"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 block ml-1">{t('unitPrice')}</label>
+                    <input 
+                      type="number" 
+                      required 
+                      data-testid="new-product-price-input"
+                      value={newProductPrice} 
+                      onChange={(e) => setNewProductPrice(e.target.value)} 
+                      className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-2xl font-black text-[10px] lg:text-xs dark:text-white border-none outline-none focus:ring-4 focus:ring-primary/5" 
+                      placeholder="e.g. 5000"
                     />
                   </div>
                 </div>

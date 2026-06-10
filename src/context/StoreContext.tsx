@@ -95,7 +95,7 @@ interface StoreContextType {
   getProductQuantity: (branch: string, productId: number) => number;
   customProducts: Product[];
   products: Product[];
-  addNewProduct: (product: Omit<Product, 'id'>) => void;
+  addNewProduct: (product: Omit<Product, 'id'> & { id?: number }) => void;
   isBranchDashboardOpen: boolean;
   setIsBranchDashboardOpen: (isOpen: boolean) => void;
   locations: Location[];
@@ -258,10 +258,10 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     localStorage.setItem('simba_custom_products', JSON.stringify(customProducts));
   }, [customProducts]);
 
-  const addNewProduct = (product: Omit<Product, 'id'>) => {
+  const addNewProduct = (product: Omit<Product, 'id'> & { id?: number }) => {
     const newProduct: Product = {
       ...product,
-      id: Math.floor(Math.random() * 90000) + 10000 // Generate a unique 5-digit ID
+      id: product.id || Math.floor(Math.random() * 90000) + 10000 // Generate a unique 5-digit ID if not provided
     };
     setCustomProducts(prev => [newProduct, ...prev]);
   };

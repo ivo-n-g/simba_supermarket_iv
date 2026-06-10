@@ -40,7 +40,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
   setOnlyInStock
 }) => {
   const { t, language } = useLanguage();
-  const { pickupBranch, setPickupBranch, locations, closestBranchName, userLocation, calculateDistance } = useStore();
+  const { pickupBranch, setPickupBranch, locations, closestBranchName, userLocation, calculateDistance, user, setIsBranchDashboardOpen } = useStore();
   
   const sortedLocations = useMemo(() => {
     if (!userLocation) return locations;
@@ -92,6 +92,18 @@ const LandingPage: React.FC<LandingPageProps> = ({
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+      {/* Staff Quick Action Bar */}
+      {user?.role === 'representative' && (
+        <div className="bg-primary py-2 px-6 border-b border-white/10 flex justify-center animate-in slide-in-from-top duration-500">
+          <button 
+            onClick={() => setIsBranchDashboardOpen(true)}
+            className="flex items-center gap-3 text-[10px] font-black text-secondary uppercase tracking-[0.3em] hover:scale-105 transition-transform"
+          >
+            <span className="w-2 h-2 bg-secondary rounded-full animate-ping"></span>
+            {t('updateStock')} • {t('addNewProduct')} →
+          </button>
+        </div>
+      )}
       {/* Trust Bar */}
       <div className="bg-primary/5 dark:bg-white/5 py-4 overflow-hidden border-b border-gray-100 dark:border-gray-800">
         <div className="container mx-auto px-6 flex justify-around items-center gap-8 whitespace-nowrap animate-pulse">
@@ -312,6 +324,26 @@ const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </div>
       </section>
+
+      {/* Staff Prominent Action Section */}
+      {user?.role === 'representative' && (
+        <section className="py-12 md:py-24 container mx-auto px-6">
+          <div className="bg-gradient-to-tr from-primary to-orange-400 p-8 md:p-20 rounded-[60px] shadow-2xl shadow-primary/20 group relative overflow-hidden text-center">
+            <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="relative z-10 max-w-2xl mx-auto">
+              <h2 className="text-white text-3xl md:text-5xl font-black uppercase tracking-tight mb-4">{t('updateStock')}</h2>
+              <p className="text-white/70 text-sm md:text-lg font-bold uppercase tracking-widest mb-10 leading-relaxed">{t('expandCatalog')}</p>
+              <button 
+                onClick={() => setIsBranchDashboardOpen(true)} 
+                className="px-12 py-5 bg-white text-primary rounded-[32px] font-black uppercase text-sm md:text-lg tracking-widest shadow-2xl hover:scale-105 active:scale-95 transition-all"
+              >
+                {t('addNewProduct')}
+              </button>
+            </div>
+            <div className="absolute -bottom-10 -right-10 text-[200px] opacity-10 font-black tracking-tighter select-none text-white">SIMBA</div>
+          </div>
+        </section>
+      )}
 
       {/* Trust Signals Section */}
       <section className="py-24 md:py-40 container mx-auto px-6">

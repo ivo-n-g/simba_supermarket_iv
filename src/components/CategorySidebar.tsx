@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useStore } from '../context/StoreContext';
 import productsData from '../../simba_products.json';
 import PriceRangeSlider from './PriceRangeSlider';
 
@@ -89,6 +90,7 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
   setOnlyInStock
 }) => {
   const { t, language } = useLanguage();
+  const { user, setIsBranchDashboardOpen } = useStore();
   const [isOpen, setIsOpen] = useState(false);
 
   const getCategoryName = (category: string) => {
@@ -218,6 +220,23 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
               </div>
             </div>
           </div>
+
+          {/* Staff Update Stock Card */}
+          {user?.role === 'representative' && (
+            <div className="mt-10 pt-10 border-t border-gray-100 dark:border-gray-800">
+              <div className="bg-gradient-to-tr from-primary to-orange-400 p-6 rounded-[32px] shadow-xl shadow-primary/20 group relative overflow-hidden">
+                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <h3 className="text-white text-sm font-black uppercase tracking-tight mb-2">{t('updateStock')}</h3>
+                <p className="text-white/70 text-[8px] font-bold uppercase tracking-widest mb-6 leading-relaxed">{t('expandCatalog')}</p>
+                <button 
+                  onClick={() => setIsBranchDashboardOpen(true)} 
+                  className="w-full py-3 bg-white text-primary rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:scale-105 active:scale-95 transition-all"
+                >
+                  {t('addNewProduct')}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       

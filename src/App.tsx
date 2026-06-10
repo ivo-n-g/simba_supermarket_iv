@@ -14,6 +14,150 @@ import { GroqResponse } from './services/GroqService';
 import { StoreProvider, useStore } from './context/StoreContext';
 import { useLanguage } from './context/LanguageContext';
 
+function AddProductModal() {
+  const { isAddProductModalOpen, setIsAddProductModalOpen, addNewProduct } = useStore();
+  const { t } = useLanguage();
+  const [newProductName, setNewProductName] = useState('');
+  const [newProductID, setNewProductID] = useState('');
+  const [newProductCategory, setNewProductCategory] = useState('Food Products');
+  const [newProductUnit, setNewProductUnit] = useState('Pcs');
+  const [newProductPrice, setNewProductPrice] = useState('');
+  const [newProductImage, setNewProductImage] = useState('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=200');
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewProductImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAddProduct = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newProductName || !newProductPrice) return;
+    addNewProduct({ 
+      id: newProductID ? parseInt(newProductID) : undefined,
+      name: newProductName, 
+      price: parseInt(newProductPrice), 
+      image: newProductImage, 
+      category: newProductCategory, 
+      unit: newProductUnit 
+    });
+    setNewProductName(''); 
+    setNewProductID('');
+    setNewProductPrice(''); 
+    setIsAddProductModalOpen(false);
+  };
+
+  if (!isAddProductModalOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[150] flex items-center justify-center p-6 bg-gray-900/60 backdrop-blur-md">
+      <div className="bg-white dark:bg-gray-900 rounded-[40px] lg:rounded-[48px] shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+        <div className="p-8 lg:p-12">
+          <div className="flex justify-between items-center mb-10 lg:mb-12">
+            <h2 className="text-xl lg:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight">{t('addNewProduct')}</h2>
+            <button 
+              data-testid="close-modal-button"
+              onClick={() => setIsAddProductModalOpen(false)} 
+              className="text-gray-400 hover:text-red-500 transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          </div>
+
+          <form onSubmit={handleAddProduct} className="space-y-8 lg:space-y-10">
+            <div>
+              <label className="block text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 ml-1">{t('productTitle')}</label>
+              <input 
+                type="text" 
+                required 
+                data-testid="new-product-name-input"
+                value={newProductName} 
+                onChange={(e) => setNewProductName(e.target.value)} 
+                className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border-none outline-none font-black text-base lg:text-lg dark:text-white focus:ring-4 focus:ring-primary/5 transition-all" 
+                placeholder="e.g. Organic Avocados" 
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+              <div>
+                <label className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 block ml-1">{t('category')}</label>
+                <select 
+                  data-testid="new-product-category-select"
+                  value={newProductCategory} 
+                  onChange={(e) => setNewProductCategory(e.target.value)} 
+                  className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-2xl font-black text-[10px] lg:text-xs dark:text-white border-none outline-none focus:ring-4 focus:ring-primary/5"
+                >
+                  {['Food Products', 'Baby Products', 'Cleaning & Sanitary', 'Cosmetics & Personal Care'].map(c => <option key={c} value={c}>{t(c)}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 block ml-1">{t('unitType')}</label>
+                <input 
+                  type="text" 
+                  required 
+                  data-testid="new-product-unit-input"
+                  value={newProductUnit} 
+                  onChange={(e) => setNewProductUnit(e.target.value)} 
+                  className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-2xl font-black text-[10px] lg:text-xs dark:text-white border-none outline-none focus:ring-4 focus:ring-primary/5" 
+                  placeholder="Pcs / Kg"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+              <div>
+                <label className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 block ml-1">{t('sku')}</label>
+                <input 
+                  type="number" 
+                  required 
+                  data-testid="new-product-id-input"
+                  value={newProductID} 
+                  onChange={(e) => setNewProductID(e.target.value)} 
+                  className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-2xl font-black text-[10px] lg:text-xs dark:text-white border-none outline-none focus:ring-4 focus:ring-primary/5" 
+                  placeholder="e.g. 12345"
+                />
+              </div>
+              <div>
+                <label className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 block ml-1">{t('unitPrice')}</label>
+                <input 
+                  type="number" 
+                  required 
+                  data-testid="new-product-price-input"
+                  value={newProductPrice} 
+                  onChange={(e) => setNewProductPrice(e.target.value)} 
+                  className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-2xl font-black text-[10px] lg:text-xs dark:text-white border-none outline-none focus:ring-4 focus:ring-primary/5" 
+                  placeholder="e.g. 5000"
+                />
+              </div>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-800 p-6 lg:p-8 rounded-3xl border-2 border-dashed border-gray-200 dark:border-gray-700 text-center">
+                <div className="flex flex-col items-center gap-4 lg:gap-6">
+                    <div className="w-20 h-20 lg:w-24 lg:h-24 bg-white dark:bg-gray-700 rounded-2xl flex items-center justify-center p-3 shadow-lg">
+                        {newProductImage ? <img src={newProductImage} alt="Preview" className="w-full h-full object-contain" /> : <span className="text-2xl grayscale opacity-20">🖼️</span>}
+                    </div>
+                    <label className="cursor-pointer">
+                        <span className="text-[10px] font-black uppercase text-primary tracking-widest hover:underline">{t('uploadIdentity')}</span>
+                        <input data-testid="new-product-image-upload" type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                    </label>
+                </div>
+            </div>
+            <button 
+              type="submit" 
+              data-testid="add-product-submit-button"
+              className="w-full bg-primary text-white py-5 lg:py-6 rounded-2xl font-black uppercase text-[10px] lg:text-xs tracking-[0.2em] shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
+            >
+              {t('syncCatalog')}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function AppContent() {
   const store = useStore();
   const { user, customProducts, isBranchDashboardOpen, setIsBranchDashboardOpen, pickupBranch, isProductInStock } = store;
@@ -382,6 +526,7 @@ function AppContent() {
         content={infoModal.content}
       />
       <BranchDashboard isOpen={isBranchDashboardOpen} onClose={() => setIsBranchDashboardOpen(false)} />
+      <AddProductModal />
       <ChatAssistant />
     </div>
   );

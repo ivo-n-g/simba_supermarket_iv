@@ -98,6 +98,8 @@ interface StoreContextType {
   addNewProduct: (product: Omit<Product, 'id'> & { id?: number }) => void;
   isBranchDashboardOpen: boolean;
   setIsBranchDashboardOpen: (isOpen: boolean) => void;
+  isAddProductModalOpen: boolean;
+  setIsAddProductModalOpen: (isOpen: boolean) => void;
   locations: Location[];
   closestBranchName: string;
   userLocation: { lat: number; lng: number } | null;
@@ -183,6 +185,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [branchStock, setBranchStock] = useState<Record<string, Record<number, number>>>({});
   const [customProducts, setCustomProducts] = useState<Product[]>([]);
   const [isBranchDashboardOpen, setIsBranchDashboardOpen] = useState(false);
+  const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
   const [closestBranchName, setClosestBranchName] = useState(locations[5].name); // Default to Remera
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
 
@@ -456,7 +459,8 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       deliveryMethod, setDeliveryMethod, pickupBranch, setPickupBranch, 
       pickupTime, setPickupTime, cartCount, orders, updateOrderStatus,
       branchStock, updateStockAmount, isProductInStock, getProductQuantity,
-      customProducts, products, addNewProduct, isBranchDashboardOpen, setIsBranchDashboardOpen, locations,
+      customProducts, products, addNewProduct, isBranchDashboardOpen, setIsBranchDashboardOpen,
+      isAddProductModalOpen, setIsAddProductModalOpen, locations,
       closestBranchName, userLocation, calculateDistance
     }}>
       {children}

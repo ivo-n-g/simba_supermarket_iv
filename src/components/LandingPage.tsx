@@ -40,7 +40,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
   setOnlyInStock
 }) => {
   const { t, language } = useLanguage();
-  const { pickupBranch, setPickupBranch, locations, closestBranchName, userLocation, calculateDistance, user, setIsBranchDashboardOpen } = useStore();
+  const { pickupBranch, setPickupBranch, locations, closestBranchName, userLocation, calculateDistance, user, setIsBranchDashboardOpen, setIsAddProductModalOpen } = useStore();
   
   const sortedLocations = useMemo(() => {
     if (!userLocation) return locations;
@@ -328,14 +328,16 @@ const LandingPage: React.FC<LandingPageProps> = ({
       {/* Staff Prominent Action Section */}
       {user?.role === 'representative' && (
         <section className="py-12 md:py-24 container mx-auto px-6">
-          <div className="bg-gradient-to-tr from-primary to-orange-400 p-8 md:p-20 rounded-[60px] shadow-2xl shadow-primary/20 group relative overflow-hidden text-center">
-            <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div 
+            onClick={() => setIsAddProductModalOpen(true)}
+            className="bg-gradient-to-tr from-primary to-orange-400 p-8 md:p-20 rounded-[60px] shadow-2xl shadow-primary/20 group relative overflow-hidden text-center cursor-pointer active:scale-[0.98] transition-all"
+          >
+            <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
             <div className="relative z-10 max-w-2xl mx-auto">
               <h2 className="text-white text-3xl md:text-5xl font-black uppercase tracking-tight mb-4">{t('updateStock')}</h2>
               <p className="text-white/70 text-sm md:text-lg font-bold uppercase tracking-widest mb-10 leading-relaxed">{t('expandCatalog')}</p>
               <button 
-                onClick={() => setIsBranchDashboardOpen(true)} 
-                className="px-12 py-5 bg-white text-primary rounded-[32px] font-black uppercase text-sm md:text-lg tracking-widest shadow-2xl hover:scale-105 active:scale-95 transition-all"
+                className="px-12 py-5 bg-white text-primary rounded-[32px] font-black uppercase text-sm md:text-lg tracking-widest shadow-2xl hover:scale-105 transition-all"
               >
                 {t('addNewProduct')}
               </button>

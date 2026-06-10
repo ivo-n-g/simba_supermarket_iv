@@ -333,25 +333,26 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                                 </td>
                                 <td className="px-6 lg:px-10 py-6 lg:py-8 text-right">
                                   <div className="flex justify-end gap-2">
-                                    {order.status === 'pending' && role === 'manager' && (
+                                    {order.status === 'pending' && (
                                       <button 
                                         data-testid="assign-order-button"
                                         onClick={() => updateOrderStatus(order.id, 'assigned', user?.name || 'Staff')} 
-                                        className="w-8 h-8 lg:w-10 lg:h-10 bg-primary text-white rounded-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-lg shadow-primary/20"
+                                        className="px-4 py-2 bg-primary text-white rounded-xl text-[8px] lg:text-[9px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
                                       >
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 4v16m8-8H4" /></svg>
+                                        {t('assignToMe')}
                                       </button>
                                     )}
-                                    {order.status === 'assigned' && order.assignedStaff === user?.name && (
+                                    {order.status === 'assigned' && (order.assignedStaff === user?.name || role === 'manager') && (
                                       <button 
                                         data-testid="mark-ready-button"
                                         onClick={() => updateOrderStatus(order.id, 'ready')} 
                                         className="px-4 lg:px-6 py-2 bg-green-500 text-white rounded-xl text-[8px] lg:text-[9px] font-black uppercase tracking-widest hover:bg-green-600 transition-colors shadow-lg shadow-green-500/20"
                                       >
-                                        {t('markReady')}
+                                        {t('markAsReady')}
                                       </button>
                                     )}
-                                    {order.status === 'ready' && role === 'manager' && (
+                                    {order.status === 'ready' && (order.assignedStaff === user?.name || role === 'manager') && (
                                       <button 
                                         data-testid="complete-order-button"
                                         onClick={() => updateOrderStatus(order.id, 'completed')} 

@@ -14,7 +14,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose, title, content }
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+    <div className="fixed inset-0 z-150 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
       <div className="bg-white dark:bg-gray-800 rounded-[40px] shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in duration-300 border-4 border-white/20">
         <div className="p-8 md:p-12">
           <div className="flex justify-between items-center mb-8 md:mb-12">

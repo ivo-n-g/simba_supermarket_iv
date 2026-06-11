@@ -55,7 +55,7 @@ function AddProductModal() {
   if (!isAddProductModalOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 md:p-6 bg-gray-900/60 backdrop-blur-md">
+    <div className="fixed inset-0 z-150 flex items-center justify-center p-4 md:p-6 bg-gray-900/60 backdrop-blur-md">
       <div className="bg-white dark:bg-gray-900 rounded-[32px] md:rounded-[48px] shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-300">
         <div className="p-6 md:p-12">
           <div className="flex justify-between items-center mb-8 md:mb-12">

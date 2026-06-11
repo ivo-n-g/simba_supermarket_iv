@@ -147,10 +147,10 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
   );
 
   return (
-    <div className="fixed inset-0 z-[110] flex bg-gray-50 dark:bg-gray-950 overflow-hidden font-sans selection:bg-primary selection:text-white" data-testid="branch-dashboard-view">
+    <div className="fixed inset-0 z-110 flex bg-gray-50 dark:bg-gray-950 overflow-hidden font-sans selection:bg-primary selection:text-white" data-testid="branch-dashboard-view">
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[120] lg:hidden">
+        <div className="fixed inset-0 z-120 lg:hidden">
            <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)}></div>
            <aside className="absolute inset-y-0 left-0 w-80 bg-white dark:bg-gray-900 shadow-2xl animate-in slide-in-from-left duration-300">
               <SidebarContent />

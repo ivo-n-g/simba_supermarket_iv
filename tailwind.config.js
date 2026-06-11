@@ -14,6 +14,12 @@ export default {
       fontFamily: {
         sans: ['Outfit', 'sans-serif'],
       },
+      zIndex: {
+        '100': '100',
+        '110': '110',
+        '120': '120',
+        '150': '150',
+      },
       animation: {
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'fade-in-up': 'fade-in-up 0.6s ease-out forwards',

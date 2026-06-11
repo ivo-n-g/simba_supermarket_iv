@@ -308,6 +308,7 @@ function AppContent() {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">
         <BranchDashboard isOpen={true} onClose={() => {}} hideClose={true} />
+        <AddProductModal />
       </div>
     );
   }

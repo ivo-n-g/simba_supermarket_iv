@@ -306,7 +306,7 @@ function AppContent() {
   // Representative-only view
   if (user?.role === 'representative') {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <BranchDashboard isOpen={true} onClose={() => {}} hideClose={true} />
         <AddProductModal />
       </div>

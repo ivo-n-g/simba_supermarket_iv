@@ -123,19 +123,19 @@ const LandingPage: React.FC<LandingPageProps> = ({
       </div>
 
       {/* Categories Section */}
-      <section id="explore-categories" className="py-12 md:py-24 container mx-auto px-4 md:px-6">
+      <section id="explore-categories" className="py-10 md:py-24 container mx-auto px-4 md:px-6">
         <div className="flex flex-col md:flex-row md:items-start justify-between mb-8 md:mb-16 gap-8 text-center md:text-left">
           <div className="max-w-xl">
-            <h2 className="text-3xl md:text-5xl font-black text-primary dark:text-secondary uppercase tracking-tighter mb-3">
+            <h2 className="text-3xl md:text-5xl font-black text-primary dark:text-secondary uppercase tracking-tighter mb-3 leading-none">
               {t('exploreCategories')}
             </h2>
-            <p className="text-gray-500 dark:text-gray-400 font-medium text-sm md:text-lg">
+            <p className="text-gray-500 dark:text-gray-400 font-medium text-[13px] md:text-lg">
               {t('exploreCategoriesDesc')}
             </p>
           </div>
           
           {/* Quick Filters on Landing Page */}
-          <div className="bg-white dark:bg-gray-800/50 p-6 md:p-8 rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-700 flex flex-col gap-6 w-full md:w-auto shrink-0 min-w-[320px]">
+          <div className="bg-white dark:bg-gray-800/50 p-6 md:p-8 rounded-[32px] md:rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-700 flex flex-col gap-6 w-full md:w-auto shrink-0 min-w-0 md:min-w-[320px]">
             <div className="flex items-center justify-between">
               <h3 className="text-xs font-black text-primary dark:text-secondary uppercase tracking-[0.2em]">{t('filters')}</h3>
               <div className="flex items-center gap-3">

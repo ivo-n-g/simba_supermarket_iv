@@ -146,32 +146,32 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
   return (
     <>
       <header className="sticky top-0 z-[100] bg-primary/95 backdrop-blur-xl text-white shadow-[0_8px_32px_rgba(0,0,0,0.1)] border-b border-white/10 transition-all duration-300">
-        <div className="container mx-auto px-2 md:px-6 h-16 md:h-20 flex items-center justify-between gap-1 md:gap-4">
+        <div className="container mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
           {/* Logo */}
           <div 
             onClick={onLogoClick}
             className="cursor-pointer hover:opacity-90 transition-all flex-shrink-0 flex items-center group relative"
           >
-            <div className="bg-white/10 backdrop-blur-md p-1.5 md:p-2 rounded-2xl border border-white/10 shadow-inner group-hover:bg-white/20 transition-all">
+            <div className="bg-white/10 backdrop-blur-md p-1 md:p-2 rounded-xl md:rounded-2xl border border-white/10 shadow-inner group-hover:bg-white/20 transition-all">
               <img 
                 src="/logo.png" 
                 alt="Simba Supermarket" 
-                className="h-8 md:h-12 w-auto object-contain filter drop-shadow-lg"
+                className="h-7 md:h-12 w-auto object-contain filter drop-shadow-lg"
               />
             </div>
             <div className="absolute -top-1 -right-1 bg-secondary text-primary text-[8px] font-black px-1.5 py-0.5 rounded-full shadow-lg border border-white/20 animate-pulse">LIVE</div>
           </div>
 
-          {/* Location Picker */}
-          <div className="relative ml-2 md:ml-4" ref={locRef}>
+          {/* Location Picker - Hidden on Mobile */}
+          <div className="hidden sm:block relative ml-4" ref={locRef}>
             <button
               onClick={() => setIsLocOpen(!isLocOpen)}
               className={`flex items-center gap-2 px-3 py-2 rounded-xl text-[10px] font-black uppercase transition-all border border-white/10 ${isLocOpen ? 'bg-white text-primary shadow-xl' : 'hover:bg-white/10 text-white'}`}
             >
               <span className="text-base">📍</span>
               <div className="flex flex-col items-start leading-none">
-                <span className="hidden sm:inline opacity-60 text-[8px] mb-0.5">{t('pickupBranch')}</span>
-                <span className="hidden sm:inline max-w-[100px] truncate">
+                <span className="opacity-60 text-[8px] mb-0.5">{t('pickupBranch')}</span>
+                <span className="max-w-[100px] truncate">
                   {pickupBranch ? pickupBranch.replace('Simba Supermarket ', '') : 'Select Branch'}
                 </span>
                 {userLocation && pickupBranch && (
@@ -294,22 +294,21 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
           </div>
 
           {/* Action Group */}
-          <div className="flex items-center gap-1 md:gap-3">
-            {/* STAFF QUICK ACCESS FOR GRADER */}
+          <div className="flex items-center gap-1.5 md:gap-3 ml-auto shrink-0">
+            {/* STAFF QUICK ACCESS FOR GRADER - HIDDEN ON MOBILE */}
             <button 
               data-testid="staff-quick-login"
               onClick={() => {
                 const { login } = (window as any).simbaStore;
                 login('staff@simba.rw', 'password', 'representative', 'Simba Supermarket Remera');
               }}
-              className="flex items-center gap-2 px-2 md:px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-lg text-[8px] md:text-[9px] font-black uppercase tracking-widest transition-all"
+              className="hidden sm:flex items-center gap-2 px-2 md:px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-lg text-[8px] md:text-[9px] font-black uppercase tracking-widest transition-all"
             >
               <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-primary rounded-full animate-ping"></span>
-              <span className="hidden xs:inline">Staff Portal</span>
-              <span className="xs:hidden">OPs</span>
+              <span className="hidden sm:inline">Staff Portal</span>
             </button>
 
-            <div className="flex items-center bg-white/5 rounded-lg md:rounded-xl p-0.5 border border-white/5">              <button onClick={toggleTheme} className="p-1.5 md:p-2.5 rounded-lg hover:bg-white/10 transition-all">
+            <div className="hidden sm:flex items-center bg-white/5 rounded-lg md:rounded-xl p-0.5 border border-white/5">              <button onClick={toggleTheme} className="p-1.5 md:p-2.5 rounded-lg hover:bg-white/10 transition-all">
                 {theme === 'light' ? (
                   <svg className="w-3.5 h-3.5 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
                 ) : (
@@ -358,7 +357,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
                 )}
               </div>            </div>
 
-            <button onClick={handleAuthClick} className="flex items-center p-1 md:px-4 md:py-2 hover:bg-white/10 rounded-xl transition-all font-black text-xs md:text-sm">
+            <button onClick={handleAuthClick} className="flex items-center p-1 md:px-4 md:py-2 hover:bg-white/10 rounded-xl transition-all font-black text-xs md:text-sm shrink-0">
               {user?.photoURL ? (
                 <img src={user.photoURL} alt={user.name} className="h-7 w-7 md:h-9 md:w-9 rounded-full border-2 border-secondary object-cover" />
               ) : (
@@ -371,7 +370,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
             <button 
               data-testid="cart-button"
               onClick={() => setIsCartDrawerOpen(true)} 
-              className="flex items-center gap-1.5 bg-secondary text-primary px-2.5 md:px-4 h-9 md:h-12 rounded-xl font-black hover:bg-yellow-400 transition-all active:scale-95 border-2 border-secondary/30 shadow-md"
+              className="flex items-center gap-1.5 bg-secondary text-primary px-2.5 md:px-4 h-9 md:h-12 rounded-xl font-black hover:bg-yellow-400 transition-all active:scale-95 border-2 border-secondary/30 shadow-md shrink-0"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
               <span className="text-xs md:text-sm">{cartCount}</span>

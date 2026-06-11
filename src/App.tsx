@@ -55,10 +55,10 @@ function AddProductModal() {
   if (!isAddProductModalOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center p-6 bg-gray-900/60 backdrop-blur-md">
-      <div className="bg-white dark:bg-gray-900 rounded-[40px] lg:rounded-[48px] shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
-        <div className="p-8 lg:p-12">
-          <div className="flex justify-between items-center mb-10 lg:mb-12">
+    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 md:p-6 bg-gray-900/60 backdrop-blur-md">
+      <div className="bg-white dark:bg-gray-900 rounded-[32px] md:rounded-[48px] shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-300">
+        <div className="p-6 md:p-12">
+          <div className="flex justify-between items-center mb-8 md:mb-12">
             <h2 className="text-xl lg:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight">{t('addNewProduct')}</h2>
             <button 
               data-testid="close-modal-button"
@@ -145,7 +145,8 @@ function AddProductModal() {
                 </div>
             </div>
             <button 
-              type="submit" 
+              type="button"
+              onClick={handleAddProduct}
               data-testid="add-product-submit-button"
               className="w-full bg-primary text-white py-5 lg:py-6 rounded-2xl font-black uppercase text-[10px] lg:text-xs tracking-[0.2em] shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
             >
@@ -423,7 +424,7 @@ function AppContent() {
               />
             </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-12 mb-16 text-left">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12 mb-16 text-left">
             <div>
               <h4 className="font-black mb-6 uppercase text-xs tracking-[0.3em] opacity-40">{t('discover')}</h4>
               <ul className="space-y-3 text-sm font-bold">

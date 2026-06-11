@@ -224,29 +224,29 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
           <div className="max-w-7xl mx-auto space-y-8 lg:space-y-12">
             
             {/* Elegant Welcome Card */}
-            <div className="bg-gradient-to-br from-gray-900 to-primary p-8 lg:p-12 rounded-[40px] lg:rounded-[48px] shadow-2xl relative overflow-hidden text-white">
-                <div className="absolute top-0 right-0 w-[400px] lg:w-[600px] h-[400px] lg:h-[600px] bg-white/5 rounded-full translate-x-1/2 -translate-y-1/2 blur-[120px]"></div>
+            <div className="bg-gradient-to-br from-gray-900 to-primary p-6 lg:p-12 rounded-[32px] lg:rounded-[48px] shadow-2xl relative overflow-hidden text-white">
+                <div className="absolute top-0 right-0 w-[300px] lg:w-[600px] h-[300px] lg:h-[600px] bg-white/5 rounded-full translate-x-1/2 -translate-y-1/2 blur-[80px] lg:blur-[120px]"></div>
                 <div className="relative z-10 max-w-2xl">
-                    <h2 className="text-3xl lg:text-5xl font-black tracking-tighter mb-4 leading-none">{t('managementConsole')}.</h2>
-                    <p className="text-sm lg:text-lg font-bold text-white/60 mb-8 leading-relaxed italic">"{t('welcomeBack')}, {user?.name.split(' ')[0]}. {t('monitoringPipelines')} {selectedBranch}."</p>
-                    <div className="flex flex-wrap gap-4">
-                       <div className="px-5 lg:px-6 py-2.5 lg:py-3 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 flex items-center gap-3">
-                          <span className="text-lg lg:text-xl">📊</span>
+                    <h2 className="text-2xl lg:text-5xl font-black tracking-tighter mb-4 leading-none">{t('managementConsole')}.</h2>
+                    <p className="text-xs lg:text-lg font-bold text-white/60 mb-6 lg:mb-8 leading-relaxed italic">"{t('welcomeBack')}, {user?.name.split(' ')[0]}. {t('monitoringPipelines')} {selectedBranch}."</p>
+                    <div className="flex flex-wrap gap-3 lg:gap-4">
+                       <div className="px-4 lg:px-6 py-2 lg:py-3 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 flex items-center gap-2 lg:gap-3">
+                          <span className="text-base lg:text-xl">📊</span>
                           <div>
-                             <p className="text-[8px] lg:text-[10px] font-black uppercase text-white/40 leading-none mb-1">{t('successRate')}</p>
-                             <p className="text-xs lg:text-sm font-black">98.2%</p>
+                             <p className="text-[7px] lg:text-[10px] font-black uppercase text-white/40 leading-none mb-1">{t('successRate')}</p>
+                             <p className="text-[10px] lg:text-sm font-black">98.2%</p>
                           </div>
                        </div>
-                       <div className="px-5 lg:px-6 py-2.5 lg:py-3 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 flex items-center gap-3">
-                          <span className="text-lg lg:text-xl">⏱️</span>
+                       <div className="px-4 lg:px-6 py-2 lg:py-3 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 flex items-center gap-2 lg:gap-3">
+                          <span className="text-base lg:text-xl">⏱️</span>
                           <div>
-                             <p className="text-[8px] lg:text-[10px] font-black uppercase text-white/40 leading-none mb-1">{t('avgFulfillment')}</p>
-                             <p className="text-xs lg:text-sm font-black">14 mins</p>
+                             <p className="text-[7px] lg:text-[10px] font-black uppercase text-white/40 leading-none mb-1">{t('avgFulfillment')}</p>
+                             <p className="text-[10px] lg:text-sm font-black">14 mins</p>
                           </div>
                        </div>
                     </div>
                 </div>
-                <div className="absolute bottom-6 right-6 lg:bottom-12 lg:right-12 text-6xl lg:text-9xl opacity-10 font-black tracking-tighter select-none">SIMBA</div>
+                <div className="absolute bottom-4 right-4 lg:bottom-12 lg:right-12 text-5xl lg:text-9xl opacity-10 font-black tracking-tighter select-none">SIMBA</div>
             </div>
 
             {/* Top Stats Row - Refined */}
@@ -278,9 +278,9 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                       <button className="flex items-center gap-2 text-[9px] lg:text-[10px] font-black uppercase text-primary tracking-widest hover:translate-x-1 transition-transform">{t('viewArchive')} →</button>
                     </div>
 
-                    <div className="bg-white dark:bg-gray-900 rounded-[40px] lg:rounded-[48px] shadow-[0_24px_48px_rgba(0,0,0,0.02)] border border-gray-100 dark:border-gray-800 overflow-hidden">
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-left" data-testid="orders-table">
+                    <div className="bg-white dark:bg-gray-900 rounded-[32px] lg:rounded-[48px] shadow-[0_24px_48px_rgba(0,0,0,0.02)] border border-gray-100 dark:border-gray-800 overflow-hidden">
+                      <div className="overflow-x-auto scrollbar-hide">
+                        <table className="w-full text-left min-w-[700px] lg:min-w-full" data-testid="orders-table">
                           <thead>
                             <tr className="text-[9px] lg:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] bg-gray-50/50 dark:bg-gray-800/50">
                               <th className="px-6 lg:px-10 py-5 lg:py-6">{t('reference')}</th>
@@ -454,14 +454,16 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                 </div>
 
                 <div 
-                  onClick={() => setIsAddProductModalOpen(true)}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsAddProductModalOpen(true); }}
                   className="bg-gradient-to-tr from-primary to-orange-400 p-8 lg:p-10 rounded-[40px] lg:rounded-[48px] shadow-2xl shadow-primary/20 group relative overflow-hidden cursor-pointer active:scale-[0.98] transition-all"
                 >
                    <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                    <h3 className="text-white text-lg lg:text-xl font-black uppercase tracking-tight mb-4">{t('updateStock')}</h3>
                    <p className="text-white/70 text-[9px] lg:text-[10px] font-bold uppercase tracking-widest mb-10 leading-relaxed">{t('expandCatalog')}</p>
                    <button 
+                     type="button"
                      data-testid="add-product-open-button"
+                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsAddProductModalOpen(true); }}
                      className="w-full py-4 lg:py-5 bg-white text-primary rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl hover:scale-105 transition-all"
                    >
                      {t('addNewProduct')}

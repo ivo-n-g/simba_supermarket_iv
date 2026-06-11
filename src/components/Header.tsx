@@ -145,8 +145,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
 
   return (
     <>
-      <header className="sticky top-0 z-[100] bg-primary/95 backdrop-blur-xl text-white shadow-[0_8px_32px_rgba(0,0,0,0.1)] border-b border-white/10 transition-all duration-300">
-        <div className="container mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
+      <header className="sticky top-0 z-[100] bg-primary dark:bg-gray-900 md:bg-primary/95 md:backdrop-blur-xl text-white shadow-[0_8px_32px_rgba(0,0,0,0.1)] border-b border-white/10 transition-all duration-300">
+        <div className="container mx-auto px-4 md:px-6 h-14 sm:h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
           {/* Logo */}
           <div 
             onClick={onLogoClick}
@@ -383,8 +383,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
           </div>
         </div>
         
-        {/* Mobile Search Bar */}
-        <div className="md:hidden bg-primary/95 dark:bg-gray-900 px-4 pb-4 border-b border-white/5 relative" ref={mobileSearchRef}>
+        {/* Mobile Search Bar - Integrated & Solid */}
+        <div className="md:hidden bg-primary dark:bg-gray-900 px-4 pb-4 relative" ref={mobileSearchRef}>
           <form onSubmit={handleSubmit} className="relative flex items-center">
             <div className="relative flex-1">
               <input 
@@ -396,11 +396,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
                 value={inputValue}
                 onChange={handleSearch}
                 onFocus={() => !isAiMode && setShowSuggestions(true)}
-                className={`w-full h-11 py-2 pl-10 pr-20 rounded-2xl text-gray-900 bg-white/10 backdrop-blur-md border focus:bg-white focus:text-gray-900 outline-none transition-all text-sm placeholder:text-gray-300 ${isAiMode ? 'border-secondary/50 shadow-[0_0_15px_rgba(255,210,0,0.1)]' : 'border-white/5'}`}
+                className="w-full h-11 py-2 pl-10 pr-20 rounded-2xl text-gray-900 bg-white dark:bg-gray-800 border-none outline-none transition-all text-sm placeholder:text-gray-400 focus:ring-4 focus:ring-secondary/30"
               />
-              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300">
+              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-primary dark:text-secondary">
                 {isAiLoading ? (
-                  <svg className="animate-spin h-4 w-4 text-secondary" viewBox="0 0 24 24">
+                  <svg className="animate-spin h-4 w-4 text-primary" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
@@ -413,7 +413,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
               <button
                 type="button"
                 onClick={() => setIsAiMode(!isAiMode)}
-                className={`absolute right-1.5 top-1/2 -translate-y-1/2 px-2.5 py-1.5 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all ${isAiMode ? 'bg-secondary text-primary' : 'bg-white/20 text-white'}`}
+                className={`absolute right-1.5 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${isAiMode ? 'bg-secondary text-primary shadow-md' : 'bg-gray-100 text-gray-400'}`}
               >
                 {isAiMode ? 'AI ON' : 'AI OFF'}
               </button>

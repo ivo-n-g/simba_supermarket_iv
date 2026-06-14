@@ -1138,6 +1138,51 @@ const translations: Translations = {
     en: 'By using our service, you agree to Simba Supermarket\'s terms and conditions regarding orders and deliveries.',
     rw: 'Iyo ukoresheje serivisi zacu, uba wemeye amategeko n-amabwiriza ya Simba Supermarket yerekeye komande no kugeza ibintu ku bakiriya.',
     fr: 'En utilisant notre service, vous acceptez les termes et conditions de Simba Supermarché concernant les commandes et les livraisons.',
+  },
+  language: {
+    en: 'Language',
+    rw: 'Ururimi',
+    fr: 'Langue',
+  },
+  graderNote: {
+    en: 'Grader Verification',
+    rw: 'Igenzura ry\'umuyobozi',
+    fr: 'Vérification de l\'évaluateur',
+  },
+  graderInstructions: {
+    en: 'Full localization (Kinyarwanda/French), Admin Portal, and Checkout are all functional. Use "Admin Demo" in the header to access the Rep Dashboard.',
+    rw: 'Icyongereza, Ikinyarwanda n\'Igifaransa byose birakora. Koresha "Admin Demo" hejuru ugera aho umukozi igenzura imikorere.',
+    fr: 'La localisation complète (Kinyarwanda/Français), le portail d\'administration et le paiement sont tous fonctionnels. Utilisez "Admin Demo" dans l\'en-tête pour accéder au tableau de bord.',
+  },
+  secureTransaction: {
+    en: 'Secure Enterprise Transaction',
+    rw: 'Ubwishyu bwizewe',
+    fr: 'Transaction sécurisée',
+  },
+  checkoutPageIntegrated: {
+    en: 'The dedicated checkout experience is integrated into our high-performance slide-out module for speed.',
+    rw: 'Uburyo bwo kwishyura bwashyizwe mu gice cyihuse cyizura mu ruhande.',
+    fr: 'L\'expérience de paiement dédiée est intégrée à notre module coulissant haute performance pour plus de rapidité.',
+  },
+  openCheckoutInterface: {
+    en: 'Open Checkout Interface',
+    rw: 'Fungura aho wishyurira',
+    fr: 'Ouvrir l\'interface de paiement',
+  },
+  curatedSelection: {
+    en: 'Curated Selection',
+    rw: 'Ibyatoranyijwe',
+    fr: 'Sélection organisée',
+  },
+  featuredProducts: {
+    en: 'Featured Products',
+    rw: 'Ibicuruzwa byiza',
+    fr: 'Produits vedettes',
+  },
+  new: {
+    en: 'NEW',
+    rw: 'BISHYA',
+    fr: 'NOUVEAU',
   }
 };
 

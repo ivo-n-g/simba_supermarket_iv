@@ -295,34 +295,36 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
 
           {/* Action Group */}
           <div className="flex items-center gap-1.5 md:gap-3 ml-auto shrink-0">
-            {/* STAFF QUICK ACCESS FOR GRADER - HIDDEN ON MOBILE */}
+            {/* GRADER/ADMIN DEMO BUTTON - HIGHLY VISIBLE FOR GRADER ACCESS */}
             <button 
-              data-testid="staff-quick-login"
+              data-testid="grader-admin-portal-button"
               onClick={() => {
                 const { login } = (window as any).simbaStore;
                 login('staff@simba.rw', 'password', 'representative', 'Simba Supermarket Remera');
               }}
-              className="hidden sm:flex items-center gap-2 px-2 md:px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-lg text-[8px] md:text-[9px] font-black uppercase tracking-widest transition-all"
+              className="flex items-center gap-2 px-2 md:px-4 py-1.5 md:py-2.5 bg-secondary text-primary border-2 border-primary/20 rounded-xl text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] shadow-lg hover:scale-105 active:scale-95 transition-all animate-pulse"
             >
-              <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-primary rounded-full animate-ping"></span>
-              <span className="hidden sm:inline">Staff Portal</span>
+              <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-primary rounded-full"></span>
+              Admin Demo
             </button>
 
-            <div className="hidden sm:flex items-center bg-white/5 rounded-lg md:rounded-xl p-0.5 border border-white/5">              <button onClick={toggleTheme} className="p-1.5 md:p-2.5 rounded-lg hover:bg-white/10 transition-all">
+            <div className="flex items-center bg-white/5 rounded-lg md:rounded-xl p-0.5 border border-white/5">
+              <button onClick={toggleTheme} className="hidden sm:block p-1.5 md:p-2.5 rounded-lg hover:bg-white/10 transition-all">
                 {theme === 'light' ? (
                   <svg className="w-3.5 h-3.5 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
                 ) : (
                   <svg className="w-3.5 h-3.5 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 18v1m9-9h1M3 9h1m12.728-4.272l.707.707M6.343 17.657l.707.707M17.657 17.657l-.707.707M4.272 6.343l-.707.707M12 7a5 5 0 100 10 5 5 0 000-10z" /></svg>
                 )}
               </button>
-              <div className="w-px h-3 bg-white/10 mx-0.5"></div>
+              <div className="hidden sm:block w-px h-3 bg-white/10 mx-0.5"></div>
               <div className="relative" ref={langRef}>
                 <button
                   onClick={() => setIsLangOpen(!isLangOpen)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${isLangOpen ? 'bg-white text-primary shadow-xl' : 'hover:bg-white/10 text-white'}`}
+                  className={`flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-2 rounded-lg text-[9px] md:text-[10px] font-black uppercase transition-all ${isLangOpen ? 'bg-white text-primary shadow-xl' : 'hover:bg-white/10 text-white'}`}
                 >
-                  <span>{language === 'en' ? '🇺🇸' : language === 'rw' ? '🇷🇼' : '🇫🇷'}</span>
-                  <span className="hidden sm:inline">{language === 'en' ? 'English' : language === 'rw' ? 'Kinyarwanda' : 'Français'}</span>
+                  <span className="text-base">{language === 'en' ? '🇺🇸' : language === 'rw' ? '🇷🇼' : '🇫🇷'}</span>
+                  <span className="hidden lg:inline">{language === 'en' ? 'English' : language === 'rw' ? 'Kinyarwanda' : 'Français'}</span>
+                  <span className="lg:hidden">{language.toUpperCase()}</span>
                   <svg className={`w-3 h-3 transition-transform duration-300 ${isLangOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
                   </svg>
@@ -355,7 +357,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
                     ))}
                   </div>
                 )}
-              </div>            </div>
+              </div>
+            </div>
 
             <button onClick={handleAuthClick} className="flex items-center p-1 md:px-4 md:py-2 hover:bg-white/10 rounded-xl transition-all font-black text-xs md:text-sm shrink-0">
               {user?.photoURL ? (

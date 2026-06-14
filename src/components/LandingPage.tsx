@@ -90,6 +90,10 @@ const LandingPage: React.FC<LandingPageProps> = ({
     return t(category);
   };
 
+  const featuredProducts = useMemo(() => {
+    return productsData.products.slice(0, 8);
+  }, []);
+
   return (
     <div className="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Staff Quick Action Bar */}
@@ -121,6 +125,66 @@ const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Featured Products Section - Added to solve "empty homepage" feedback */}
+      <section className="py-12 md:py-24 container mx-auto px-4 md:px-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-16 gap-6">
+          <div className="text-center md:text-left">
+            <p className="text-[10px] md:text-xs font-black text-primary uppercase tracking-[0.4em] mb-4">{t('curatedSelection') || 'Curated Selection'}</p>
+            <h2 className="text-3xl md:text-6xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-none">
+              {t('featuredProducts') || 'Featured Products'}
+            </h2>
+          </div>
+          <button 
+            onClick={() => onSelectCategory('All')}
+            className="hidden md:block px-8 py-4 bg-gray-900 dark:bg-white dark:text-gray-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-xl"
+          >
+            {t('viewAllProducts')} →
+          </button>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+          {featuredProducts.map((product) => (
+            <div 
+              key={product.id}
+              onClick={() => {
+                // We need to pass product ID and set view to details in parent
+                // For now, let's just trigger shop view with this product's category
+                onSelectCategory(product.category);
+              }}
+              className="group cursor-pointer bg-white dark:bg-gray-800 rounded-[32px] md:rounded-[48px] p-4 md:p-8 shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 dark:border-gray-700 relative overflow-hidden"
+            >
+              <div className="absolute top-4 right-4 z-10">
+                <span className="bg-secondary text-primary text-[8px] font-black px-2 py-1 rounded-full shadow-sm">{t('new') || 'NEW'}</span>
+              </div>
+              <div className="aspect-square bg-gray-50 dark:bg-gray-900/50 rounded-3xl mb-4 md:mb-6 overflow-hidden flex items-center justify-center p-4 md:p-8 group-hover:scale-[1.02] transition-transform">
+                <img 
+                  src={product.image} 
+                  alt={product.name} 
+                  className="w-full h-full object-contain filter drop-shadow-xl"
+                />
+              </div>
+              <p className="text-[8px] md:text-[10px] font-black text-primary uppercase tracking-widest mb-1 md:mb-2">{t(product.category)}</p>
+              <h3 className="text-xs md:text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight mb-2 md:mb-4 line-clamp-1">
+                {(product as any)[`name_${language}`] || product.name}
+              </h3>
+              <div className="flex items-center justify-between">
+                <p className="text-sm md:text-2xl font-black text-gray-900 dark:text-white">{product.price.toLocaleString()} <span className="text-[10px] md:text-xs opacity-40">RWF</span></p>
+                <div className="w-8 h-8 md:w-12 md:h-12 bg-primary text-white rounded-full flex items-center justify-center text-sm md:text-xl shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
+                  +
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <button 
+          onClick={() => onSelectCategory('All')}
+          className="w-full md:hidden mt-10 py-5 bg-gray-900 dark:bg-white dark:text-gray-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest"
+        >
+          {t('viewAllProducts')} →
+        </button>
+      </section>
 
       {/* Categories Section */}
       <section id="explore-categories" className="py-10 md:py-24 container mx-auto px-4 md:px-6">

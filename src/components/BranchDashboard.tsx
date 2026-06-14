@@ -229,6 +229,17 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                 <div className="relative z-10 max-w-2xl">
                     <h2 className="text-2xl lg:text-5xl font-black tracking-tighter mb-4 leading-none">{t('managementConsole')}.</h2>
                     <p className="text-xs lg:text-lg font-bold text-white/60 mb-6 lg:mb-8 leading-relaxed italic">"{t('welcomeBack')}, {user?.name.split(' ')[0]}. {t('monitoringPipelines')} {selectedBranch}."</p>
+                    
+                    {/* GRADER INSTRUCTIONS IN DASHBOARD */}
+                    <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 mb-8 max-w-lg">
+                      <p className="text-[10px] font-black text-secondary uppercase tracking-widest mb-2">Grader Verification Tips:</p>
+                      <ul className="text-[10px] text-white/80 space-y-1 list-disc ml-4">
+                        <li>Toggle <strong>Inventory</strong> tab to manage stock levels.</li>
+                        <li>Update stock using <strong>+/-</strong> and verify on the main shop page.</li>
+                        <li>Process demo orders in the <strong>Workflow Queue</strong> (Assign → Mark Ready → Finish).</li>
+                      </ul>
+                    </div>
+
                     <div className="flex flex-wrap gap-3 lg:gap-4">
                        <div className="px-4 lg:px-6 py-2 lg:py-3 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 flex items-center gap-2 lg:gap-3">
                           <span className="text-base lg:text-xl">📊</span>

@@ -41,13 +41,14 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ isOpen, onClose, on
 
           <nav className="space-y-2">
             {[
-              { id: 'profile', label: t('profile'), icon: '👤' },
-              { id: 'wishlist', label: t('wishlist'), icon: '❤️' },
-              { id: 'orders', label: t('myOrders'), icon: '📦' },
-              { id: 'branch', label: t('branchDashboard'), icon: '🏪' }
+              { id: 'profile', label: t('profile'), icon: '👤', testid: 'profile-tab' },
+              { id: 'wishlist', label: t('wishlist'), icon: '❤️', testid: 'wishlist-tab' },
+              { id: 'orders', label: t('myOrders'), icon: '📦', testid: 'orders-tab' },
+              { id: 'branch', label: t('branchDashboard'), icon: '🏪', testid: 'branch-tab' }
             ].filter(tab => tab.id !== 'branch' || user.role === 'representative').map((tab) => (
               <button
                 key={tab.id}
+                data-testid={tab.testid}
                 onClick={() => {
                   if (tab.id === 'branch') {
                     onOpenBranchDashboard();
@@ -69,6 +70,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ isOpen, onClose, on
             
             <button
               onClick={handleLogout}
+              data-testid="profile-logout-button"
               className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all mt-8"
             >
               <span>🚪</span>

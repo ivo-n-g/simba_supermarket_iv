@@ -320,6 +320,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
               <div className="relative" ref={langRef}>
                 <button
                   onClick={() => setIsLangOpen(!isLangOpen)}
+                  data-testid="language-switcher-button"
                   className={`flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-2 rounded-lg text-[9px] md:text-[10px] font-black uppercase transition-all ${isLangOpen ? 'bg-white text-primary shadow-xl' : 'hover:bg-white/10 text-white'}`}
                 >
                   <span className="text-base">{language === 'en' ? '🇺🇸' : language === 'rw' ? '🇷🇼' : '🇫🇷'}</span>

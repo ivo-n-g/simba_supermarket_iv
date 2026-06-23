@@ -106,24 +106,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit,
         <div className="mt-6 space-y-4">
           {/* Quantity and Add to Cart Row */}
             <div className="flex flex-wrap items-center justify-between gap-2 md:gap-4 w-full shrink-0" onClick={e => e.stopPropagation()}>
-              <div className="flex items-center bg-gray-50 dark:bg-gray-900 rounded-xl md:rounded-2xl overflow-hidden h-11 md:h-14 border border-gray-100 dark:border-gray-800 shrink-0">
+              <div className="flex items-center bg-gray-50 dark:bg-gray-900 rounded-xl md:rounded-2xl h-11 md:h-14 border border-gray-100 dark:border-gray-800 shrink-0 min-w-max">
                 <button 
                   data-testid="quantity-decrement"
                   onClick={decrement}
-                  className="w-8 md:w-10 h-full flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-900 dark:text-white transition-colors font-black text-lg md:text-xl"
+                  className="w-8 md:w-10 h-full flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-900 dark:text-white transition-colors font-black text-lg md:text-xl rounded-l-xl md:rounded-l-2xl shrink-0"
                 >
                   -
                 </button>
                 <span 
                   data-testid="quantity-display"
-                  className="w-6 md:w-8 flex items-center justify-center text-sm md:text-base font-black text-primary dark:text-secondary"
+                  className="w-6 md:w-8 flex items-center justify-center text-sm md:text-base font-black text-primary dark:text-secondary shrink-0"
                 >
                   {localQuantity}
                 </span>
                 <button 
                   data-testid="quantity-increment"
                   onClick={increment}
-                  className="w-8 md:w-10 h-full flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-900 dark:text-white transition-colors font-black text-lg md:text-xl"
+                  className="w-8 md:w-10 h-full flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-900 dark:text-white transition-colors font-black text-lg md:text-xl rounded-r-xl md:rounded-r-2xl shrink-0"
                 >
                   +
                 </button>

@@ -10,6 +10,69 @@ interface ProfileDashboardProps {
 
 type DashboardTab = 'profile' | 'wishlist' | 'orders' | 'branch';
 
+const WishlistItem = ({ product, addToCart, toggleWishlist, t }: any) => {
+  const [localQuantity, setLocalQuantity] = useState(1);
+  const [isAdded, setIsAdded] = useState(false);
+
+  const increment = () => setLocalQuantity(prev => prev + 1);
+  const decrement = () => setLocalQuantity(prev => prev > 1 ? prev - 1 : 1);
+
+  const handleAddToCart = () => {
+    addToCart(product, localQuantity);
+    setLocalQuantity(1);
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 2000);
+  };
+
+  return (
+    <div className="p-3 flex gap-4 bg-gray-50 dark:bg-gray-900/30 rounded-2xl border border-gray-100 dark:border-gray-700 group">
+      <div className="w-20 h-20 bg-white dark:bg-gray-800 rounded-xl overflow-hidden flex-shrink-0">
+        <img src={product.image} alt={product.name} className="w-full h-full object-contain p-2" />
+      </div>
+      <div className="flex-1 min-w-0 flex flex-col justify-between">
+        <div>
+          <h4 className="font-bold text-gray-800 dark:text-white text-sm line-clamp-1 mb-1">{product.name}</h4>
+          <p className="text-primary dark:text-secondary font-black text-sm mb-2">{product.price.toLocaleString()} RWF</p>
+        </div>
+        <div className="flex gap-2 items-center mt-auto">
+          <div className="flex items-center bg-gray-200 dark:bg-gray-800 rounded-lg overflow-hidden h-8">
+            <button 
+              onClick={decrement}
+              className="px-2 h-full hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-colors font-black"
+            >
+              -
+            </button>
+            <span className="px-2 text-xs font-black min-w-[1.5rem] text-center text-primary dark:text-secondary">
+              {localQuantity}
+            </span>
+            <button 
+              onClick={increment}
+              className="px-2 h-full hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-colors font-black"
+            >
+              +
+            </button>
+          </div>
+          <button 
+            onClick={handleAddToCart}
+            disabled={isAdded}
+            className={`flex-1 text-white text-[10px] font-bold py-1.5 rounded-lg transition-all h-8 ${isAdded ? 'bg-green-500' : 'bg-primary hover:opacity-90'}`}
+          >
+            {isAdded ? t('added') : t('addToCart')}
+          </button>
+          <button 
+            onClick={() => toggleWishlist(product)}
+            className="p-1.5 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-lg hover:bg-red-100 transition-all h-8 w-8 flex items-center justify-center"
+          >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ isOpen, onClose, onOpenBranchDashboard }) => {
   const { user, logout, wishlist, toggleWishlist, addToCart, orders } = useStore();
   const { t } = useLanguage();
@@ -124,31 +187,13 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ isOpen, onClose, on
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {wishlist.map((product) => (
-                      <div key={product.id} className="p-3 flex gap-4 bg-gray-50 dark:bg-gray-900/30 rounded-2xl border border-gray-100 dark:border-gray-700 group">
-                        <div className="w-20 h-20 bg-white dark:bg-gray-800 rounded-xl overflow-hidden flex-shrink-0">
-                          <img src={product.image} alt={product.name} className="w-full h-full object-contain p-2" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-bold text-gray-800 dark:text-white text-sm line-clamp-1 mb-1">{product.name}</h4>
-                          <p className="text-primary dark:text-secondary font-black text-sm mb-3">{product.price.toLocaleString()} RWF</p>
-                          <div className="flex gap-2">
-                            <button 
-                              onClick={() => addToCart(product)}
-                              className="flex-1 bg-primary text-white text-[10px] font-bold py-2 rounded-lg hover:opacity-90 transition-all"
-                            >
-                              {t('addToCart')}
-                            </button>
-                            <button 
-                              onClick={() => toggleWishlist(product)}
-                              className="p-2 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-lg hover:bg-red-100 transition-all"
-                            >
-                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
+                      <WishlistItem 
+                        key={product.id} 
+                        product={product} 
+                        addToCart={addToCart} 
+                        toggleWishlist={toggleWishlist} 
+                        t={t} 
+                      />
                     ))}
                   </div>
                 )}

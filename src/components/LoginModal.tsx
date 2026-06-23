@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStore } from '../context/StoreContext';
 import { useLanguage } from '../context/LanguageContext';
 import { GoogleLogin } from '@react-oauth/google';
@@ -7,6 +7,7 @@ interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenBranchDashboard?: () => void;
+  defaultRole?: 'customer' | 'representative';
 }
 
 const branches = [
@@ -21,11 +22,11 @@ const branches = [
   'Simba Supermarket Nyanza',
 ];
 
-const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDashboard }) => {
+const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDashboard, defaultRole }) => {
   const { login, signup, forgotPassword, handleGoogleSuccess } = useStore();
   const { t } = useLanguage();
   const [isLogin, setIsLogin] = useState(true);
-  const [role, setRole] = useState<'customer' | 'representative'>('customer');
+  const [role, setRole] = useState<'customer' | 'representative'>(defaultRole || 'customer');
   const [repRole, setRepRole] = useState<'manager' | 'staff'>('staff');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -35,6 +36,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDa
   const [isLoading, setIsLoading] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [isResetSent, setIsResetSent] = useState(false);
+  useEffect(() => {
+    if (isOpen && defaultRole) {
+      setRole(defaultRole);
+    }
+  }, [isOpen, defaultRole]);
 
   if (!isOpen) return null;
 

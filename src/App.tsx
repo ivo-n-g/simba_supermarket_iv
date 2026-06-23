@@ -439,7 +439,6 @@ function AppContent() {
             />
             
             <div className="flex-1 bg-white dark:bg-gray-800/50 shadow-sm md:rounded-[32px] md:my-8 overflow-hidden">
-              {/* RESULTS COUNTER FOR GRADER EVIDENCE */}
               <div className="px-8 pt-8 pb-4 border-b border-gray-50 dark:border-gray-800 flex justify-between items-end">
                 <div>
                   <p className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-1">{t('shopping')}</p>
@@ -448,7 +447,7 @@ function AppContent() {
                   </h2>
                 </div>
                 <div className="text-right">
-                  <p data-testid="results-count" className="text-xl font-black text-primary leading-none">{filteredProducts.length}</p>
+                  <p className="text-xl font-black text-primary leading-none">{filteredProducts.length}</p>
                   <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{t('productsFound')}</p>
                 </div>
               </div>
@@ -558,9 +557,11 @@ function AppContent() {
                 data-testid="market-rep-portal-button"
                 className="w-full bg-white/10 hover:bg-white/20 p-4 rounded-2xl border border-white/10 transition-all font-black uppercase text-[10px] tracking-widest text-secondary"
                 onClick={() => {
-                  // Direct login for grader convenience
-                  const { login } = (window as any).simbaStore;
-                  login('staff@simba.rw', 'password', 'representative', 'Simba Supermarket Remera');
+                  if ((window as any).simbaHeader?.openLoginModal) {
+                    (window as any).simbaHeader.openLoginModal('representative');
+                  } else {
+                    alert("Please log in using the profile icon in the header.");
+                  }
                 }}
               >
                 {t('marketRepPortal')} →

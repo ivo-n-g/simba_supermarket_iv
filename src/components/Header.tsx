@@ -18,10 +18,25 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDashboard, onAiSearch }) => {
   const [inputValue, setInputValue] = React.useState('');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [loginDefaultRole, setLoginDefaultRole] = useState<'customer' | 'representative'>('customer');
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isAiMode, setIsAiMode] = useState(true);
   const [isAiLoading, setIsAiLoading] = useState(false);
+
+  useEffect(() => {
+    (window as any).simbaHeader = {
+      openLoginModal: (role?: 'customer' | 'representative') => {
+        if (role) {
+          setLoginDefaultRole(role);
+        }
+        setIsLoginModalOpen(true);
+      }
+    };
+    return () => {
+      delete (window as any).simbaHeader;
+    };
+  }, []);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [history, setHistory] = useState<string[]>([]);
   const { user, cartCount, pickupBranch, setPickupBranch, locations, userLocation, calculateDistance, closestBranchName } = useStore();
@@ -295,18 +310,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
 
           {/* Action Group */}
           <div className="flex items-center gap-1.5 md:gap-3 ml-auto shrink-0">
-            {/* GRADER/ADMIN DEMO BUTTON - HIGHLY VISIBLE FOR GRADER ACCESS */}
-            <button 
-              data-testid="grader-admin-portal-button"
-              onClick={() => {
-                const { login } = (window as any).simbaStore;
-                login('staff@simba.rw', 'password', 'representative', 'Simba Supermarket Remera');
-              }}
-              className="flex items-center gap-2 px-2 md:px-4 py-1.5 md:py-2.5 bg-secondary text-primary border-2 border-primary/20 rounded-xl text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] shadow-lg hover:scale-105 active:scale-95 transition-all animate-pulse"
-            >
-              <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-primary rounded-full"></span>
-              Admin Demo
-            </button>
+
 
             <div className="flex items-center bg-white/5 rounded-lg md:rounded-xl p-0.5 border border-white/5">
               <button onClick={toggleTheme} className="hidden sm:block p-1.5 md:p-2.5 rounded-lg hover:bg-white/10 transition-all">
@@ -453,6 +457,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
         isOpen={isLoginModalOpen} 
         onClose={() => setIsLoginModalOpen(false)} 
         onOpenBranchDashboard={onOpenBranchDashboard}
+        defaultRole={loginDefaultRole}
       />
       <CartDrawer 
         isOpen={isCartDrawerOpen} 

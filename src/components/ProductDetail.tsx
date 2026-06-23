@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useStore } from '../context/StoreContext';
 
@@ -12,7 +12,8 @@ interface ProductDetailProps {
 const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onBack }) => {
   const { t, language } = useLanguage();
   const { customProducts, addToCart, getProductQuantity, pickupBranch, isProductInStock } = useStore();
-  const [isAdded, setIsAdded] = React.useState(false);
+  const [isAdded, setIsAdded] = useState(false);
+  const [localQuantity, setLocalQuantity] = useState(1);
   
   // Find product in either custom products or base productsData
   const product = useMemo(() => {
@@ -35,10 +36,14 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onBack }) => {
 
   const handleAddToCart = () => {
     if (!product || !inStock) return;
-    addToCart(product);
+    addToCart(product, localQuantity);
+    setLocalQuantity(1);
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 2000);
   };
+
+  const increment = () => setLocalQuantity(prev => prev + 1);
+  const decrement = () => setLocalQuantity(prev => prev > 1 ? prev - 1 : 1);
 
   // Realistic mock data generator
   const details = useMemo(() => {
@@ -149,29 +154,50 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onBack }) => {
                   {inStock ? `${quantity} ${t('inStock')}` : t('soldOut')}
                 </span>
               </div>
-              <button
-                data-testid="add-to-cart-detail"
-                onClick={handleAddToCart}
-                disabled={!inStock || isAdded}
-                className={`w-full py-6 rounded-[32px] font-black text-xl uppercase tracking-tighter transition-all shadow-xl active:scale-95 ${
-                  isAdded
-                    ? 'bg-green-500 text-white animate-in zoom-in duration-300'
-                    : inStock 
-                      ? 'bg-secondary text-primary hover:scale-[1.02] shadow-secondary/20' 
-                      : 'bg-gray-200 text-gray-400 cursor-not-allowed grayscale'
-                }`}
-              >
-                {isAdded ? (
-                   <div className="flex items-center justify-center gap-3">
-                     <svg className="w-6 h-6 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" />
-                     </svg>
-                     <span>{t('added')}</span>
-                   </div>
-                ) : (
-                  inStock ? t('addToCart') : t('outOfStock')
+              <div className="flex items-center gap-4">
+                {inStock && (
+                  <div className="flex items-center bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden h-14 md:h-16 border border-gray-100 dark:border-gray-700 flex-shrink-0">
+                    <button 
+                      onClick={decrement}
+                      className="px-4 md:px-6 h-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-colors font-black text-2xl"
+                    >
+                      -
+                    </button>
+                    <span className="px-2 md:px-4 text-lg font-black min-w-[3rem] text-center text-primary dark:text-secondary">
+                      {localQuantity}
+                    </span>
+                    <button 
+                      onClick={increment}
+                      className="px-4 md:px-6 h-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-colors font-black text-2xl"
+                    >
+                      +
+                    </button>
+                  </div>
                 )}
-              </button>
+                <button
+                  data-testid="add-to-cart-detail"
+                  onClick={handleAddToCart}
+                  disabled={!inStock || isAdded}
+                  className={`flex-1 h-14 md:h-16 rounded-[32px] font-black text-xl uppercase tracking-tighter transition-all shadow-xl active:scale-95 ${
+                    isAdded
+                      ? 'bg-green-500 text-white animate-in zoom-in duration-300'
+                      : inStock 
+                        ? 'bg-secondary text-primary hover:scale-[1.02] shadow-secondary/20' 
+                        : 'bg-gray-200 text-gray-400 cursor-not-allowed grayscale'
+                  }`}
+                >
+                  {isAdded ? (
+                     <div className="flex items-center justify-center gap-3">
+                       <svg className="w-6 h-6 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" />
+                       </svg>
+                       <span>{t('added')}</span>
+                     </div>
+                  ) : (
+                    inStock ? t('addToCart') : t('outOfStock')
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>

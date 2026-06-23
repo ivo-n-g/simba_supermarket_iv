@@ -106,24 +106,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit,
         <div className="mt-6 space-y-4">
           {/* Quantity and Add to Cart Row */}
           <div className="flex items-center gap-4" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center bg-gray-50 dark:bg-gray-900 rounded-2xl overflow-hidden h-12 md:h-14 border border-gray-100 dark:border-gray-800">
+            <div className="flex items-center bg-gray-50 dark:bg-gray-900 rounded-2xl overflow-hidden h-12 md:h-14 border border-gray-100 dark:border-gray-800 shrink-0">
               <button 
                 data-testid="quantity-decrement"
                 onClick={decrement}
-                className="px-4 md:px-5 h-full hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-900 dark:text-white transition-colors font-black text-xl"
+                className="px-3 md:px-4 h-full hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-900 dark:text-white transition-colors font-black text-xl"
               >
                 -
               </button>
               <span 
                 data-testid="quantity-display"
-                className="px-3 text-sm md:text-base font-black min-w-[2.5rem] text-center text-primary dark:text-secondary"
+                className="px-2 text-sm md:text-base font-black min-w-[2rem] text-center text-primary dark:text-secondary"
               >
                 {localQuantity}
               </span>
               <button 
                 data-testid="quantity-increment"
                 onClick={increment}
-                className="px-4 md:px-5 h-full hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-900 dark:text-white transition-colors font-black text-xl"
+                className="px-3 md:px-4 h-full hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-900 dark:text-white transition-colors font-black text-xl"
               >
                 +
               </button>

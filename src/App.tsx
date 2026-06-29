@@ -189,7 +189,7 @@ function AppContent() {
     title: '',
     content: ''
   });
-  const { language, t, setLanguage } = useLanguage();
+  const { language, t } = useLanguage();
 
   // Persist states to localStorage
   useEffect(() => {

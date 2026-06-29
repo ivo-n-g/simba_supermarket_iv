@@ -15,7 +15,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
   const { 
     cart, removeFromCart, updateQuantity, clearCart, checkout, 
     deliveryMethod, pickupBranch, setPickupBranch, 
-    pickupTime, setPickupTime, user, locations, closestBranchName, userLocation, calculateDistance 
+    pickupTime, setPickupTime, user, locations, closestBranchName, userLocation, calculateDistance, cartCount
   } = useStore();
   
   const { t } = useLanguage();

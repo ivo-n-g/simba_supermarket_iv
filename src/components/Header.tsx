@@ -13,9 +13,10 @@ interface HeaderProps {
   onLogoClick: () => void;
   onOpenBranchDashboard: () => void;
   onAiSearch: (response: GroqResponse) => void;
+  onNavigate: (view: string) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDashboard, onAiSearch }) => {
+const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDashboard, onAiSearch, onNavigate }) => {
   const [inputValue, setInputValue] = React.useState('');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [loginDefaultRole, setLoginDefaultRole] = useState<'customer' | 'representative'>('customer');
@@ -175,6 +176,13 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
               />
             </div>
             <div className="absolute -top-1 -right-1 bg-secondary text-primary text-[8px] font-black px-1.5 py-0.5 rounded-full shadow-lg border border-white/20 animate-pulse">LIVE</div>
+          </div>
+
+          {/* Main Navigation - Hidden on Mobile */}
+          <div className="hidden md:flex items-center gap-6 ml-4">
+            <button onClick={() => onNavigate('shop')} className="text-sm font-black uppercase text-white/80 hover:text-white transition-colors">Shop</button>
+            <button onClick={() => onNavigate('branches')} className="text-sm font-black uppercase text-white/80 hover:text-white transition-colors">Branches</button>
+            <button onClick={() => onNavigate('about')} className="text-sm font-black uppercase text-white/80 hover:text-white transition-colors">About Us</button>
           </div>
 
           {/* Location Picker - Hidden on Mobile */}

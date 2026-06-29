@@ -6,6 +6,8 @@ import CategorySidebar from './components/CategorySidebar';
 import ProductGrid from './components/ProductGrid';
 import ProductDetail from './components/ProductDetail';
 import LandingPage from './components/LandingPage';
+import BranchesPage from './components/BranchesPage';
+import AboutPage from './components/AboutPage';
 import ContactModal from './components/ContactModal';
 import InfoModal from './components/InfoModal';
 import BranchDashboard from './components/BranchDashboard';
@@ -180,7 +182,7 @@ function AppContent() {
   const [maxPrice, setMaxPrice] = useState(500000);
   const [onlyInStock, setOnlyInStock] = useState(false);
   const [aiResponse, setAiResponse] = useState<GroqResponse | null>(null);
-  const [view, setView] = useState<'landing' | 'shop' | 'details' | 'checkout'>(() => {
+  const [view, setView] = useState<'landing' | 'shop' | 'details' | 'checkout' | 'branches' | 'about'>(() => {
     return (localStorage.getItem('simba_current_view') as any) || 'landing';
   });
   const [isContactOpen, setIsContactOpen] = useState(false);
@@ -323,6 +325,7 @@ function AppContent() {
         onLogoClick={resetToLanding} 
         onOpenBranchDashboard={() => setIsBranchDashboardOpen(true)}
         onAiSearch={handleAiSearch}
+        onNavigate={(v) => setView(v as any)}
       />
       
       <main key={view + searchQuery + (aiResponse ? 'ai' : '') + selectedProductId} className="animate-fade-in-up">
@@ -371,6 +374,10 @@ function AppContent() {
                 </div>
              </div>
           </div>
+        ) : view === 'branches' ? (
+          <BranchesPage />
+        ) : view === 'about' ? (
+          <AboutPage />
         ) : (
           <div className="container mx-auto flex flex-col md:flex-row min-h-screen">
             <CategorySidebar 
@@ -459,9 +466,15 @@ function AppContent() {
               <ul className="space-y-3 text-sm font-bold">
                 <li 
                   className="hover:text-secondary cursor-pointer transition-colors"
-                  onClick={() => setInfoModal({ isOpen: true, title: t('aboutUs'), content: t('aboutUsContent') })}
+                  onClick={() => setView('about')}
                 >
                   {t('aboutUs')}
+                </li>
+                <li 
+                  className="hover:text-secondary cursor-pointer transition-colors"
+                  onClick={() => setView('branches')}
+                >
+                  {t('branches') || 'Our Branches'}
                 </li>
                 <li 
                   className="hover:text-secondary cursor-pointer transition-colors"

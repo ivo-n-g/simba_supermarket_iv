@@ -29,14 +29,14 @@ const AboutPage: React.FC = () => {
         </div>
 
         {/* Contact Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-primary text-white p-8 rounded-[32px] shadow-lg flex flex-col items-center text-center group hover:scale-[1.02] transition-transform">
             <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-4">
               <span className="text-3xl">📧</span>
             </div>
             <h3 className="text-xl font-black uppercase mb-2">Email Us</h3>
-            <p className="text-white/80 mb-4">For general inquiries and support</p>
-            <a href="mailto:info@simbasupermarket.rw" className="text-lg font-bold text-secondary hover:underline">
+            <p className="text-white/80 mb-4 text-sm">For general inquiries and support</p>
+            <a href="mailto:info@simbasupermarket.rw" className="text-base font-bold text-secondary hover:underline">
               info@simbasupermarket.rw
             </a>
           </div>
@@ -46,10 +46,23 @@ const AboutPage: React.FC = () => {
               <span className="text-3xl">📞</span>
             </div>
             <h3 className="text-xl font-black uppercase mb-2">Call Us</h3>
-            <p className="text-white/80 mb-4">Available 08:00 AM - 10:00 PM</p>
-            <a href="tel:+250788123456" className="text-lg font-bold text-secondary hover:underline">
-              +250 788 123 456
+            <p className="text-white/80 mb-4 text-sm">Available 08:00 AM - 10:00 PM</p>
+            <a href="tel:+250788307200" className="text-base font-bold text-secondary hover:underline">
+              +250 788 307 200
             </a>
+          </div>
+
+          <div className="bg-primary/5 dark:bg-gray-800 text-gray-900 dark:text-white p-8 rounded-[32px] shadow-lg border border-gray-100 dark:border-gray-700 flex flex-col items-center text-center group hover:scale-[1.02] transition-transform">
+            <div className="w-16 h-16 bg-primary/10 dark:bg-white/10 rounded-full flex items-center justify-center mb-4 text-primary dark:text-white">
+              <span className="text-3xl">📍</span>
+            </div>
+            <h3 className="text-xl font-black uppercase mb-2">Head Office</h3>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">Nyarugenge District, Kigali</p>
+            <address className="not-italic text-sm font-bold text-gray-700 dark:text-gray-300">
+              U.T.C Building, 5th Floor<br />
+              KN 34 Street, Kiyovu<br />
+              Kigali, Rwanda
+            </address>
           </div>
         </div>
       </div>

@@ -184,7 +184,6 @@ function AppContent() {
     return (localStorage.getItem('simba_current_view') as any) || 'landing';
   });
   const [isContactOpen, setIsContactOpen] = useState(false);
-  const [showGraderNote, setShowGraderNote] = useState(true);
   const [infoModal, setInfoModal] = useState<{ isOpen: boolean; title: string; content: string }>({
     isOpen: false,
     title: '',
@@ -326,56 +325,6 @@ function AppContent() {
         onAiSearch={handleAiSearch}
       />
       
-      {/* GRADER QUICK NAVIGATION BAR - Added to address accessibility feedback */}
-      <div className="bg-secondary/10 border-b border-secondary/20 py-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
-        <div className="container mx-auto px-6 flex items-center justify-center gap-6 md:gap-12">
-           <div className="flex items-center gap-2 shrink-0">
-             <span className="text-[10px] font-black text-primary uppercase tracking-widest">{t('language') || 'Language'}:</span>
-             <div className="flex gap-2">
-                {['en', 'rw', 'fr'].map(l => (
-                  <button 
-                    key={l}
-                    onClick={() => setLanguage(l as any)}
-                    className={`px-2 py-1 rounded text-[10px] font-black uppercase transition-all ${language === l ? 'bg-primary text-white' : 'bg-white/50 text-gray-400 hover:bg-white'}`}
-                  >
-                    {l === 'en' ? '🇺🇸' : l === 'rw' ? '🇷🇼' : '🇫🇷'} {l.toUpperCase()}
-                  </button>
-                ))}
-             </div>
-           </div>
-           <div className="h-4 w-px bg-gray-200"></div>
-           <div className="flex items-center gap-4 shrink-0">
-              <button 
-                onClick={() => setView('checkout')}
-                className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline"
-              >
-                🛒 {t('checkout')}
-              </button>
-              <button 
-                onClick={() => setIsBranchDashboardOpen(true)}
-                className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline"
-              >
-                📊 Admin Dashboard
-              </button>
-           </div>
-        </div>
-      </div>
-
-      {showGraderNote && (
-        <div className="bg-primary text-white px-6 py-3 flex items-center justify-between animate-in slide-in-from-top duration-500">
-          <div className="flex items-center gap-4">
-            <span className="text-xl">💡</span>
-            <p className="text-xs font-bold leading-tight">
-              <span className="text-secondary font-black uppercase mr-2">{t('graderNote') || 'Grader Note'}:</span>
-              {t('graderInstructions') || 'Full localization (Kinyarwanda/French), Admin Portal, and Checkout are all functional. Use "Admin Demo" in the header to access the Rep Dashboard.'}
-            </p>
-          </div>
-          <button onClick={() => setShowGraderNote(false)} className="text-white/50 hover:text-white transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
-        </div>
-      )}
-
       <main key={view + searchQuery + (aiResponse ? 'ai' : '') + selectedProductId} className="animate-fade-in-up">
         {view === 'landing' ? (
           <>

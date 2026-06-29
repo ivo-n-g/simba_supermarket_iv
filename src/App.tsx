@@ -61,7 +61,7 @@ function AddProductModal() {
           <div className="flex justify-between items-center mb-8 md:mb-12">
             <h2 className="text-xl lg:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight">{t('addNewProduct')}</h2>
             <button 
-              data-testid="close-modal-button"
+             
               onClick={() => setIsAddProductModalOpen(false)} 
               className="text-gray-400 hover:text-red-500 transition-colors"
             >
@@ -75,7 +75,7 @@ function AddProductModal() {
               <input 
                 type="text" 
                 required 
-                data-testid="new-product-name-input"
+               
                 value={newProductName} 
                 onChange={(e) => setNewProductName(e.target.value)} 
                 className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border-none outline-none font-black text-base lg:text-lg dark:text-white focus:ring-4 focus:ring-primary/5 transition-all" 
@@ -86,7 +86,7 @@ function AddProductModal() {
               <div>
                 <label className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 block ml-1">{t('category')}</label>
                 <select 
-                  data-testid="new-product-category-select"
+                 
                   value={newProductCategory} 
                   onChange={(e) => setNewProductCategory(e.target.value)} 
                   className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-2xl font-black text-[10px] lg:text-xs dark:text-white border-none outline-none focus:ring-4 focus:ring-primary/5"
@@ -99,7 +99,7 @@ function AddProductModal() {
                 <input 
                   type="text" 
                   required 
-                  data-testid="new-product-unit-input"
+                 
                   value={newProductUnit} 
                   onChange={(e) => setNewProductUnit(e.target.value)} 
                   className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-2xl font-black text-[10px] lg:text-xs dark:text-white border-none outline-none focus:ring-4 focus:ring-primary/5" 
@@ -113,7 +113,7 @@ function AddProductModal() {
                 <input 
                   type="number" 
                   required 
-                  data-testid="new-product-id-input"
+                 
                   value={newProductID} 
                   onChange={(e) => setNewProductID(e.target.value)} 
                   className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-2xl font-black text-[10px] lg:text-xs dark:text-white border-none outline-none focus:ring-4 focus:ring-primary/5" 
@@ -125,7 +125,7 @@ function AddProductModal() {
                 <input 
                   type="number" 
                   required 
-                  data-testid="new-product-price-input"
+                 
                   value={newProductPrice} 
                   onChange={(e) => setNewProductPrice(e.target.value)} 
                   className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-2xl font-black text-[10px] lg:text-xs dark:text-white border-none outline-none focus:ring-4 focus:ring-primary/5" 
@@ -140,14 +140,14 @@ function AddProductModal() {
                     </div>
                     <label className="cursor-pointer">
                         <span className="text-[10px] font-black uppercase text-primary tracking-widest hover:underline">{t('uploadIdentity')}</span>
-                        <input data-testid="new-product-image-upload" type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                        <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
                     </label>
                 </div>
             </div>
             <button 
               type="button"
               onClick={handleAddProduct}
-              data-testid="add-product-submit-button"
+             
               className="w-full bg-primary text-white py-5 lg:py-6 rounded-2xl font-black uppercase text-[10px] lg:text-xs tracking-[0.2em] shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
             >
               {t('syncCatalog')}
@@ -411,7 +411,7 @@ function AppContent() {
                         onClick={() => {
                           (window as any).simbaStore.addToCart(allProducts[0], 1);
                           // Open the cart drawer
-                          const cartBtn = document.querySelector('[data-testid="cart-button"]') as HTMLButtonElement;
+                          const cartBtn = document.querySelector('#cart-button') as HTMLButtonElement;
                           cartBtn?.click();
                         }}
                         className="px-12 py-5 bg-primary text-white rounded-[32px] font-black uppercase tracking-widest shadow-2xl hover:scale-105 transition-all"
@@ -554,7 +554,7 @@ function AppContent() {
             <div>
               <h4 className="font-black mb-6 uppercase text-xs tracking-[0.3em] opacity-40">{t('internal')}</h4>
               <button 
-                data-testid="market-rep-portal-button"
+               
                 className="w-full bg-white/10 hover:bg-white/20 p-4 rounded-2xl border border-white/10 transition-all font-black uppercase text-[10px] tracking-widest text-secondary"
                 onClick={() => {
                   if ((window as any).simbaHeader?.openLoginModal) {

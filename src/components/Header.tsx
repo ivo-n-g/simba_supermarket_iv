@@ -258,7 +258,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
               <input 
                 id="search" 
                 name="search"
-                data-testid="search-input"
+               
                 type="search"
                 placeholder={isAiMode ? "Ask AI: 'I need fresh milk' or 'Breakfast ideas'..." : t('searchPlaceholder')}
                 value={inputValue}
@@ -283,7 +283,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
               <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                 <button
                   type="button"
-                  data-testid="ai-mode-toggle"
+                 
                   onClick={() => setIsAiMode(!isAiMode)}
                   className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${isAiMode ? 'bg-secondary text-primary shadow-lg' : 'bg-white/10 text-white hover:bg-white/20'}`}
                 >
@@ -324,7 +324,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
               <div className="relative" ref={langRef}>
                 <button
                   onClick={() => setIsLangOpen(!isLangOpen)}
-                  data-testid="language-switcher-button"
+                 
                   className={`flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-2 rounded-lg text-[9px] md:text-[10px] font-black uppercase transition-all ${isLangOpen ? 'bg-white text-primary shadow-xl' : 'hover:bg-white/10 text-white'}`}
                 >
                   <span className="text-base">{language === 'en' ? '🇺🇸' : language === 'rw' ? '🇷🇼' : '🇫🇷'}</span>
@@ -340,7 +340,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
                     {(['en', 'rw', 'fr'] as const).map((lang) => (
                       <button
                         key={lang}
-                        data-testid={`lang-switch-${lang}`}
+                       
                         onClick={() => {
                           setLanguage(lang);
                           setIsLangOpen(false);
@@ -376,7 +376,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
             </button>
 
             <button 
-              data-testid="cart-button"
+             
               onClick={() => setIsCartDrawerOpen(true)} 
               className="relative flex items-center justify-center bg-secondary text-primary w-10 h-10 md:w-auto md:h-12 md:px-4 rounded-xl md:rounded-2xl font-black hover:bg-yellow-400 transition-all active:scale-95 border-2 border-secondary/30 shadow-md shrink-0"
             >
@@ -398,7 +398,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onLogoClick, onOpenBranchDash
               <input 
                 id="search-mobile" 
                 name="search"
-                data-testid="search-input-mobile"
+               
                 type="search"
                 placeholder={isAiMode ? "Ask AI Assistant..." : t('searchPlaceholder')}
                 value={inputValue}

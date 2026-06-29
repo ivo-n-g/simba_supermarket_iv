@@ -13,22 +13,22 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit, category, onClick }) => {
-  const { addToCart, toggleWishlist, isInWishlist, pickupBranch, isProductInStock, getProductQuantity } = useStore();
+  const { cart, addToCart, updateQuantity, toggleWishlist, isInWishlist, pickupBranch, isProductInStock, getProductQuantity } = useStore();
   const { t } = useLanguage();
-  const [localQuantity, setLocalQuantity] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
 
   const isWishlisted = isInWishlist(id);
   const currentBranch = pickupBranch || 'Simba Supermarket Remera';
   const inStock = isProductInStock(currentBranch, id);
   const stockAmount = getProductQuantity(currentBranch, id);
+  const cartItem = cart.find(item => item.id === id);
+  const currentQuantity = cartItem ? cartItem.quantity : 0;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (!inStock) return;
-    addToCart({ id, name, price, image, category, unit }, localQuantity);
-    setLocalQuantity(1);
+    addToCart({ id, name, price, image, category, unit }, 1);
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 2000);
   };
@@ -42,15 +42,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit,
   const increment = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setLocalQuantity(prev => prev + 1);
+    updateQuantity(id, currentQuantity + 1);
   };
 
   const decrement = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (localQuantity > 1) {
-      setLocalQuantity(prev => prev - 1);
-    }
+    updateQuantity(id, currentQuantity - 1);
   };
 
   return (
@@ -104,82 +102,55 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, unit,
 
         {/* Action Controls */}
         <div className="mt-6 space-y-4">
-          {/* Quantity and Add to Cart Row */}
-            <div className="flex flex-wrap items-center justify-between gap-2 md:gap-4 w-full shrink-0" onClick={e => e.stopPropagation()}>
-              <div className="flex items-center bg-gray-50 dark:bg-gray-900 rounded-xl md:rounded-2xl h-11 md:h-14 border border-gray-100 dark:border-gray-800 shrink-0 min-w-max">
+          <div className="flex gap-4" onClick={e => e.stopPropagation()}>
+            {currentQuantity > 0 ? (
+              <div className="flex-[2] flex items-center justify-between bg-primary/5 dark:bg-gray-900 rounded-2xl h-12 border border-primary/20 dark:border-gray-800">
                 <button 
-                  data-testid="quantity-decrement"
                   onClick={decrement}
-                  className="w-8 md:w-10 h-full flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-900 dark:text-white transition-colors font-black text-lg md:text-xl rounded-l-xl md:rounded-l-2xl shrink-0"
+                  className="w-12 h-full flex items-center justify-center hover:bg-primary/10 dark:hover:bg-gray-800 text-primary dark:text-secondary transition-colors font-black text-xl rounded-l-2xl"
                 >
                   -
                 </button>
-                <span 
-                  data-testid="quantity-display"
-                  className="w-6 md:w-8 flex items-center justify-center text-sm md:text-base font-black text-primary dark:text-secondary shrink-0"
-                >
-                  {localQuantity}
+                <span className="flex-1 flex items-center justify-center text-base font-black text-primary dark:text-secondary">
+                  {currentQuantity}
                 </span>
                 <button 
-                  data-testid="quantity-increment"
                   onClick={increment}
-                  className="w-8 md:w-10 h-full flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-900 dark:text-white transition-colors font-black text-lg md:text-xl rounded-r-xl md:rounded-r-2xl shrink-0"
+                  className="w-12 h-full flex items-center justify-center hover:bg-primary/10 dark:hover:bg-gray-800 text-primary dark:text-secondary transition-colors font-black text-xl rounded-r-2xl"
                 >
                   +
                 </button>
               </div>
+            ) : (
+              <button 
+                onClick={handleAddToCart}
+                disabled={!inStock || isAdded}
+                className={`flex-[2] h-12 rounded-2xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-3 px-5 ${
+                  isAdded
+                    ? 'bg-green-500 text-white animate-in zoom-in duration-300'
+                    : inStock 
+                      ? 'bg-primary text-white hover:bg-opacity-90 shadow-primary/20' 
+                      : 'bg-gray-200 text-gray-400 cursor-not-allowed grayscale shadow-none'
+                }`}
+              >
+                {isAdded ? (
+                  <>
+                    <svg className="w-5 h-5 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-xs font-black uppercase tracking-widest">{t('added')}</span>
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <span className="text-xs font-black uppercase tracking-widest">{t('addToCart')}</span>
+                  </>
+                )}
+              </button>
+            )}
             
-            <button 
-              data-testid="add-to-cart-button"
-              onClick={handleAddToCart}
-              disabled={!inStock || isAdded}
-              className={`flex-1 h-12 md:h-14 rounded-2xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-3 px-5 ${
-                isAdded
-                  ? 'bg-green-500 text-white animate-in zoom-in duration-300'
-                  : inStock 
-                    ? 'bg-primary text-white hover:bg-opacity-90 shadow-primary/20' 
-                    : 'bg-gray-200 text-gray-400 cursor-not-allowed grayscale shadow-none'
-              }`}
-            >
-              {isAdded ? (
-                <>
-                  <svg className="w-6 h-6 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span className="text-xs font-black uppercase tracking-widest">{t('added')}</span>
-                </>
-              ) : (
-                <>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                  <span className="text-xs font-black uppercase tracking-widest">{t('addToCart')}</span>
-                </>
-              )}
-            </button>
-          </div>
-
-          {/* Secondary Buy Now and Wishlist Row */}
-          <div className="flex gap-4" onClick={e => e.stopPropagation()}>
-            <button 
-              data-testid="buy-now-button"
-              onClick={(e) => {
-                handleAddToCart(e);
-                // We'll use the window event or state to open cart instantly
-                setTimeout(() => {
-                  const cartBtn = document.querySelector('[data-testid="cart-button"]') as HTMLButtonElement;
-                  cartBtn?.click();
-                }, 100);
-              }}
-              disabled={!inStock}
-              className={`flex-[2] h-12 rounded-2xl text-xs font-black uppercase tracking-widest flex items-center justify-center gap-3 transition-all active:scale-95 ${
-                inStock 
-                  ? 'bg-secondary text-primary hover:bg-yellow-400' 
-                  : 'bg-gray-100 text-gray-300 cursor-not-allowed'
-              }`}
-            >
-              🚀 {t('buyNow')}
-            </button>
             <button 
               onClick={handleToggleWishlist}
               className={`flex-1 h-12 rounded-2xl text-xs font-black uppercase tracking-widest flex items-center justify-center border-2 transition-all active:scale-95 ${

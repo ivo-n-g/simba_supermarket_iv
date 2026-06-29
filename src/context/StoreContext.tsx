@@ -77,6 +77,7 @@ interface StoreContextType {
   addToCart: (product: { id: number; name: string; price: number; image: string; category: string; unit: string }, quantity?: number) => void;
   removeFromCart: (productId: number) => void;
   updateQuantity: (productId: number, quantity: number) => void;
+  clearCart: () => void;
   toggleWishlist: (product: Product) => void;
   isInWishlist: (productId: number) => boolean;
   checkout: () => Promise<void>;
@@ -399,6 +400,10 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setCart((prevCart) => prevCart.map((item) => item.id === productId ? { ...item, quantity } : item));
   };
 
+  const clearCart = () => {
+    setCart([]);
+  };
+
   const toggleWishlist = (product: Product) => {
     setWishlist(prev => {
       const isExist = prev.find(p => p.id === product.id);
@@ -455,7 +460,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   return (
     <StoreContext.Provider value={{ 
       user, cart, wishlist, login, signup, forgotPassword, handleGoogleSuccess, logout, 
-      addToCart, removeFromCart, updateQuantity, toggleWishlist, isInWishlist, checkout, 
+      addToCart, removeFromCart, updateQuantity, clearCart, toggleWishlist, isInWishlist, checkout, 
       deliveryMethod, setDeliveryMethod, pickupBranch, setPickupBranch, 
       pickupTime, setPickupTime, cartCount, orders, updateOrderStatus,
       branchStock, updateStockAmount, isProductInStock, getProductQuantity,

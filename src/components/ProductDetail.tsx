@@ -175,7 +175,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onBack }) => {
                   </div>
                 )}
                 <button
-                  data-testid="add-to-cart-detail"
+                 
                   onClick={handleAddToCart}
                   disabled={!inStock || isAdded}
                   className={`flex-1 h-14 md:h-16 rounded-[32px] font-black text-xl uppercase tracking-tighter transition-all shadow-xl active:scale-95 ${

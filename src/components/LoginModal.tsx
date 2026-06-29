@@ -170,7 +170,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDa
                 <input
                   type="email"
                   required
-                  data-testid="login-email-input"
+                 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 dark:text-white"
@@ -180,7 +180,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDa
               <button
                 type="submit"
                 disabled={isLoading}
-                data-testid="login-submit-button"
+               
                 className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-opacity-90 transition-all shadow-lg flex justify-center items-center gap-2"
               >
                 {isLoading && (
@@ -207,7 +207,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDa
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('assignedBranch')}</label>
                     <select
                       value={selectedBranch}
-                      data-testid="login-branch-select"
+                     
                       onChange={(e) => setSelectedBranch(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 dark:text-white text-xs font-bold"
                     >
@@ -219,7 +219,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDa
                     <div className="flex p-1 bg-gray-100 dark:bg-gray-900 rounded-lg h-10">
                       <button
                         type="button"
-                        data-testid="login-role-manager"
+                       
                         onClick={() => setRepRole('manager')}
                         className={`flex-1 text-[10px] font-black uppercase rounded-md transition-all ${repRole === 'manager' ? 'bg-white dark:bg-gray-700 text-primary dark:text-secondary shadow-sm' : 'text-gray-400'}`}
                       >
@@ -227,7 +227,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDa
                       </button>
                       <button
                         type="button"
-                        data-testid="login-role-staff"
+                       
                         onClick={() => setRepRole('staff')}
                         className={`flex-1 text-[10px] font-black uppercase rounded-md transition-all ${repRole === 'staff' ? 'bg-white dark:bg-gray-700 text-primary dark:text-secondary shadow-sm' : 'text-gray-400'}`}
                       >
@@ -243,7 +243,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDa
                   <input
                     type="text"
                     required
-                    data-testid="login-fullname-input"
+                   
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 dark:text-white"
@@ -256,7 +256,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDa
                 <input
                   type="email"
                   required
-                  data-testid="login-email-input"
+                 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 dark:text-white"
@@ -279,7 +279,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDa
                 <input
                   type="password"
                   required
-                  data-testid="login-password-input"
+                 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 dark:text-white"
@@ -289,7 +289,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onOpenBranchDa
               <button
                 type="submit"
                 disabled={isLoading}
-                data-testid="login-submit-button"
+               
                 className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-opacity-90 transition-all shadow-lg active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-2"
               >
                 {isLoading && (

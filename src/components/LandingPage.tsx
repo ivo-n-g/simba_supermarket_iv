@@ -205,7 +205,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
               <div className="flex items-center gap-3">
                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('onlyInStock')}</span>
                 <button 
-                  data-testid="in-stock-toggle"
+                 
                   onClick={() => setOnlyInStock(!onlyInStock)}
                   className={`w-10 h-5 rounded-full relative transition-all duration-300 ${onlyInStock ? 'bg-primary' : 'bg-gray-200 dark:bg-gray-700'}`}
                 >
@@ -238,7 +238,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           {categories.map((category) => (
             <div 
               key={category}
-              data-testid={`category-card-${category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
+             
               onClick={() => onSelectCategory(category)}
               className="group cursor-pointer bg-white dark:bg-gray-800 p-6 md:p-10 rounded-[32px] md:rounded-[48px] shadow-sm hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 border border-gray-100 dark:border-gray-700 flex flex-col items-center text-center relative overflow-hidden"
             >

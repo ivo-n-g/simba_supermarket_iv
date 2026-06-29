@@ -111,7 +111,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
           ].map(item => (
             <button
               key={item.id}
-              data-testid={item.testid}
+             
               onClick={() => { setActiveTab(item.id as any); setIsMobileMenuOpen(false); }}
               className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-sm transition-all ${activeTab === item.id ? 'bg-primary/5 text-primary' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
             >
@@ -135,7 +135,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
         </div>
         
         <button 
-          data-testid="logout-button"
+         
           onClick={() => { if(window.confirm(t('logoutConfirm'))) logout(); }}
           className="w-full flex items-center justify-between gap-3 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all group"
         >
@@ -147,7 +147,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
   );
 
   return (
-    <div className="fixed inset-0 z-110 flex bg-gray-50 dark:bg-gray-950 overflow-hidden font-sans selection:bg-primary selection:text-white" data-testid="branch-dashboard-view">
+    <div className="fixed inset-0 z-110 flex bg-gray-50 dark:bg-gray-950 overflow-hidden font-sans selection:bg-primary selection:text-white">
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-120 lg:hidden">
@@ -184,7 +184,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
             <div className="relative group hidden xl:block">
               <input 
                 type="text" 
-                data-testid="dashboard-search-input"
+               
                 placeholder="Find anything..." 
                 className="pl-12 pr-6 py-3 bg-gray-50 dark:bg-gray-800 rounded-2xl text-xs font-black w-80 outline-none focus:ring-4 focus:ring-primary/5 border border-transparent focus:border-primary/20 transition-all" 
               />
@@ -209,7 +209,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
 
               {!hideClose && (
                 <button 
-                  data-testid="close-dashboard-button"
+                 
                   onClick={onClose}
                   className="p-2 bg-gray-50 dark:bg-gray-800 text-gray-400 hover:text-red-500 rounded-xl transition-all"
                 >
@@ -270,7 +270,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                 <div key={i} className={`${stat.bg} p-6 lg:p-8 rounded-[32px] lg:rounded-[40px] border border-gray-100 dark:border-gray-800 flex items-center justify-between group hover:scale-[1.02] transition-all`}>
                   <div>
                     <p className="text-[9px] lg:text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">{stat.label}</p>
-                    <p className={`text-4xl lg:text-5xl font-black ${stat.color}`} data-testid={stat.testid}>{stat.value}</p>
+                    <p className={`text-4xl lg:text-5xl font-black ${stat.color}`}>{stat.value}</p>
                   </div>
                   <div className="w-12 h-12 lg:w-16 lg:h-16 rounded-2xl lg:rounded-3xl bg-white dark:bg-gray-900 shadow-xl flex items-center justify-center text-2xl lg:text-3xl group-hover:rotate-12 transition-transform">
                     {stat.icon}
@@ -291,7 +291,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
 
                     <div className="bg-white dark:bg-gray-900 rounded-[32px] lg:rounded-[48px] shadow-[0_24px_48px_rgba(0,0,0,0.02)] border border-gray-100 dark:border-gray-800 overflow-hidden">
                       <div className="overflow-x-auto scrollbar-hide">
-                        <table className="w-full text-left min-w-[700px] lg:min-w-full" data-testid="orders-table">
+                        <table className="w-full text-left min-w-[700px] lg:min-w-full">
                           <thead>
                             <tr className="text-[9px] lg:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] bg-gray-50/50 dark:bg-gray-800/50">
                               <th className="px-6 lg:px-10 py-5 lg:py-6">{t('reference')}</th>
@@ -311,7 +311,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                                 </td>
                               </tr>
                             ) : filteredOrders.map(order => (
-                              <tr key={order.id} className="group hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors" data-testid={`order-row-${order.id}`}>
+                              <tr key={order.id} className="group hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
                                 <td className="px-6 lg:px-10 py-6 lg:py-8">
                                   <span className="font-mono text-xs font-black text-gray-300 group-hover:text-primary transition-colors">#{order.id.toUpperCase()}</span>
                                 </td>
@@ -337,7 +337,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                                   <div className="flex justify-end gap-2">
                                     {order.status === 'pending' && (
                                       <button 
-                                        data-testid="assign-order-button"
+                                       
                                         onClick={() => updateOrderStatus(order.id, 'assigned', user?.name || 'Staff')} 
                                         className="px-4 py-2 bg-primary text-white rounded-xl text-[8px] lg:text-[9px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
                                       >
@@ -347,7 +347,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                                     )}
                                     {order.status === 'assigned' && (order.assignedStaff === user?.name || role === 'manager') && (
                                       <button 
-                                        data-testid="mark-ready-button"
+                                       
                                         onClick={() => updateOrderStatus(order.id, 'ready')} 
                                         className="px-4 lg:px-6 py-2 bg-green-500 text-white rounded-xl text-[8px] lg:text-[9px] font-black uppercase tracking-widest hover:bg-green-600 transition-colors shadow-lg shadow-green-500/20"
                                       >
@@ -356,7 +356,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                                     )}
                                     {order.status === 'ready' && (order.assignedStaff === user?.name || role === 'manager') && (
                                       <button 
-                                        data-testid="complete-order-button"
+                                       
                                         onClick={() => updateOrderStatus(order.id, 'completed')} 
                                         className="px-4 lg:px-6 py-2 bg-gray-900 text-white rounded-xl text-[8px] lg:text-[9px] font-black uppercase tracking-widest hover:bg-black transition-colors"
                                       >
@@ -379,7 +379,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                       <div className="relative group">
                         <input 
                           type="text" 
-                          data-testid="inventory-search-input"
+                         
                           value={inventorySearch} 
                           onChange={(e) => setInventorySearch(e.target.value)} 
                           placeholder={t('searchItems')} 
@@ -389,11 +389,11 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6" data-testid="inventory-grid">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {filteredInventory.map(product => {
                         const qty = getProductQuantity(selectedBranch, product.id);
                         return (
-                          <div key={product.id} className="p-6 bg-white dark:bg-gray-900 rounded-[32px] border border-gray-100 dark:border-gray-800 flex items-center justify-between group hover:shadow-2xl hover:shadow-gray-900/5 transition-all" data-testid={`inventory-item-${product.id}`}>
+                          <div key={product.id} className="p-6 bg-white dark:bg-gray-900 rounded-[32px] border border-gray-100 dark:border-gray-800 flex items-center justify-between group hover:shadow-2xl hover:shadow-gray-900/5 transition-all">
                             <div className="flex items-center gap-6">
                               <div className="w-14 h-14 lg:w-16 lg:h-16 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center p-3 shadow-inner group-hover:scale-110 transition-transform"><img src={product.image} className="w-full h-full object-contain" /></div>
                               <div>
@@ -408,15 +408,15 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                             </div>
                             <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 p-1 lg:p-1.5 rounded-xl border border-gray-100 dark:border-gray-700">
                               <button 
-                                data-testid="stock-decrement-button"
+                               
                                 onClick={() => updateStockAmount(selectedBranch, product.id, qty - 1)} 
                                 className="w-6 h-6 lg:w-8 lg:h-8 flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 rounded-lg transition-all font-black text-gray-400 hover:text-red-500"
                               >
                                 -
                               </button>
-                              <span className="px-2 font-black text-[10px] lg:text-xs min-w-[1rem] lg:min-w-[1.5rem] text-center dark:text-white" data-testid="stock-count-display">{qty}</span>
+                              <span className="px-2 font-black text-[10px] lg:text-xs min-w-[1rem] lg:min-w-[1.5rem] text-center dark:text-white">{qty}</span>
                               <button 
-                                data-testid="stock-increment-button"
+                               
                                 onClick={() => updateStockAmount(selectedBranch, product.id, qty + 1)} 
                                 className="w-6 h-6 lg:w-8 lg:h-8 flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 rounded-lg transition-all font-black text-gray-400 hover:text-primary"
                               >
@@ -437,7 +437,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                   <div className="relative z-10">
                     <h3 className="text-lg lg:text-xl font-black uppercase tracking-tighter text-gray-900 dark:text-white mb-8">{t('performance')}</h3>
                     <div className="flex items-baseline gap-2 mb-2">
-                       <span className="text-3xl lg:text-4xl font-black text-primary" data-testid="performance-score">{stats.fulfillmentRate}%</span>
+                       <span className="text-3xl lg:text-4xl font-black text-primary">{stats.fulfillmentRate}%</span>
                        <span className={`text-[10px] font-black uppercase ${stats.fulfillmentRate > 80 ? 'text-green-500' : 'text-primary'}`}>
                          {stats.fulfillmentRate > 80 ? '↑ High' : '→ Stable'}
                        </span>
@@ -453,7 +453,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                          <div key={metric.label}>
                             <div className="flex justify-between text-[9px] font-black uppercase mb-2">
                                <span className="text-gray-400">{metric.label}</span>
-                               <span className="dark:text-white" data-testid={`kpi-value-${metric.val}`}>{metric.val}%</span>
+                               <span className="dark:text-white">{metric.val}%</span>
                             </div>
                             <div className="h-1.5 w-full bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
                                <div className={`${metric.color} h-full rounded-full transition-all duration-1000`} style={{ width: `${metric.val}%` }}></div>
@@ -473,7 +473,7 @@ const BranchDashboard: React.FC<BranchDashboardProps> = ({ isOpen, onClose, hide
                    <p className="text-white/70 text-[9px] lg:text-[10px] font-bold uppercase tracking-widest mb-10 leading-relaxed">{t('expandCatalog')}</p>
                    <button 
                      type="button"
-                     data-testid="add-product-open-button"
+                    
                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsAddProductModalOpen(true); }}
                      className="w-full py-4 lg:py-5 bg-white text-primary rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl hover:scale-105 transition-all"
                    >

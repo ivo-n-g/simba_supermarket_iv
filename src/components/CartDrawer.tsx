@@ -13,7 +13,7 @@ type CheckoutStep = 'cart' | 'pickup-selection' | 'pickup-time' | 'identity' | '
 
 const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDashboard }) => {
   const { 
-    cart, removeFromCart, updateQuantity, checkout, 
+    cart, removeFromCart, updateQuantity, clearCart, checkout, 
     deliveryMethod, pickupBranch, setPickupBranch, 
     pickupTime, setPickupTime, user, locations, closestBranchName, userLocation, calculateDistance 
   } = useStore();
@@ -23,6 +23,9 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'momo' | 'card' | 'cash'>('momo');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState('+250');
+  const [phoneError, setPhoneError] = useState('');
+  const [deliveryNotes, setDeliveryNotes] = useState('');
 
   const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
   const deliveryFee = deliveryMethod === 'delivery' ? 2000 : 0;
@@ -46,6 +49,12 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
       }
       proceedToIdentity();
     } else if (step === 'identity') {
+      const phoneRegex = /^\+250(78|79|72|73)\d{7}$/;
+      if (!phoneRegex.test(phoneNumber.replace(/\s+/g, ''))) {
+        setPhoneError('Please enter a valid Rwandan mobile number (e.g., +250781234567)');
+        return;
+      }
+      setPhoneError('');
       setStep('payment');
     }
   };
@@ -133,11 +142,15 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 11-8 0v4M5 9h14l1 12H4L5 9z" />
                         </svg>
                       </div>
-                      <p className="text-xl font-black uppercase tracking-tight">{t('cartEmpty')}</p>
-                      <button onClick={onClose} className="mt-4 text-primary dark:text-secondary font-black hover:underline uppercase text-sm tracking-widest">{t('continueShopping')}</button>
+                      <p className="text-xl font-black uppercase tracking-tight">Your cart is empty</p>
+                      <button onClick={onClose} className="mt-6 px-8 py-4 bg-primary text-white rounded-full font-black hover:scale-105 transition-transform uppercase tracking-widest">Go to Shop</button>
                     </div>
                   ) : (
                     <div className="flow-root">
+                      <div className="flex justify-between items-center mb-4 px-1">
+                        <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">{cartCount} items</span>
+                        <button onClick={clearCart} className="text-[10px] font-black text-red-500 hover:text-red-600 uppercase tracking-widest border border-red-100 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors">Clear Cart</button>
+                      </div>
                       <ul className="-my-6 divide-y divide-gray-100 dark:divide-gray-700">
                         {cart.map((product) => (
                           <li key={product.id} className="py-6 flex group">
@@ -151,11 +164,11 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                               </div>
                               <div className="flex-1 flex items-end justify-between text-sm mt-3">
                                 <div className="flex items-center bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-100 dark:border-gray-600 p-0.5">
-                                  <button data-testid={`cart-decrement-${product.id}`} onClick={() => updateQuantity(product.id, product.quantity - 1)} className="w-7 h-7 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors font-black">-</button>
-                                  <span data-testid={`cart-quantity-${product.id}`} className="px-3 font-black text-xs dark:text-gray-100">{product.quantity}</span>
-                                  <button data-testid={`cart-increment-${product.id}`} onClick={() => updateQuantity(product.id, product.quantity + 1)} className="w-7 h-7 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors font-black">+</button>
+                                  <button onClick={() => updateQuantity(product.id, product.quantity - 1)} className="w-7 h-7 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors font-black">-</button>
+                                  <span className="px-3 font-black text-xs dark:text-gray-100">{product.quantity}</span>
+                                  <button onClick={() => updateQuantity(product.id, product.quantity + 1)} className="w-7 h-7 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors font-black">+</button>
                                 </div>
-                                <button data-testid={`cart-remove-${product.id}`} onClick={() => removeFromCart(product.id)} className="font-black text-red-500 hover:text-red-600 text-[10px] uppercase tracking-widest">{t('remove')}</button>
+                                <button onClick={() => removeFromCart(product.id)} className="font-black text-red-500 hover:text-red-600 text-[10px] uppercase tracking-widest">{t('remove')}</button>
                               </div>
                             </div>
                           </li>
@@ -172,7 +185,6 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                         return (
                           <button
                             key={branch.name}
-                            data-testid="branch-option"
                             onClick={() => { setPickupBranch(branch.name); }}
                             className={`w-full p-5 rounded-[24px] border-2 text-left transition-all flex flex-col gap-1 relative ${
                               pickupBranch === branch.name
@@ -212,8 +224,8 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                       ].map((time) => (
                         <button
                           key={time}
-                          data-testid="time-option"
-                          onClick={() => { setPickupTime(time); }}                          className={`p-4 rounded-2xl border-2 text-center transition-all ${
+                          onClick={() => { setPickupTime(time); }}
+                          className={`p-4 rounded-2xl border-2 text-center transition-all ${
                             pickupTime === time
                               ? 'border-primary dark:border-secondary bg-primary/5 dark:bg-secondary/5'
                               : 'border-gray-100 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50'
@@ -270,8 +282,15 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                         </div>
                         <div className="flex flex-col gap-2">
                           <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">{t('phoneNumber')}</label>
-                          <input type="text" placeholder="+250..." className="w-full p-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-primary/10 dark:text-white transition-all" />
+                          <input type="text" value={phoneNumber} onChange={(e) => { setPhoneNumber(e.target.value); setPhoneError(''); }} placeholder="+25078..." className={`w-full p-4 bg-gray-50 dark:bg-gray-700 border ${phoneError ? 'border-red-500' : 'border-gray-100 dark:border-gray-600'} rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-primary/10 dark:text-white transition-all`} />
+                          {phoneError && <p className="text-red-500 text-[10px] font-bold px-2">{phoneError}</p>}
                         </div>
+                        {deliveryMethod === 'delivery' && (
+                          <div className="flex flex-col gap-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Delivery Instructions & Landmarks</label>
+                            <input type="text" value={deliveryNotes} onChange={(e) => setDeliveryNotes(e.target.value)} placeholder="e.g. Opposite Gisozi Sector Office" className="w-full p-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-primary/10 dark:text-white transition-all" />
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -282,11 +301,10 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                       {[
                         { id: 'momo', label: t('momo'), icon: '📱', disabled: false },
                         { id: 'card', label: t('card'), icon: '💳', disabled: true },
-                        { id: 'cash', label: t('cash'), icon: '💵', disabled: false }
+                        { id: 'cash', label: 'Cash on Delivery / Collection', icon: '💵', disabled: false }
                       ].map((m) => (
                         <button
                           key={m.id}
-                          data-testid={`payment-${m.id}`}
                           disabled={m.disabled}
                           onClick={() => !m.disabled && setPaymentMethod(m.id as any)}
                           className={`w-full flex items-center justify-between p-5 rounded-[28px] border-2 transition-all relative ${
@@ -332,30 +350,38 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onOpenBranchDa
                   </div>
                 </div>
                 
-                <div className="flex gap-4">
+                <div className="flex gap-4 items-center">
                   {step !== 'cart' && (
                     <button onClick={handleBack} className="px-8 py-5 rounded-3xl border-2 border-gray-200 dark:border-gray-700 font-black text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                       ←
                     </button>
                   )}
-                  <button 
-                    data-testid="checkout-next-button"
-                    onClick={step === 'payment' ? handleCheckout : handleNextStep}
-                    disabled={isProcessing}
-                    className="flex-1 flex justify-center items-center px-6 py-5 rounded-3xl shadow-[0_20px_40px_-8px_rgba(0,0,0,0.2)] text-xl font-black text-primary bg-secondary hover:bg-yellow-400 transition-all active:scale-[0.98] disabled:opacity-50 uppercase tracking-tighter"
-                  >
-                    {isProcessing ? (
-                      <div className="flex items-center gap-3">
-                        <svg className="animate-spin h-6 w-6 text-primary" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                        </svg>
-                        {t('processing')}
-                      </div>
-                    ) : (
-                      step === 'payment' ? t('completePayment') : t('checkout')
-                    )}
-                  </button>
+                  {step === 'cart' && subtotal < 2500 ? (
+                    <div className="flex-1 flex flex-col relative">
+                      <button disabled className="w-full flex justify-center items-center px-6 py-5 rounded-3xl text-xl font-black text-gray-400 bg-gray-200 dark:bg-gray-700 uppercase tracking-tighter opacity-70 cursor-not-allowed">
+                        {t('checkout')}
+                      </button>
+                      <p className="absolute -top-7 right-0 text-red-500 text-[10px] font-bold uppercase tracking-widest">Min. order 2,500 RWF</p>
+                    </div>
+                  ) : (
+                    <button 
+                      onClick={step === 'payment' ? handleCheckout : handleNextStep}
+                      disabled={isProcessing}
+                      className="flex-1 flex justify-center items-center px-6 py-5 rounded-3xl shadow-[0_20px_40px_-8px_rgba(0,0,0,0.2)] text-xl font-black text-primary bg-secondary hover:bg-yellow-400 transition-all active:scale-[0.98] disabled:opacity-50 uppercase tracking-tighter"
+                    >
+                      {isProcessing ? (
+                        <div className="flex items-center gap-3">
+                          <svg className="animate-spin h-6 w-6 text-primary" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                          </svg>
+                          {t('processing')}
+                        </div>
+                      ) : (
+                        step === 'payment' ? t('completePayment') : t('checkout')
+                      )}
+                    </button>
+                  )}
                 </div>
               </div>
             )}

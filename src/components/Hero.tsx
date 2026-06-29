@@ -8,7 +8,7 @@ const Hero: React.FC = () => {
   const { user, handleGoogleSuccess } = useStore();
   
   return (
-    <div data-testid="hero-section" id="hero" className="relative h-[500px] md:h-[700px] flex items-center justify-center overflow-hidden bg-primary">
+    <div id="hero" className="relative h-[500px] md:h-[700px] flex items-center justify-center overflow-hidden bg-primary">
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
         <video
@@ -42,7 +42,7 @@ const Hero: React.FC = () => {
           
           <div className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
             <button 
-              data-testid="hero-shop-button"
+             
               onClick={() => {
                 const shopSection = document.getElementById('explore-categories');
                 shopSection?.scrollIntoView({ behavior: 'smooth' });

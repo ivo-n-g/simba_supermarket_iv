@@ -38,7 +38,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
         {/* Min Input */}
         <input
           type="range"
-          data-testid="price-min-slider"
+         
           min={min}
           max={max}
           step={100}
@@ -57,7 +57,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
         {/* Max Input */}
         <input
           type="range"
-          data-testid="price-max-slider"
+         
           min={min}
           max={max}
           step={100}
